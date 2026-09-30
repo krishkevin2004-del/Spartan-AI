@@ -1,0 +1,421 @@
+/* Wilson Hall Handbook Assistant: one small stylesheet, no framework. */
+
+:root {
+  --green: #18453b; /* MSU Spartan green */
+  --green-dark: #0f2e27;
+  --green-tint: #eaf1ee;
+  --ink: #1c2321;
+  --muted: #5b6763;
+  --line: #d9e1de;
+  --bg: #f6f8f7;
+  --white: #ffffff;
+  --alert: #9b1c1c;
+  --radius: 14px;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Header ── */
+.header {
+  background: var(--green);
+  color: var(--white);
+  padding: 24px 16px 20px;
+}
+.header-inner {
+  max-width: 720px;
+  margin: 0 auto;
+}
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+.header h1 {
+  margin: 6px 0 6px;
+  font-size: 24px;
+  line-height: 1.2;
+}
+.header p {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+/* ── Conversation ── */
+.chat {
+  flex: 1;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.welcome p {
+  margin: 0 0 14px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.starters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.starters button {
+  border: 1px solid var(--line);
+  background: var(--white);
+  color: var(--green);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 14px;
+  text-align: left;
+}
+.starters button:hover {
+  border-color: var(--green);
+}
+
+.bubble {
+  max-width: 88%;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  line-height: 1.5;
+  font-size: 15px;
+}
+.bubble p {
+  margin: 0;
+}
+.bubble.user {
+  align-self: flex-end;
+  background: var(--green);
+  color: var(--white);
+  border-bottom-right-radius: 4px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.bubble.assistant {
+  align-self: flex-start;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-bottom-left-radius: 4px;
+}
+.bubble.handoff {
+  border-left: 4px solid var(--green);
+}
+.bubble.typing {
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* ── Citations ── */
+.citations {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.citation {
+  background: var(--green-tint);
+  border-radius: 10px;
+  font-size: 13px;
+}
+.citation summary {
+  padding: 8px 10px;
+  cursor: pointer;
+  color: var(--green-dark);
+}
+.cite-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-right: 4px;
+}
+.citation blockquote {
+  margin: 0;
+  padding: 4px 12px 12px;
+  white-space: pre-wrap;
+  color: var(--ink);
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.feedback {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.feedback button {
+  border: 1px solid var(--line);
+  background: var(--white);
+  border-radius: 8px;
+  padding: 2px 8px;
+}
+
+.link {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-top: 6px;
+  color: var(--green);
+  text-decoration: underline;
+  font-size: 14px;
+}
+
+/* ── Input ── */
+.composer {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--bg);
+}
+.composer input {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  font-size: 16px; /* 16px stops iPhones zooming in on focus */
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--white);
+}
+.composer input:focus {
+  outline: 2px solid var(--green);
+  outline-offset: 1px;
+}
+.composer button {
+  border: none;
+  border-radius: var(--radius);
+  padding: 0 20px;
+  background: var(--green);
+  color: var(--white);
+  font-weight: 600;
+}
+.composer button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.footer {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 16px 20px;
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* ── Escalation screen ── */
+.escalation {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 46, 39, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 10;
+}
+.escalation-card {
+  background: var(--white);
+  border-radius: 18px;
+  padding: 24px 20px;
+  max-width: 480px;
+  width: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+}
+.escalation-card h2 {
+  margin: 0 0 8px;
+  font-size: 22px;
+  color: var(--green-dark);
+}
+.escalation-card > p {
+  margin: 0 0 16px;
+  line-height: 1.5;
+}
+.resources {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.resource {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.resource strong {
+  display: block;
+}
+.resource span {
+  font-size: 14px;
+  color: var(--muted);
+}
+.call {
+  display: block;
+  text-align: center;
+  background: var(--green);
+  color: var(--white);
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 12px;
+}
+.back {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: var(--white);
+  border-radius: 10px;
+  padding: 10px;
+  color: var(--muted);
+}
+
+/* ── RA on duty ── */
+.ra-button {
+  margin-top: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--white);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 14px;
+}
+.ra-button:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+.hall-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.hall-picker select {
+  max-width: 100%;
+  min-width: 0;
+}
+.hall-picker select,
+.chip {
+  font: inherit;
+  font-size: 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 8px 14px;
+  background: var(--white);
+  color: var(--green);
+}
+.hall-card {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.hall-card p {
+  margin: 0;
+}
+.sc {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+}
+.call.secondary {
+  background: var(--green-tint);
+  color: var(--green-dark);
+}
+.muted {
+  color: var(--muted);
+}
+.small {
+  font-size: 13px;
+}
+.bubble p + p {
+  margin-top: 8px;
+}
+.bubble.assistant p {
+  white-space: pre-wrap;
+}
+
+/* ── Get help now (always visible) ── */
+.dock {
+  position: sticky;
+  bottom: 0;
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+}
+.help-bar {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.help-now {
+  border: none;
+  background: var(--alert);
+  color: var(--white);
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.resources-heading {
+  margin: 4px 0 10px;
+  font-size: 14px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.resources.compact .resource {
+  padding: 10px 12px;
+  gap: 8px;
+}

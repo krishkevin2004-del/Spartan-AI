@@ -1,0 +1,40 @@
+{
+  "_readme": "Contact numbers for every MSU residence hall, used when a resident asks for their RA. Service Center numbers come from each hall's page on liveon.msu.edu/reshall/<hall> and liveon.msu.edu/servicecenters (checked 2026-09-29). MSU does NOT publish RA on-duty numbers online; they are posted inside each hall. Fill in raOnDutyPhone for each hall as you collect them (digits and dashes, e.g. \"517-555-0123\"). Until a hall has one, residents are told to call that hall's Service Center, which can connect them to the RA on duty. Re-check every semester.",
+  "checked": "2026-09-29",
+  "halls": [
+    { "id": "abbot", "name": "Abbot Hall", "neighborhood": "North", "raOnDutyPhone": null, "serviceCenters": [{ "name": "Abbot Service Center", "phone": "517-355-6438" }] },
+    { "id": "campbell", "name": "Campbell Hall", "neighborhood": "North", "raOnDutyPhone": null, "serviceCenters": [{ "name": "Campbell Hall Service Center (West Circle primary)", "phone": "517-355-0080", "hours": "7 a.m. to midnight" }] },
+    { "id": "gilchrist", "name": "Gilchrist Hall", "neighborhood": "North", "raOnDutyPhone": null, "serviceCenters": [{ "name": "Gilchrist Service Center", "phone": "517-353-8511" }] },
+    { "id": "landon", "name": "Landon Hall", "neighborhood": "North", "raOnDutyPhone": null, "serviceCenters": [{ "name": "Landon Service Center", "phone": "517-355-8713" }] },
+    { "id": "mason", "name": "Mason Hall", "neighborhood": "North", "raOnDutyPhone": null, "serviceCenters": [{ "name": "Mason Service Center", "phone": "517-355-2129" }] },
+    { "id": "mayo", "name": "Mayo Hall", "neighborhood": "North", "raOnDutyPhone": null, "serviceCenters": [{ "name": "Mayo Hall Service Center", "phone": "517-355-2481" }] },
+    { "id": "phillips", "name": "Phillips Hall", "neighborhood": "North", "raOnDutyPhone": null, "serviceCenters": [{ "name": "Phillips Service Center", "phone": "517-355-9500" }] },
+    { "id": "snyder", "name": "Snyder Hall", "neighborhood": "North", "raOnDutyPhone": null, "serviceCenters": [{ "name": "Snyder Service Center", "phone": "517-355-4988" }] },
+    { "id": "williams", "name": "Williams Hall", "neighborhood": "North", "raOnDutyPhone": null, "serviceCenters": [{ "name": "Williams Service Center", "phone": "517-355-3530" }] },
+    { "id": "yakeley", "name": "Yakeley Hall", "neighborhood": "North", "raOnDutyPhone": null, "serviceCenters": [{ "name": "Yakeley Service Center", "phone": "517-355-8623" }] },
+
+    { "id": "armstrong", "name": "Armstrong Hall", "neighborhood": "Brody", "raOnDutyPhone": null, "serviceCenters": [{ "name": "Armstrong Service Center", "phone": "517-355-5514" }, { "name": "Brody Hall 122 Service Center", "phone": "517-355-7480", "hours": "open 24 hours" }] },
+    { "id": "bailey", "name": "Bailey Hall", "neighborhood": "Brody", "raOnDutyPhone": null, "serviceCenters": [{ "name": "Bailey Service Center", "phone": "517-355-5751" }, { "name": "Brody Hall 122 Service Center", "phone": "517-355-7480", "hours": "open 24 hours" }] },
+    { "id": "bryan", "name": "Bryan Hall", "neighborhood": "Brody", "raOnDutyPhone": null, "serviceCenters": [{ "name": "Bryan Service Center", "phone": "517-355-0721" }, { "name": "Brody Hall 122 Service Center", "phone": "517-355-7480", "hours": "open 24 hours" }] },
+    { "id": "butterfield", "name": "Butterfield Hall", "neighborhood": "Brody", "raOnDutyPhone": null, "serviceCenters": [{ "name": "Butterfield Service Center", "phone": "517-355-1324" }, { "name": "Brody Hall 122 Service Center", "phone": "517-355-7480", "hours": "open 24 hours" }] },
+    { "id": "emmons", "name": "Emmons Hall", "neighborhood": "Brody", "raOnDutyPhone": null, "serviceCenters": [{ "name": "Emmons Service Center", "phone": "517-355-2717" }, { "name": "Brody Hall 122 Service Center", "phone": "517-355-7480", "hours": "open 24 hours" }] },
+    { "id": "rather", "name": "Rather Hall", "neighborhood": "Brody", "raOnDutyPhone": null, "serviceCenters": [{ "name": "Rather Service Center", "phone": "517-355-4446" }, { "name": "Brody Hall 122 Service Center", "phone": "517-355-7480", "hours": "open 24 hours" }] },
+
+    { "id": "mcdonel", "name": "McDonel Hall", "neighborhood": "River Trail", "raOnDutyPhone": null, "serviceCenters": [{ "name": "East McDonel Service Center", "phone": "517-353-1292", "hours": "7 a.m. to midnight" }, { "name": "West McDonel Service Center", "phone": "517-353-1602" }, { "name": "Owen Hall Service Center", "phone": "517-355-5068", "hours": "open 24 hours" }] },
+    { "id": "owen", "name": "Owen Hall", "neighborhood": "River Trail", "raOnDutyPhone": null, "serviceCenters": [{ "name": "Owen Hall Service Center (River Trail primary)", "phone": "517-355-5068", "hours": "open 24 hours" }] },
+    { "id": "shaw", "name": "Shaw Hall", "neighborhood": "River Trail", "raOnDutyPhone": null, "serviceCenters": [{ "name": "West Shaw Service Center", "phone": "517-355-9255", "hours": "7 a.m. to midnight" }, { "name": "East Shaw Service Center", "phone": "517-355-8987" }, { "name": "Owen Hall Service Center", "phone": "517-355-5068", "hours": "open 24 hours" }] },
+    { "id": "vanhoosen", "name": "Van Hoosen Apartments", "neighborhood": "River Trail", "raOnDutyPhone": null, "serviceCenters": [{ "name": "Owen Hall Service Center", "phone": "517-355-5068", "hours": "open 24 hours" }] },
+
+    { "id": "akers", "name": "Akers Hall", "neighborhood": "East", "raOnDutyPhone": null, "serviceCenters": [{ "name": "West Akers Service Center", "phone": "517-353-3358", "hours": "7 a.m. to midnight" }, { "name": "East Akers Service Center", "phone": "517-353-2218" }] },
+    { "id": "holmes", "name": "Holmes Hall", "neighborhood": "East", "raOnDutyPhone": null, "serviceCenters": [{ "name": "West Holmes Service Center (East Neighborhood primary)", "phone": "517-353-6360", "hours": "7 a.m. to midnight" }, { "name": "East Holmes Service Center", "phone": "517-353-7760" }] },
+    { "id": "hubbard", "name": "Hubbard Hall", "neighborhood": "East", "raOnDutyPhone": null, "serviceCenters": [{ "name": "North Hubbard Service Center", "phone": "517-353-8469", "hours": "7 a.m. to midnight" }, { "name": "South Hubbard Service Center", "phone": "517-353-8113" }] },
+
+    { "id": "case", "name": "Case Hall", "neighborhood": "South", "raOnDutyPhone": null, "serviceCenters": [{ "name": "North Case Service Center (South Neighborhood primary)", "phone": "517-355-7250", "hours": "7 a.m. to midnight" }, { "name": "South Case Service Center", "phone": "517-355-6968" }] },
+    { "id": "holden", "name": "Holden Hall", "neighborhood": "South", "raOnDutyPhone": null, "serviceCenters": [{ "name": "Holden Service Center", "phone": "517-353-5912", "hours": "7 a.m. to midnight" }] },
+    { "id": "wilson", "name": "Wilson Hall", "neighborhood": "South", "raOnDutyPhone": null, "serviceCenters": [{ "name": "North Case Service Center (serves Wilson Hall)", "phone": "517-355-7250", "hours": "7 a.m. to midnight" }] },
+    { "id": "wonders", "name": "Wonders Hall", "neighborhood": "South", "raOnDutyPhone": null, "serviceCenters": [{ "name": "North Case Service Center (serves Wonders Hall)", "phone": "517-355-7250", "hours": "7 a.m. to midnight" }] },
+
+    { "id": "university-village", "name": "University Village Apartments", "neighborhood": "Apartments", "raOnDutyPhone": null, "serviceCenters": [{ "name": "University Village Community Center Service Center", "phone": "517-353-3888", "hours": "7 a.m. to midnight" }] },
+    { "id": "1855-place", "name": "1855 Place (Apartments, Townhouses and Family Housing)", "neighborhood": "Apartments", "raOnDutyPhone": null, "serviceCenters": [{ "name": "479 Ivy Court Service Center", "phone": "517-353-6952", "hours": "7 a.m. to midnight" }] }
+  ]
+}

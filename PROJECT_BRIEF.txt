@@ -1,0 +1,111 @@
+WILSON HALL HANDBOOK ASSISTANT — PROJECT BRIEF
+Krish Gupta, Resident Assistant, Wilson Hall, MSU (2023-2026)
+
+
+THE PROBLEM
+
+Residents have small questions, guests, quiet hours, lockouts, room changes,
+that don't feel worth troubling their RA for. A lot of them are simple
+yes-or-no problems that come up any time, day or night, and the honest
+answer still lives in a PDF nobody reads. So it lands on RAs, front desk
+staff, and hall directors instead.
+
+
+THE IDEA
+
+A simple web assistant that answers policy questions in seconds and shows
+the exact handbook section it used. It only answers from official REHS
+documents. When it's unsure, or the topic is sensitive, it hands the
+student to their RA, the hall office, or the right emergency number,
+instead of guessing.
+
+
+HOW IT WORKS (Retrieval-Augmented Generation, plain terms)
+
+The model has to find the answer in the handbook before it's allowed to
+speak. If it can't find it, it says so instead of guessing.
+
+1. Ask      — a resident types a question, in plain language, any time.
+2. Retrieve — the system searches the official handbook and pulls only the
+              exact passages that match.
+3. Answer   — the model drafts a reply using only those passages, and
+              cites the section.
+4. Escalate — no match, or a sensitive topic, and it hands off to a person
+              immediately, no model involved in that decision.
+
+
+THE NUMBERS (conservative planning estimates, not promises)
+
+Wilson Hall (v1 pilot):
+  1,200 residents × 25% ask a question a month × 2 min average per question
+  = 10 hours of staff time back every month.
+
+MSU-wide (28 residence halls, ~15,000 residents), same assumptions:
+  = roughly 125 hours back every month.
+
+Not every resident asks, and not every question takes the same time, these
+are deliberately conservative. Running cost during build and testing: about
+$15 a month. The pilot replaces all of this with a measured baseline.
+
+
+BUILT TO BE SAFE — THE GUARDRAILS
+
+- No student data. No logins, no personal info, no access to housing
+  systems. Anonymous by design, keeps privacy review simple.
+- Approved sources only. Answers come only from REHS documents, with the
+  section cited. Off-topic questions are refused. Rate limits stop abuse.
+- Zero-creativity RAG. Model temperature locked to 0.0. If the answer isn't
+  in the retrieved passages, it says so, it never guesses or fills in from
+  general knowledge.
+- Hardcoded escalation. Self-harm, safety, conduct, and roommate-conflict
+  topics never reach the model's judgment. A keyword list plus a separate
+  safety-classifier call run before generation, and anything uncertain
+  defaults to escalating, not to a generic "I didn't understand." Routes
+  straight to a fixed, unchangeable screen with real resources (988, MSU
+  CAPS, Crisis Text Line, MSU Police) and a click-to-call. The model
+  cannot improvise its way around this.
+- Sensitive topics go to a person. Conduct, safety, or roommate conflicts
+  are handed off immediately to an RA, the hall office, or the right
+  emergency number.
+- Sandboxed scope. v1 is Wilson Hall only, a contained blast radius before
+  anyone discusses campus-wide.
+- Tested before launch. 50 to 100 real questions with known answers, plus a
+  stress test to try to break it, before any resident sees it.
+
+
+HOW WE'LL KNOW IT WORKED
+
+- 90%+ accuracy on the test set, counting correct answers or proper
+  hand-offs, not just "sounds plausible."
+- Baseline comparison: questions the assistant handles vs. what used to
+  reach staff.
+- Thumbs up/down from residents on every answer.
+- Actual monthly cost vs. the ~$15 planning number.
+
+
+IF THIS WORKS, WHAT IT ADDS UP TO
+
+- RA Burnout Protection — low-stakes volume stops crowding out attention
+  for the moments that actually matter.
+- Staff Time Back — hours returned to community building, not repeating
+  the handbook.
+- Early Policy Tackling — common, confusing policies get flagged and
+  clarified before they cause real disputes.
+- Consistent, Cited Answers — every resident gets the same accurate
+  answer, day or night, hall to hall.
+
+
+TECH STACK (v1)
+
+- Model: Claude API, Claude Haiku 4.5
+- RAG over the current MSU on-campus housing handbook PDF (chunk + embed
+  the handbook, vector search for retrieval)
+- Frontend: simple web app, hosted free on Vercel
+- No accounts, no persistent per-resident data
+
+
+WHAT'S DELIBERATELY OUT OF SCOPE FOR THIS FILE
+
+Timeline, rollout sequencing, stakeholder approvals, and the MSU-wide
+push are being handled separately by Krish. This brief is about what the
+product is and the rules it has to follow, not when things happen.

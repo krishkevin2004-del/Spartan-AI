@@ -1,0 +1,79 @@
+"use client";
+
+// "Which hall are you in?" picker and the contact card for that hall.
+// All numbers come from data/hall-contacts.json, never from the AI.
+
+import { HALLS, NEIGHBORHOODS, type Hall } from "@/lib/halls";
+
+const PILOT_HALL_ID = "wilson"; // shown as a one-tap button, since this is the Wilson Hall pilot
+
+function digits(phone: string) {
+  return phone.replace(/[^0-9]/g, "");
+}
+
+export function HallPicker({ onPick }: { onPick: (hall: Hall) => void }) {
+  const pilot = HALLS.find((h) => h.id === PILOT_HALL_ID);
+  return (
+    <div className="hall-picker">
+      {pilot && (
+        <button className="chip" onClick={() => onPick(pilot)}>
+          {pilot.name}
+        </button>
+      )}
+      <select
+        aria-label="Choose your hall"
+        defaultValue=""
+        onChange={(e) => {
+          const hall = HALLS.find((h) => h.id === e.target.value);
+          if (hall) onPick(hall);
+        }}
+      >
+        <option value="" disabled>
+          Other hall…
+        </option>
+        {NEIGHBORHOODS.map((n) => (
+          <optgroup key={n} label={n}>
+            {HALLS.filter((h) => h.neighborhood === n).map((h) => (
+              <option key={h.id} value={h.id}>
+                {h.name}
+              </option>
+            ))}
+          </optgroup>
+        ))}
+      </select>
+    </div>
+  );
+}
+
+export function HallContactCard({ hall }: { hall: Hall }) {
+  return (
+    <div className="hall-card">
+      <strong>{hall.name}</strong>
+
+      {hall.raOnDutyPhone ? (
+        <a className="call" href={`tel:${digits(hall.raOnDutyPhone)}`}>
+          Call RA on duty: {hall.raOnDutyPhone}
+        </a>
+      ) : (
+        <p className="muted">
+          The RA on duty number is posted in your hall. Your Service Center can also connect you with the RA on
+          duty:
+        </p>
+      )}
+
+      {hall.serviceCenters.map((sc) => (
+        <div key={sc.name + sc.phone} className="sc">
+          <span>
+            {sc.name}
+            {sc.hours ? ` (${sc.hours})` : ""}
+          </span>
+          <a className="call secondary" href={`tel:${digits(sc.phone)}`}>
+            Call {sc.phone}
+          </a>
+        </div>
+      ))}
+
+      <p className="muted small">Emergency? Call 911. Campus police non-emergency: 517-355-2221.</p>
+    </div>
+  );
+}
