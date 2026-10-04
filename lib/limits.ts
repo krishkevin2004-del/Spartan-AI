@@ -39,6 +39,17 @@ if (!redis && process.env.VERCEL_ENV === "production") {
 
 const memory = new Map<string, { value: number; expires: number }>();
 
+/** For /api/health: is the shared counter store connected and working? */
+export async function redisStatus(): Promise<"ok" | "not_connected" | "error"> {
+  if (!redis) return "not_connected";
+  try {
+    await redis.ping();
+    return "ok";
+  } catch {
+    return "error";
+  }
+}
+
 /** Add `amount` to a counter and return the new total. The counter deletes itself after `ttlSeconds`. */
 async function addTo(key: string, amount: number, ttlSeconds: number): Promise<number> {
   if (redis) {

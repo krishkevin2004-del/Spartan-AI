@@ -15,6 +15,7 @@
 
 import Anthropic from "@anthropic-ai/sdk";
 import { getClient } from "./claude";
+import { describeClaudeError } from "./claudeErrors";
 import { CONFIG } from "./config";
 import { recordSpend } from "./limits";
 
@@ -72,7 +73,11 @@ export async function classifySafety(message: string, previousUserMessage?: stri
     if (label === "escalate") return { label: "escalate", failedClosed: false };
     return { label: "escalate", failedClosed: true }; // anything unexpected
   } catch (err) {
-    console.error("safety classifier failed, escalating:", err instanceof Error ? err.message : "unknown error");
+    // The reason goes in the server log so a maintainer can see why (never the resident's message).
+    console.error(
+      `safety classifier failed, escalating [${describeClaudeError(err)}]:`,
+      err instanceof Error ? err.message : "unknown error",
+    );
     return { label: "escalate", failedClosed: true };
   }
 }
