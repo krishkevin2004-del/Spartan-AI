@@ -8,5 +8,5 @@ next-env.d.ts
 .vercel
 
 # Kept on this laptop only, not uploaded to GitHub
-AI Handbook Assistant — Wilson Hall Pilot.pdf
+AI Handbook Assistant*.pdf
 .claude/

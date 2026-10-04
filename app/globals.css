@@ -1,33 +1,51 @@
-/* Wilson Hall Handbook Assistant: one small stylesheet, no framework. */
+/* Housing Handbook Assistant: one small stylesheet, no framework.
+   Built phone-first; the @media block at the bottom adds laptop touches. */
 
 :root {
   --green: #18453b; /* MSU Spartan green */
   --green-dark: #0f2e27;
   --green-tint: #eaf1ee;
-  --ink: #1c2321;
-  --muted: #5b6763;
-  --line: #d9e1de;
-  --bg: #f6f8f7;
+  --ink: #1b2421;
+  --muted: #5c6864;
+  --line: #d8e0dd;
+  --bg: #f3f6f4;
   --white: #ffffff;
-  --alert: #9b1c1c;
-  --radius: 14px;
+  --radius: 16px;
+  --col: 800px; /* width of the reading column */
+  --shadow: 0 1px 2px rgba(15, 46, 39, 0.06), 0 4px 14px rgba(15, 46, 39, 0.07);
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   color: var(--ink);
   background: var(--bg);
+  color-scheme: light;
 }
 
 * {
   box-sizing: border-box;
 }
 
+html,
+body {
+  height: 100%;
+}
+
 body {
   margin: 0;
   background: var(--bg);
+  -webkit-text-size-adjust: 100%;
 }
 
-button {
+button,
+textarea,
+select {
   font: inherit;
+}
+button {
   cursor: pointer;
+}
+
+:focus-visible {
+  outline: 3px solid #7fb5a3;
+  outline-offset: 2px;
 }
 
 .sr-only {
@@ -38,239 +56,498 @@ button {
   clip: rect(0 0 0 0);
 }
 
-.page {
-  min-height: 100dvh;
+/* ── Page frame: header on top, conversation scrolls, input docked at the bottom ── */
+.app {
+  height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
 }
 
-/* ── Header ── */
-.header {
+/* ── Top bar ── */
+.topbar {
+  flex-shrink: 0;
   background: var(--green);
   color: var(--white);
-  padding: 24px 16px 20px;
+  padding: max(10px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 10px
+    max(16px, env(safe-area-inset-left));
 }
-.header-inner {
-  max-width: 720px;
+.topbar-inner {
+  max-width: var(--col);
   margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
-.eyebrow {
-  font-size: 12px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  opacity: 0.8;
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
 }
-.header h1 {
-  margin: 6px 0 6px;
-  font-size: 24px;
-  line-height: 1.2;
+.brand-mark {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.14);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
 }
-.header p {
+.brand-text {
+  min-width: 0;
+}
+.brand h1 {
   margin: 0;
-  font-size: 14px;
-  opacity: 0.9;
+  font-size: 17px;
+  line-height: 1.2;
+  font-weight: 650;
+}
+.brand small {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  opacity: 0.8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* "Get help": always in the corner, calm and inviting rather than alarming */
+.help-btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--white);
+  font-size: 15px;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+.help-btn:hover {
+  background: rgba(255, 255, 255, 0.26);
+}
+.help-btn:focus-visible {
+  outline-color: var(--white);
 }
 
 /* ── Conversation ── */
 .chat {
   flex: 1;
-  width: 100%;
-  max-width: 720px;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.chat-inner {
+  max-width: var(--col);
+  min-height: 100%;
   margin: 0 auto;
-  padding: 20px 16px;
+  padding: 20px max(16px, env(safe-area-inset-right)) 12px max(16px, env(safe-area-inset-left));
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
-.welcome p {
-  margin: 0 0 14px;
-  color: var(--muted);
-  line-height: 1.5;
+.welcome {
+  margin: auto;
+  max-width: 480px;
+  padding: 24px 0;
+  text-align: center;
 }
-.starters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.starters button {
-  border: 1px solid var(--line);
-  background: var(--white);
+.welcome-mark {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 16px;
+  border-radius: 18px;
+  background: var(--green-tint);
   color: var(--green);
-  border-radius: 999px;
-  padding: 8px 14px;
-  font-size: 14px;
-  text-align: left;
+  display: grid;
+  place-items: center;
 }
-.starters button:hover {
-  border-color: var(--green);
+.welcome h2 {
+  margin: 0 0 8px;
+  font-size: 24px;
+  color: var(--green-dark);
+}
+.welcome p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
 }
 
 .bubble {
   max-width: 88%;
-  padding: 12px 14px;
+  padding: 12px 15px;
   border-radius: var(--radius);
-  line-height: 1.5;
-  font-size: 15px;
+  line-height: 1.55;
+  font-size: 16px;
+  overflow-wrap: anywhere;
 }
 .bubble p {
   margin: 0;
+}
+.bubble p + p {
+  margin-top: 8px;
 }
 .bubble.user {
   align-self: flex-end;
   background: var(--green);
   color: var(--white);
-  border-bottom-right-radius: 4px;
+  border-bottom-right-radius: 5px;
   white-space: pre-wrap;
-  overflow-wrap: anywhere;
 }
 .bubble.assistant {
   align-self: flex-start;
   background: var(--white);
   border: 1px solid var(--line);
-  border-bottom-left-radius: 4px;
+  border-bottom-left-radius: 5px;
+  box-shadow: var(--shadow);
+}
+.bubble.assistant p {
+  white-space: pre-wrap;
 }
 .bubble.handoff {
   border-left: 4px solid var(--green);
 }
 .bubble.typing {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   color: var(--muted);
-  font-style: italic;
+}
+.dots {
+  display: inline-flex;
+  gap: 4px;
+}
+.dots i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  opacity: 0.35;
+  animation: pulse 1.2s infinite ease-in-out;
+}
+.dots i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.dots i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes pulse {
+  0%,
+  80%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.85);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.muted {
+  color: var(--muted);
+}
+.small {
+  font-size: 14px;
 }
 
 /* ── Citations ── */
 .citations {
-  margin-top: 10px;
+  margin-top: 12px;
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 .citation {
   background: var(--green-tint);
-  border-radius: 10px;
-  font-size: 13px;
+  border-radius: 12px;
+  font-size: 14px;
 }
 .citation summary {
-  padding: 8px 10px;
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  padding: 10px 12px;
+  min-height: 44px;
   cursor: pointer;
   color: var(--green-dark);
+  list-style: none;
+}
+.citation summary::-webkit-details-marker {
+  display: none;
+}
+.citation summary::after {
+  content: "›";
+  margin-left: auto;
+  padding-left: 8px;
+  font-size: 20px;
+  line-height: 1;
+  transition: transform 0.15s;
+}
+.citation[open] summary::after {
+  transform: rotate(90deg);
 }
 .cite-label {
+  flex-shrink: 0;
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  margin-right: 4px;
 }
 .citation blockquote {
   margin: 0;
-  padding: 4px 12px 12px;
+  padding: 0 14px 14px;
   white-space: pre-wrap;
   color: var(--ink);
-  max-height: 280px;
+  line-height: 1.55;
+  max-height: 300px;
   overflow-y: auto;
 }
 
 .feedback {
-  margin-top: 8px;
+  margin-top: 10px;
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 13px;
+  gap: 8px;
+  font-size: 14px;
   color: var(--muted);
 }
 .feedback button {
+  min-width: 40px;
+  min-height: 36px;
   border: 1px solid var(--line);
   background: var(--white);
-  border-radius: 8px;
-  padding: 2px 8px;
+  border-radius: 10px;
 }
 
 .link {
   background: none;
   border: none;
-  padding: 0;
-  margin-top: 6px;
+  padding: 8px 0;
+  margin-top: 4px;
   color: var(--green);
   text-decoration: underline;
-  font-size: 14px;
+  font-size: 15px;
 }
 
-/* ── Input ── */
-.composer {
-  width: 100%;
-  max-width: 720px;
-  margin: 0 auto;
-  display: flex;
-  gap: 8px;
-  padding: 12px 16px;
-  background: var(--bg);
-}
-.composer input {
-  flex: 1;
-  min-width: 0;
-  font: inherit;
-  font-size: 16px; /* 16px stops iPhones zooming in on focus */
-  padding: 12px 14px;
+/* ── Chips (small rounded buttons) ── */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 40px;
+  padding: 0 14px;
   border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border-radius: 999px;
   background: var(--white);
-}
-.composer input:focus {
-  outline: 2px solid var(--green);
-  outline-offset: 1px;
-}
-.composer button {
-  border: none;
-  border-radius: var(--radius);
-  padding: 0 20px;
-  background: var(--green);
-  color: var(--white);
+  color: var(--green);
+  font-size: 14px;
   font-weight: 600;
 }
-.composer button:disabled {
-  opacity: 0.5;
-  cursor: default;
+.chip:hover {
+  border-color: var(--green);
+}
+.chip.inline {
+  margin-top: 10px;
+  background: var(--green-tint);
+  border-color: transparent;
 }
 
-.footer {
-  max-width: 720px;
+/* ── Input dock ── */
+.dock {
+  flex-shrink: 0;
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+  padding: 10px max(16px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom))
+    max(16px, env(safe-area-inset-left));
+}
+.dock-inner {
+  max-width: var(--col);
   margin: 0 auto;
-  padding: 0 16px 20px;
+}
+.quick {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.count {
   font-size: 12px;
   color: var(--muted);
+}
+.composer {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 5px 5px 5px 16px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 26px;
+  box-shadow: var(--shadow);
+}
+.composer:focus-within {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(24, 69, 59, 0.16);
+}
+.composer textarea {
+  flex: 1;
+  min-width: 0;
+  max-height: 140px;
+  padding: 10px 0;
+  border: 0;
+  outline: 0;
+  resize: none;
+  background: transparent;
+  color: var(--ink);
+  font-size: 16px; /* 16px stops iPhones zooming in when you tap the box */
+  line-height: 1.4;
+}
+.composer textarea::placeholder {
+  color: #8a9692;
+}
+.send {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: var(--green);
+  color: var(--white);
+  transition: background 0.15s;
+}
+.send:hover:not(:disabled) {
+  background: var(--green-dark);
+}
+.send:disabled {
+  background: #b9c8c3;
+  cursor: default;
+}
+.fineprint {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--muted);
   text-align: center;
-  line-height: 1.5;
 }
 
-/* ── Escalation screen ── */
-.escalation {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 46, 39, 0.72);
+/* ── Calls to action ── */
+.call {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 16px;
-  z-index: 10;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 14px;
+  border-radius: 12px;
+  background: var(--green);
+  color: var(--white);
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
 }
-.escalation-card {
-  background: var(--white);
-  border-radius: 18px;
-  padding: 24px 20px;
-  max-width: 480px;
-  width: 100%;
-  max-height: 100%;
-  overflow-y: auto;
+.call:hover {
+  background: var(--green-dark);
 }
-.escalation-card h2 {
-  margin: 0 0 8px;
-  font-size: 22px;
+.call.secondary {
+  background: var(--green-tint);
   color: var(--green-dark);
 }
-.escalation-card > p {
+.call.secondary:hover {
+  background: #dce8e3;
+}
+
+/* ── Hall picker and hall contacts ── */
+.hall-picker {
+  margin-top: 10px;
+}
+.hall-picker select {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--white);
+  color: var(--ink);
+  font-size: 16px;
+}
+.hall-card {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.sc {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+}
+
+/* ── Help sheet (bottom sheet on phones, centered card on laptops) ── */
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(15, 46, 39, 0.6);
+  animation: fade 0.15s ease-out;
+}
+.sheet {
+  width: 100%;
+  max-width: 540px;
+  max-height: 92dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 18px max(18px, env(safe-area-inset-bottom));
+  background: var(--white);
+  border-radius: 22px 22px 0 0;
+  outline: none;
+  animation: rise 0.2s ease-out;
+}
+.sheet-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 0 10px;
+  background: var(--white);
+}
+.sheet-head h2 {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.25;
+  color: var(--green-dark);
+}
+.icon-btn {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: var(--green-tint);
+  color: var(--green-dark);
+}
+.sheet-message {
   margin: 0 0 16px;
-  line-height: 1.5;
+  line-height: 1.55;
 }
 .resources {
   list-style: none;
@@ -281,141 +558,114 @@ button {
   gap: 10px;
 }
 .resource {
+  padding: 14px;
   border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 12px;
+  border-radius: 14px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
-.resource strong {
+.resource-text strong {
   display: block;
 }
-.resource span {
-  font-size: 14px;
-  color: var(--muted);
-}
-.call {
+.resource-text span {
   display: block;
-  text-align: center;
-  background: var(--green);
-  color: var(--white);
-  text-decoration: none;
-  font-weight: 600;
-  border-radius: 10px;
-  padding: 12px;
-}
-.back {
-  width: 100%;
-  border: 1px solid var(--line);
-  background: var(--white);
-  border-radius: 10px;
-  padding: 10px;
+  margin-top: 2px;
+  font-size: 14px;
+  line-height: 1.45;
   color: var(--muted);
-}
-
-/* ── RA on duty ── */
-.ra-button {
-  margin-top: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  background: rgba(255, 255, 255, 0.12);
-  color: var(--white);
-  border-radius: 999px;
-  padding: 6px 14px;
-  font-size: 14px;
-}
-.ra-button:hover {
-  background: rgba(255, 255, 255, 0.22);
-}
-.hall-picker {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 10px;
-}
-.hall-picker select {
-  max-width: 100%;
-  min-width: 0;
-}
-.hall-picker select,
-.chip {
-  font: inherit;
-  font-size: 14px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 8px 14px;
-  background: var(--white);
-  color: var(--green);
-}
-.hall-card {
-  margin-top: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.hall-card p {
-  margin: 0;
-}
-.sc {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 14px;
-}
-.call.secondary {
-  background: var(--green-tint);
-  color: var(--green-dark);
-}
-.muted {
-  color: var(--muted);
-}
-.small {
-  font-size: 13px;
-}
-.bubble p + p {
-  margin-top: 8px;
-}
-.bubble.assistant p {
-  white-space: pre-wrap;
-}
-
-/* ── Get help now (always visible) ── */
-.dock {
-  position: sticky;
-  bottom: 0;
-  background: var(--bg);
-  border-top: 1px solid var(--line);
-  padding-top: 10px;
-}
-.help-bar {
-  width: 100%;
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 0 16px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 13px;
-  color: var(--muted);
-}
-.help-now {
-  border: none;
-  background: var(--alert);
-  color: var(--white);
-  font-weight: 600;
-  border-radius: 999px;
-  padding: 6px 14px;
-  font-size: 14px;
-  flex-shrink: 0;
 }
 .resources-heading {
   margin: 4px 0 10px;
-  font-size: 14px;
-  color: var(--muted);
+  font-size: 13px;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  color: var(--muted);
 }
-.resources.compact .resource {
-  padding: 10px 12px;
-  gap: 8px;
+.back {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--white);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes rise {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+}
+
+/* Narrow phones: the small subtitle would be cut off, so drop it */
+@media (max-width: 480px) {
+  .brand small {
+    display: none;
+  }
+  .brand h1 {
+    font-size: 16px;
+  }
+}
+
+/* ── Laptops and tablets ── */
+@media (min-width: 700px) {
+  .topbar {
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+  .brand h1 {
+    font-size: 20px;
+  }
+  .brand small {
+    font-size: 13px;
+  }
+  .brand-mark {
+    width: 42px;
+    height: 42px;
+  }
+  .chat-inner {
+    padding-top: 28px;
+    gap: 16px;
+  }
+  .bubble {
+    max-width: 78%;
+    padding: 14px 18px;
+  }
+  .welcome h2 {
+    font-size: 28px;
+  }
+  .sheet-backdrop {
+    align-items: center;
+    padding: 24px;
+  }
+  .sheet {
+    border-radius: 22px;
+    padding: 0 24px 24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  }
+  .sc {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .sc .call {
+    min-width: 190px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }

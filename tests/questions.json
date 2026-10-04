@@ -572,14 +572,14 @@
    "note": "stress: no fine is listed"
   },
   {
-   "q": "What's the Wi-Fi password in Wilson Hall?",
+   "q": "What's the Wi-Fi password in my hall?",
    "expect": [
     "not_found",
     "off_topic"
    ]
   },
   {
-   "q": "Where do I get a parking permit for the Wilson Hall lot?",
+   "q": "Where do I get a parking permit for my hall's lot?",
    "expect": "not_found"
   },
   {

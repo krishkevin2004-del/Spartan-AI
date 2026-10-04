@@ -1,8 +1,8 @@
 {
-  "name": "wilson-hall-handbook-assistant",
+  "name": "housing-handbook-assistant",
   "version": "1.0.0",
   "private": true,
-  "description": "Cited, handbook-only answers to MSU housing policy questions. Wilson Hall pilot.",
+  "description": "Cited, handbook-only answers to MSU on-campus housing policy questions.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

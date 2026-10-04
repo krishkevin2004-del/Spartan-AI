@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// All the settings for the Wilson Hall Handbook Assistant live in this file.
+// All the settings for the Housing Handbook Assistant live in this file.
 // If you need to tune something, start here.
 // ─────────────────────────────────────────────────────────────────────────────
 

@@ -1,10 +1,10 @@
 {
-  "_readme": "Extra policy information from Wilson Hall staff that is not written in the handbook. The assistant can use and cite these, and citations are labeled with `title` so residents can tell them apart from the handbook. Keep each entry short and factual. Every entry should be approved by hall staff.",
-  "title": "Wilson Hall staff guidance",
+  "_readme": "Extra policy information from housing staff that is not written in the handbook. The assistant can use and cite these, and citations are labeled with `title` so residents can tell them apart from the handbook. Keep each entry short and factual, and have staff approve every entry. NOTE: the quiet-hours entry was provided by one hall's staff; confirm it matches policy in other halls before relying on it campus-wide.",
+  "title": "Hall staff guidance",
   "entries": [
     {
       "section": "Quiet Hours and Finals Week",
-      "text": "Wilson Hall does not have set nightly quiet hours during the regular semester. Courtesy hours are always in effect: if noise from someone is affecting your sleep or study, you can ask them to keep it down, and they are expected to. During finals, quiet hours are in effect. Finals week starts on a Monday. Quiet hours begin at 10 p.m. on the Friday before finals week and continue through the end of finals week."
+      "text": "There are no set nightly quiet hours during the regular semester. Courtesy hours are always in effect: if noise from someone is affecting your sleep or study, you can ask them to keep it down, and they are expected to. During finals, quiet hours are in effect. Finals week starts on a Monday. Quiet hours begin at 10 p.m. on the Friday before finals week and continue through the end of finals week."
     },
     {
       "section": "Counseling & Psychological Services (CAPS)",

@@ -1,9 +1,9 @@
-# Wilson Hall Handbook Assistant
+# Housing Handbook Assistant
 
 A small web app that answers MSU housing policy questions using **only** the official
 On-Campus Housing Handbook, and cites the section every answer came from. Sensitive
 topics never reach the answer step: they go straight to a fixed screen with real people
-to contact. Piloted in Wilson Hall. Runs on Claude Haiku 4.5.
+to contact. Built for MSU on-campus residents, any hall. Runs on Claude Haiku 4.5.
 
 ## How a message flows
 
@@ -39,7 +39,7 @@ A **Get help now** button is on screen at all times, independent of both checks.
 | 3. Every answer cited | `lib/answer.ts` uses Claude's Citations feature; an answer with no citation is replaced by "not in the handbook" |
 | 4. No student data | No login, no database of questions. Questions are never logged. Rate-limit counters use a salted one-way hash of the IP and expire within two days. |
 | 5. Off-topic refused, rate limited | `lib/answer.ts` (`[OFF_TOPIC]`), plus the cost protection below |
-| 6. Wilson Hall scope | One handbook, one index file, no shared infrastructure |
+| 6. Contained scope | One handbook, one index file, no shared infrastructure |
 
 **Retrieval note:** the Claude API has no embeddings endpoint, and the handbook is only
 ~22k tokens, so instead of vector search Claude receives the whole handbook (split into
@@ -77,6 +77,28 @@ everything else 92/93. Add real questions from residents to `tests/questions.jso
 - `data/staff-guidance.json`: policy info from hall staff that isn't in the handbook
   (e.g. finals quiet hours). Cited separately from the handbook.
 - `lib/escalation.ts`: crisis contacts and the fixed screens. Have REHS review changes.
+
+## If the assistant isn't answering
+
+Symptom: every question shows the "Let's get you to a person" help screen. That's the safety
+check failing closed because it couldn't reach Claude. To see why, open the live site, then in
+the browser console run:
+
+```js
+fetch('/api/health', {method:'POST', headers:{'Content-Type':'application/json'}, body:'{}'}).then(r => r.json()).then(console.log)
+```
+
+| `claude` says | Meaning | Fix |
+|---|---|---|
+| `ok` | Claude is reachable | Nothing to fix |
+| `no_key` | The server has no `ANTHROPIC_API_KEY` | Vercel → Settings → Environment Variables: add it with **Production** ticked, then Redeploy |
+| `invalid_key` | The key is wrong, has a stray space, or was deleted | Paste a fresh key, save, Redeploy |
+| `no_credit` | The Anthropic account has no credit | console.anthropic.com → Billing |
+| `rate_limited` / `timeout` / `network` | Temporary | Try again in a minute |
+
+`redis` should say `ok`. `not_connected` means Upstash isn't linked, so cost limits only count
+per server. Vercel's **Logs** tab also records the reason on every failure
+(search for `safety classifier failed`). Environment-variable changes only apply after a **Redeploy**.
 
 ## Updating the handbook (every year)
 
@@ -128,6 +150,6 @@ blocked in production by design.
 Claude Haiku 4.5 ($1 / $5 per million input/output tokens). Each question makes a tiny
 classifier call plus an answer call that reads the cached handbook. Roughly $0.005 per
 question when the cache is warm, about $0.05 for the first question after an idle hour.
-Wilson Hall's expected volume lands well under the ~$15/month planning number, and the
+Expected pilot volume lands well under the ~$15/month planning number, and the
 daily budget cap enforces that ceiling automatically (see above). `LOG_USAGE=1` in
 `.env.local` prints token use per question.

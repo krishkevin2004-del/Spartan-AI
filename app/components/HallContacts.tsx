@@ -4,22 +4,15 @@
 // All numbers come from data/hall-contacts.json, never from the AI.
 
 import { HALLS, NEIGHBORHOODS, type Hall } from "@/lib/halls";
-
-const PILOT_HALL_ID = "wilson"; // shown as a one-tap button, since this is the Wilson Hall pilot
+import { PhoneIcon } from "./Icons";
 
 function digits(phone: string) {
   return phone.replace(/[^0-9]/g, "");
 }
 
 export function HallPicker({ onPick }: { onPick: (hall: Hall) => void }) {
-  const pilot = HALLS.find((h) => h.id === PILOT_HALL_ID);
   return (
     <div className="hall-picker">
-      {pilot && (
-        <button className="chip" onClick={() => onPick(pilot)}>
-          {pilot.name}
-        </button>
-      )}
       <select
         aria-label="Choose your hall"
         defaultValue=""
@@ -29,7 +22,7 @@ export function HallPicker({ onPick }: { onPick: (hall: Hall) => void }) {
         }}
       >
         <option value="" disabled>
-          Other hall…
+          Choose your hall…
         </option>
         {NEIGHBORHOODS.map((n) => (
           <optgroup key={n} label={n}>
@@ -52,12 +45,11 @@ export function HallContactCard({ hall }: { hall: Hall }) {
 
       {hall.raOnDutyPhone ? (
         <a className="call" href={`tel:${digits(hall.raOnDutyPhone)}`}>
-          Call RA on duty: {hall.raOnDutyPhone}
+          <PhoneIcon size={18} /> Call RA on duty: {hall.raOnDutyPhone}
         </a>
       ) : (
         <p className="muted">
-          The RA on duty number is posted in your hall. Your Service Center can also connect you with the RA on
-          duty:
+          The RA on duty number is posted in your hall. Your Service Center can also connect you with the RA on duty:
         </p>
       )}
 
@@ -68,7 +60,7 @@ export function HallContactCard({ hall }: { hall: Hall }) {
             {sc.hours ? ` (${sc.hours})` : ""}
           </span>
           <a className="call secondary" href={`tel:${digits(sc.phone)}`}>
-            Call {sc.phone}
+            <PhoneIcon size={18} /> Call {sc.phone}
           </a>
         </div>
       ))}

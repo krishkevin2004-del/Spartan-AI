@@ -23,7 +23,7 @@ export type HandbookIndex = {
 
 /** A citation as shown under an answer. */
 export type Citation = {
-  source: string; // "2026-27 On-Campus Housing Handbook" or "Wilson Hall staff guidance"
+  source: string; // "2026-27 On-Campus Housing Handbook" or "Hall staff guidance"
   section: string;
   pages?: string; // "p. 15" or "pp. 15-16" (handbook only)
   passage: string; // the exact text that was cited
