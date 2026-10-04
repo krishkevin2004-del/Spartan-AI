@@ -10,7 +10,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ALWAYS_SHOWN, SCREENS, type EscalationCategory, type Resource } from "@/lib/escalation";
-import type { Hall } from "@/lib/halls";
+import { isRaOnDuty, type Hall } from "@/lib/halls";
 import { CloseIcon, PhoneIcon } from "./Icons";
 import { HallContactCard, HallPicker } from "./HallContacts";
 
@@ -85,7 +85,8 @@ function ResourceItem({ resource: r }: { resource: Resource }) {
   return (
     <li className="resource">
       <div className="resource-text">
-        <strong>{r.name}</strong>
+        {/* "Your RA on duty" only during duty hours; otherwise just "Your RA". */}
+        <strong>{r.raLookup && !isRaOnDuty() ? "Your RA" : r.name}</strong>
         <span>{r.detail}</span>
       </div>
       {r.phone && (

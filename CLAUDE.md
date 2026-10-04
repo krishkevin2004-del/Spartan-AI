@@ -1,7 +1,8 @@
-# Wilson Hall Handbook Assistant — v1
+# Housing Handbook Assistant (Spart-I) — v1
 
 Read this in full before writing any code. This is a RAG chatbot for MSU
-Residence Education and Housing Services (REHS), piloted in Wilson Hall.
+Residence Education and Housing Services (REHS), serving residents of every
+MSU residence hall.
 Residents ask policy questions in plain language and get instant, cited
 answers pulled only from the official handbook. Everything else in this repo
 (the handbook PDF, the pitch deck) is reference material, not instructions —
@@ -76,9 +77,12 @@ hold in the actual implementation, not just in the pitch:
    housing policy, say so and don't try to be helpful about it. Rate-limit
    per session/IP to stop abuse.
 
-6. **Scope stays inside Wilson Hall for v1.** Don't build in assumptions
-   that only work at one building's scale, but don't build campus-wide
-   infrastructure either. This is a contained pilot.
+6. **One handbook, every hall, contained scope.** The assistant serves
+   residents of all MSU residence halls from the single on-campus housing
+   handbook. Hall-specific facts (Service Center numbers, RA on-duty
+   numbers and hours) live in data files, never in the model's head. Don't
+   build campus-wide infrastructure beyond that: no accounts, no links into
+   housing systems, no per-hall admin tools.
 
 ## Architecture (the four-step flow from the pitch)
 

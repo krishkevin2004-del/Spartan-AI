@@ -27,6 +27,14 @@ export const CONFIG = {
   historyTurns: 4,
   maxHistoryTurnLength: 600, // characters; longer turns are cut short
 
+  // ── RA on duty hours (Michigan time). RAs are on duty from 7 pm to 7 am. ──
+  raOnDuty: {
+    startHour: 19, // 7 pm
+    endHour: 7, // 7 am
+    hoursLabel: "7 pm to 7 am",
+    timeZone: "America/Detroit",
+  },
+
   // ── Cost and abuse limits (see lib/limits.ts) ────────────────────────────
   maxQuestionLength: 500,
   limits: {

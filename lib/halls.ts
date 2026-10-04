@@ -8,6 +8,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import hallData from "../data/hall-contacts.json";
+import { CONFIG } from "./config";
 import { normalizeQuestion } from "./escalation";
 
 export type ServiceCenter = { name: string; phone: string; hours?: string };
@@ -73,6 +74,13 @@ export function matchHall(text: string, answeringHallQuestion = false): Hall | n
     if (words.some((w) => t.includes(` ${w} `))) return hall;
   }
   return null;
+}
+
+/** Is an RA on duty right now? (7 pm to 7 am, Michigan time. Set in lib/config.ts.) */
+export function isRaOnDuty(now: Date = new Date()): boolean {
+  const { startHour, endHour, timeZone } = CONFIG.raOnDuty;
+  const hour = Number(new Intl.DateTimeFormat("en-US", { hour: "numeric", hourCycle: "h23", timeZone }).format(now));
+  return hour >= startHour || hour < endHour;
 }
 
 // "What's the RA on duty number?", "how do I call my RA", "RA phone", ...

@@ -1,4 +1,4 @@
-WILSON HALL HANDBOOK ASSISTANT — PROJECT BRIEF
+HOUSING HANDBOOK ASSISTANT (SPART-I) — PROJECT BRIEF
 Krish Gupta, Resident Assistant, Wilson Hall, MSU (2023-2026)
 
 
@@ -36,7 +36,7 @@ speak. If it can't find it, it says so instead of guessing.
 
 THE NUMBERS (conservative planning estimates, not promises)
 
-Wilson Hall (v1 pilot):
+One hall (Wilson Hall, as the worked example):
   1,200 residents × 25% ask a question a month × 2 min average per question
   = 10 hours of staff time back every month.
 
@@ -67,8 +67,9 @@ BUILT TO BE SAFE — THE GUARDRAILS
 - Sensitive topics go to a person. Conduct, safety, or roommate conflicts
   are handed off immediately to an RA, the hall office, or the right
   emergency number.
-- Sandboxed scope. v1 is Wilson Hall only, a contained blast radius before
-  anyone discusses campus-wide.
+- Contained scope. One handbook, no accounts, no connection to housing
+  systems: it serves residents of every hall without touching any student
+  data.
 - Tested before launch. 50 to 100 real questions with known answers, plus a
   stress test to try to break it, before any resident sees it.
 

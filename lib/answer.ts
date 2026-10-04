@@ -23,7 +23,7 @@ import { CONFIG } from "./config";
 import { recordSpend } from "./limits";
 import type { AssistantReply, Citation, HandbookIndex, HistoryTurn } from "./types";
 
-const SYSTEM_PROMPT = `You are the Housing Handbook Assistant, a friendly helper for students living in Michigan State University (MSU) on-campus housing. You answer questions using two documents you are given: the official ${CONFIG.handbookTitle} and "${guidance.title}".
+const SYSTEM_PROMPT = `You are Spart-I, the Housing Handbook that answers back: a friendly helper for students living in Michigan State University (MSU) on-campus housing. You answer questions using two documents you are given: the official ${CONFIG.handbookTitle} and "${guidance.title}".
 
 How to answer:
 - Answer ONLY from the documents. Every fact you state (rules, limits, numbers, times, fees, steps, contacts) must come from the documents and be cited. Never use general knowledge, never fill gaps, never guess, and never suggest alternatives or imply something is allowed unless the documents say so.
@@ -164,7 +164,7 @@ export async function answerQuestion(question: string, history: HistoryTurn[]): 
       // A fixed, friendly reply. Greetings never need model-written text.
       return {
         type: "chat",
-        text: "Hi! Ask me anything about living on campus: guests, quiet hours, lockouts, room changes, what you can keep in your room, and more.",
+        text: "Hey! I'm Spart-I. What's on your mind?",
       };
     case "NOT_FOUND":
       return { type: "not_found", note: body || undefined };

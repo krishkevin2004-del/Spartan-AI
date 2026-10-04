@@ -15,7 +15,7 @@
 
 import { readFileSync } from "node:fs";
 import { checkEscalation } from "../lib/escalation";
-import { isRaContactRequest, matchHall } from "../lib/halls";
+import { isRaContactRequest, isRaOnDuty, matchHall } from "../lib/halls";
 import type { AssistantReply } from "../lib/types";
 
 type Expect = "answer" | "chat" | "ra_lookup" | "escalate" | "not_found" | "off_topic";
@@ -111,7 +111,21 @@ async function main() {
       else if (reason) failures.push(`✗ "${c.q}"\n    ${reason}`);
       else passed++;
     }
-    const graded = cases.length - skipped;
+    // RA on-duty hours: 7 pm to 7 am Michigan time, in summer (EDT) and winter (EST).
+    const dutyChecks: [string, boolean][] = [
+      ["2026-10-05T22:59:00Z", false], // 6:59 pm EDT
+      ["2026-10-05T23:00:00Z", true], // 7:00 pm EDT
+      ["2026-10-06T03:30:00Z", true], // 11:30 pm EDT
+      ["2026-10-06T10:59:00Z", true], // 6:59 am EDT
+      ["2026-10-06T11:00:00Z", false], // 7:00 am EDT
+      ["2026-12-05T23:59:00Z", false], // 6:59 pm EST
+      ["2026-12-06T00:00:00Z", true], // 7:00 pm EST
+    ];
+    for (const [time, expected] of dutyChecks) {
+      if (isRaOnDuty(new Date(time)) === expected) passed++;
+      else failures.push(`✗ RA duty hours at ${time}: expected ${expected ? "on" : "off"} duty`);
+    }
+    const graded = cases.length - skipped + 7; // + 7 duty-hours checks
     console.log(`${failures.join("\n")}\n\n${passed}/${graded} passed (${skipped} paraphrase cases need the classifier: run \`npm run eval -- --escalation\`)`);
     if (failures.length) process.exit(1);
     return;

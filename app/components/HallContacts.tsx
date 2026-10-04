@@ -3,7 +3,8 @@
 // "Which hall are you in?" picker and the contact card for that hall.
 // All numbers come from data/hall-contacts.json, never from the AI.
 
-import { HALLS, NEIGHBORHOODS, type Hall } from "@/lib/halls";
+import { CONFIG } from "@/lib/config";
+import { HALLS, isRaOnDuty, NEIGHBORHOODS, type Hall } from "@/lib/halls";
 import { PhoneIcon } from "./Icons";
 
 function digits(phone: string) {
@@ -39,18 +40,27 @@ export function HallPicker({ onPick }: { onPick: (hall: Hall) => void }) {
 }
 
 export function HallContactCard({ hall }: { hall: Hall }) {
+  // Only ever shown after a tap, so it's safe to read the clock right here.
+  const onDuty = isRaOnDuty();
+  const hours = CONFIG.raOnDuty.hoursLabel;
+
   return (
     <div className="hall-card">
       <strong>{hall.name}</strong>
+      <p className="hours">
+        {onDuty ? `RA on duty · ${hours}` : `RAs are on duty ${hours}`}
+      </p>
 
       {hall.raOnDutyPhone ? (
         <a className="call" href={`tel:${digits(hall.raOnDutyPhone)}`}>
           <PhoneIcon size={18} /> Call RA on duty: {hall.raOnDutyPhone}
         </a>
-      ) : (
+      ) : onDuty ? (
         <p className="muted">
-          The RA on duty number is posted in your hall. Your Service Center can also connect you with the RA on duty:
+          The RA on duty number is posted in your hall. Your Service Center can also give it to you:
         </p>
+      ) : (
+        <p className="muted">Until then, your hall&apos;s Service Center can point you to your RA:</p>
       )}
 
       {hall.serviceCenters.map((sc) => (

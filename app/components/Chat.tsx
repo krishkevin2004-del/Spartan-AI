@@ -6,11 +6,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CONFIG } from "@/lib/config";
 import { checkEscalation, SCREENS, type EscalationCategory } from "@/lib/escalation";
-import { HALLS, matchHall, type Hall } from "@/lib/halls";
+import { HALLS, isRaOnDuty, matchHall, type Hall } from "@/lib/halls";
 import type { AssistantReply, HistoryTurn } from "@/lib/types";
 import EscalationScreen from "./EscalationScreen";
 import { HallContactCard, HallPicker } from "./HallContacts";
 import { BookIcon, HeartIcon, PhoneIcon, SendIcon } from "./Icons";
+import { useRaOnDuty } from "./useRaOnDuty";
 
 type Message =
   | { id: number; role: "user"; text: string }
@@ -39,16 +40,26 @@ export default function Chat() {
 
   const closeHelp = useCallback(() => setEscalation(null), []);
 
+  // "Reach the RA on duty" during duty hours (7 pm to 7 am); "Reach your RA" otherwise.
+  const onDuty = useRaOnDuty();
+  const raLabel = onDuty ? "Reach the RA on duty" : "Reach your RA";
+
   // Keep the newest message in view.
   useEffect(() => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     bottomRef.current?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "end" });
   }, [messages, loading]);
 
-  // The text box grows with what's typed (up to a few lines).
+  // The text box grows with what's typed (up to a few lines). When it's empty we
+  // leave its size to the stylesheet, so it can never get stuck tall.
   useEffect(() => {
     const el = inputRef.current;
     if (!el) return;
+    if (!input) {
+      el.style.height = "";
+      el.style.overflowY = "hidden";
+      return;
+    }
     el.style.height = "auto";
     el.style.height = `${Math.min(el.scrollHeight, 140)}px`;
     el.style.overflowY = el.scrollHeight > 140 ? "auto" : "hidden"; // no scrollbar until it's needed
@@ -79,7 +90,7 @@ export default function Chat() {
   }
 
   function reachRA() {
-    addUser("How do I reach the RA on duty?");
+    addUser(onDuty ? "How do I reach the RA on duty?" : "How do I reach my RA?");
     addReply({ type: "ra_lookup" });
   }
 
@@ -158,11 +169,7 @@ export default function Chat() {
                 <BookIcon size={30} />
               </span>
               <h2>How can I help?</h2>
-              <p>
-                Ask about living on campus in your own words. I answer only from the official {CONFIG.handbookTitle}{" "}
-                and show you the section I used. If it isn&apos;t covered, I&apos;ll point you to a person instead of
-                guessing.
-              </p>
+              <p>Your friend, Spart-I, the Housing Handbook that answers back.</p>
             </section>
           )}
 
@@ -179,6 +186,7 @@ export default function Chat() {
                 onReopen={setEscalation}
                 onPickHall={pickHall}
                 onReachRA={reachRA}
+                raLabel={raLabel}
               />
             ),
           )}
@@ -201,7 +209,7 @@ export default function Chat() {
         <div className="dock-inner">
           <div className="quick">
             <button className="chip" onClick={reachRA}>
-              <PhoneIcon size={15} /> Reach the RA on duty
+              <PhoneIcon size={15} /> {raLabel}
             </button>
             {input.length > 400 && (
               <span className="count" aria-live="off">
@@ -233,7 +241,7 @@ export default function Chat() {
                   ask(input);
                 }
               }}
-              placeholder={awaitingHall ? "Type your hall, e.g. Akers" : "Ask a housing question…"}
+              placeholder={awaitingHall ? "Type your hall, e.g. Akers" : "Ask a question…"}
               maxLength={CONFIG.maxQuestionLength}
               enterKeyHint="send"
               autoComplete="off"
@@ -244,7 +252,7 @@ export default function Chat() {
           </form>
 
           <p className="fineprint">
-            Anonymous: no login, nothing is saved. Please don&apos;t include your name or personal details.{" "}
+            Everything is anonymous. Feel free to share whatever&apos;s on your mind.{" "}
             <strong>In an emergency, call 911.</strong>
           </p>
         </div>
@@ -261,12 +269,14 @@ function AssistantMessage({
   onReopen,
   onPickHall,
   onReachRA,
+  raLabel,
 }: {
   reply: AssistantReply;
   isLatest: boolean;
   onReopen: (c: EscalationCategory) => void;
   onPickHall: (hall: Hall) => void;
   onReachRA: () => void;
+  raLabel: string;
 }) {
   switch (reply.type) {
     case "answer":
@@ -285,7 +295,7 @@ function AssistantMessage({
         <div className="bubble assistant">
           {hall ? (
             <>
-              <p>Here&apos;s how to reach the RA on duty:</p>
+              <p>{isRaOnDuty() ? "Here's how to reach the RA on duty:" : "Here's how to reach your RA:"}</p>
               <HallContactCard hall={hall} />
             </>
           ) : (
@@ -316,7 +326,7 @@ function AssistantMessage({
             Rather than guess, check with your RA or your hall&apos;s Service Center.
           </p>
           <button className="chip inline" onClick={onReachRA}>
-            <PhoneIcon size={15} /> Reach the RA on duty
+            <PhoneIcon size={15} /> {raLabel}
           </button>
         </div>
       );
@@ -325,8 +335,7 @@ function AssistantMessage({
       return (
         <div className="bubble assistant">
           <p>
-            I can only help with MSU housing questions, things like guests, quiet hours, lockouts, room changes, or
-            what you can keep in your room.
+            I can only help with MSU housing questions, like guests, quiet hours, lockouts and room changes.
           </p>
         </div>
       );
@@ -336,7 +345,7 @@ function AssistantMessage({
         <div className="bubble assistant handoff">
           <p>
             {reply.reason === "visitor" &&
-              "You've asked a lot of questions in a short time. Please wait a minute and try again."}
+              "You've asked a lot in a short time. Please wait a minute and try again."}
             {reply.reason === "busy" && "The assistant is very busy right now. Please try again in a minute."}
             {reply.reason === "budget" &&
               "The assistant has reached its limit for today and will be back tomorrow. Your RA and hall Service Center can answer in the meantime."}
@@ -346,7 +355,7 @@ function AssistantMessage({
             corner.
           </p>
           <button className="chip inline" onClick={onReachRA}>
-            <PhoneIcon size={15} /> Reach the RA on duty
+            <PhoneIcon size={15} /> {raLabel}
           </button>
         </div>
       );

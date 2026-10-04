@@ -80,7 +80,7 @@ export const RESOURCES = {
   },
   raOnDuty: {
     name: "Your RA on duty",
-    detail: "An RA is on duty every night. Pick your hall to get the right contacts.",
+    detail: "RAs are on duty 7 pm to 7 am. Pick your hall to get the right contacts.",
     raLookup: true,
   },
 } satisfies Record<string, Resource>;
