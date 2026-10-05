@@ -96,8 +96,8 @@ fetch('/api/health', {method:'POST', headers:{'Content-Type':'application/json'}
 | `no_credit` | The Anthropic account has no credit | console.anthropic.com → Billing |
 | `rate_limited` / `timeout` / `network` | Temporary | Try again in a minute |
 
-`redis` should say `ok`. `not_connected` means Upstash isn't linked, so cost limits only count
-per server. Vercel's **Logs** tab also records the reason on every failure
+`redis` should say `ok`. `not_connected` means no Redis is linked, so cost limits only count
+per server; `error` means it's linked but unreachable (limits fall back to memory). Vercel's **Logs** tab also records the reason on every failure
 (search for `safety classifier failed`). Environment-variable changes only apply after a **Redeploy**.
 
 ## Updating the handbook (every year)
@@ -130,11 +130,13 @@ All numbers are in `lib/config.ts` (`limits`); `DAILY_BUDGET_USD` overrides the 
 ## Deploying to Vercel
 
 1. Put this folder in a Git repository and import it in Vercel (framework: Next.js).
-2. **Connect Upstash Redis**: Vercel project → Storage → Marketplace → Upstash (Redis) →
-   free plan → connect to this project. This adds `KV_REST_API_URL` and `KV_REST_API_TOKEN`.
-   Without it the limits only count per server and are much weaker.
+2. **Connect Redis** (so the cost limits are shared by every Vercel server): Vercel project →
+   Storage → Marketplace → pick **Upstash** or **Redis** → free plan → connect to this project.
+   Either works. It adds variables like `KV_REST_API_URL` / `KV_REST_API_TOKEN` (Upstash) or
+   `Storage_REDIS_URL` (Redis); the site detects whichever is there. Without one, limits only
+   count per server and are much weaker. If Redis ever fails, limits fall back to memory.
 3. **Environment variables** (Project → Settings → Environment Variables):
-   `ANTHROPIC_API_KEY` (required), `DAILY_BUDGET_USD` (optional, default 0.50),
+   `ANTHROPIC_API_KEY` (required; the name must match exactly), `DAILY_BUDGET_USD` (optional, default 0.50),
    `IP_HASH_SALT` (optional, any long random string).
 4. **BotID** works automatically once deployed. Optional (Pro plan): Firewall → Rules →
    enable *Vercel BotID Deep Analysis*.
