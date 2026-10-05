@@ -16,7 +16,7 @@
 import { readFileSync } from "node:fs";
 import { checkEscalation } from "../lib/escalation";
 import { isRaContactRequest, isRaOnDuty, matchHall } from "../lib/halls";
-import type { AssistantReply } from "../lib/types";
+import type { AssistantReply, HistoryTurn } from "../lib/types";
 
 type Expect = "answer" | "chat" | "ra_lookup" | "escalate" | "not_found" | "off_topic";
 type TestCase = {
@@ -26,6 +26,7 @@ type TestCase = {
   mustMention?: string[];
   category?: string; // "a|b" = either screen is fine
   hall?: string;
+  history?: HistoryTurn[]; // earlier turns, for follow-up questions like "what about if my roommate says no"
   note?: string;
 };
 
@@ -146,7 +147,8 @@ async function main() {
     if (MODE === "escalation") {
       // Both escalation layers, exactly as the pipeline runs them, without the answer step.
       const hit = checkEscalation(c.q);
-      const safety = hit ? null : await classifySafety(c.q);
+      const previousUser = [...(c.history ?? [])].reverse().find((t) => t.role === "user")?.text;
+      const safety = hit ? null : await classifySafety(c.q, previousUser);
       const escalated = Boolean(hit) || safety?.label === "escalate";
       summary = hit ? `keyword → ${hit}` : `classifier → ${safety?.label}${safety?.failedClosed ? " (failed closed)" : ""}`;
       reason = shouldEscalate(c)
@@ -157,7 +159,7 @@ async function main() {
           ? "escalated but shouldn't have"
           : null;
     } else {
-      const reply = await askHandbook(c.q); // no IP → no rate limit
+      const reply = await askHandbook(c.q, { history: c.history }); // no IP → no rate limit
       reason = gradeReply(c, reply);
       summary = describe(reply);
     }
