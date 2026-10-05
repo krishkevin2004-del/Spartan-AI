@@ -64,32 +64,49 @@ button {
   flex-direction: column;
 }
 
-/* ── Top bar ── */
+/* ── Top: white strip (MSU logo left, Get help right), then the green title band ── */
 .topbar {
   flex-shrink: 0;
-  background: var(--green);
-  color: var(--white);
+}
+.msu-strip {
+  background: var(--white);
+  border-bottom: 1px solid var(--line);
   padding: max(10px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 10px
     max(16px, env(safe-area-inset-left));
 }
-.topbar-inner {
+.strip-inner {
   max-width: var(--col);
   margin: 0 auto;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
+}
+/* The official logo, never stretched: only the width is set, height follows its own proportions */
+.msu-logo {
+  display: block;
+  width: min(236px, calc(100vw - 150px));
+  height: auto;
+}
+.brand-band {
+  background: var(--green);
+  color: var(--white);
+  padding: 9px max(16px, env(safe-area-inset-right)) 9px max(16px, env(safe-area-inset-left));
+}
+.band-inner {
+  max-width: var(--col);
+  margin: 0 auto;
 }
 .brand {
   display: flex;
   align-items: center;
   gap: 10px;
   min-width: 0;
-  flex: 1;
 }
 .brand-mark {
-  width: 38px;
-  height: 38px;
-  border-radius: 11px;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
   background: rgba(255, 255, 255, 0.14);
   display: grid;
   place-items: center;
@@ -106,7 +123,7 @@ button {
 }
 .brand small {
   display: block;
-  margin-top: 2px;
+  margin-top: 1px;
   font-size: 12px;
   opacity: 0.8;
   white-space: nowrap;
@@ -114,7 +131,7 @@ button {
   text-overflow: ellipsis;
 }
 
-/* "Get help": always in the corner, calm and inviting rather than alarming */
+/* "Get help": always in the top-right corner, calm and inviting rather than alarming */
 .help-btn {
   flex-shrink: 0;
   display: inline-flex;
@@ -123,18 +140,21 @@ button {
   min-height: 42px;
   padding: 0 16px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  background: rgba(255, 255, 255, 0.14);
-  color: var(--white);
+  border: 1px solid #cfdcd7;
+  background: var(--green-tint);
+  color: var(--green-dark);
   font-size: 15px;
   font-weight: 600;
-  transition: background 0.15s;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+.help-btn svg {
+  color: var(--green);
 }
 .help-btn:hover {
-  background: rgba(255, 255, 255, 0.26);
-}
-.help-btn:focus-visible {
-  outline-color: var(--white);
+  background: #dce8e3;
+  border-color: var(--green);
 }
 
 /* ── Conversation ── */
@@ -613,13 +633,23 @@ button {
   .brand h1 {
     font-size: 16px;
   }
+  .help-btn {
+    padding: 0 14px;
+  }
 }
 
 /* ── Laptops and tablets ── */
 @media (min-width: 700px) {
-  .topbar {
+  .msu-strip {
     padding-top: 14px;
     padding-bottom: 14px;
+  }
+  .msu-logo {
+    width: 280px;
+  }
+  .brand-band {
+    padding-top: 12px;
+    padding-bottom: 12px;
   }
   .brand h1 {
     font-size: 20px;
@@ -628,8 +658,8 @@ button {
     font-size: 13px;
   }
   .brand-mark {
-    width: 42px;
-    height: 42px;
+    width: 40px;
+    height: 40px;
   }
   .chat-inner {
     padding-top: 28px;

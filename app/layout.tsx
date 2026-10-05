@@ -12,7 +12,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: "cover", // use the full phone screen, with safe-area padding in the CSS
   interactiveWidget: "resizes-content", // Android: shrink the page when the keyboard opens
-  themeColor: "#18453b",
+  themeColor: "#ffffff", // matches the white strip at the top
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

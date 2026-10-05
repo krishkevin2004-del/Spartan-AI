@@ -144,20 +144,33 @@ export default function Chat() {
   return (
     <div className="app">
       <header className="topbar">
-        <div className="topbar-inner">
-          <div className="brand">
+        <div className="msu-strip">
+          <div className="strip-inner">
+            {/* Official MSU logo, shown unaltered (green on white) */}
+            <img
+              className="msu-logo"
+              src="/msu-logo.png"
+              width={595}
+              height={70}
+              alt="Michigan State University"
+              decoding="async"
+            />
+            <button className="help-btn" onClick={openHelp} aria-label="Get help now">
+              <HeartIcon size={16} />
+              <span>Get help</span>
+            </button>
+          </div>
+        </div>
+        <div className="brand-band">
+          <div className="band-inner brand">
             <span className="brand-mark">
-              <BookIcon size={22} />
+              <BookIcon size={20} />
             </span>
             <div className="brand-text">
               <h1>Housing Handbook Assistant</h1>
               <small>MSU Residence Education and Housing Services</small>
             </div>
           </div>
-          <button className="help-btn" onClick={openHelp} aria-label="Get help now">
-            <HeartIcon size={16} />
-            <span>Get help</span>
-          </button>
         </div>
       </header>
 
