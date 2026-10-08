@@ -1,112 +1,96 @@
-HOUSING HANDBOOK ASSISTANT (SPART-I) — PROJECT BRIEF
+ASK SPARTY — MSU CAMPUS LIFE ASSISTANT — PROJECT BRIEF
 Krish Gupta, Resident Assistant, Wilson Hall, MSU (2023-2026)
 
 
-THE PROBLEM
+WHERE THIS STARTED
 
-Residents have small questions, guests, quiet hours, lockouts, room changes,
-that don't feel worth troubling their RA for. A lot of them are simple
-yes-or-no problems that come up any time, day or night, and the honest
-answer still lives in a PDF nobody reads. So it lands on RAs, front desk
-staff, and hall directors instead.
+Residents have small questions, guests, quiet hours, lockouts, room changes, that don't feel worth troubling their RA for. A lot of them are simple yes-or-no problems that come up any time, day or night, and the honest answer still lives in a PDF nobody reads. So it lands on RAs, front desk staff, and hall directors instead.
+
+That part is built and live: a web assistant that answers housing policy questions in seconds, cites the exact handbook section it used, and hands off to a real person immediately on anything sensitive. It has been tested (escalation 36/36, everything else 92/93 on the last eval run) and is running in production today. This brief isn't describing a plan for that part anymore, it's describing what's already working, plus where it's growing next.
 
 
-THE IDEA
+WHERE IT'S GROWING
 
-A simple web assistant that answers policy questions in seconds and shows
-the exact handbook section it used. It only answers from official REHS
-documents. When it's unsure, or the topic is sensitive, it hands the
-student to their RA, the hall office, or the right emergency number,
-instead of guessing.
+Same assistant, same guardrails, more of a student's day covered:
+
+- DINING, "what's for lunch today," "where can I get Indian food today." Sourced from eatatstate.msu.edu, refreshed daily.
+- EVENTS, "what's happening on campus today or tomorrow." Sourced from UAB's event listings (uabevents.com) and/or MSU's broader Engage platform, refreshed daily.
+
+This is what's called agentic RAG: instead of one search over one document, a small orchestrator layer reads each message first and routes it to the right specialized skill, which then does its own narrow retrieval over its own small, daily-refreshed data. Each skill is its own "mini-RAG" behind one shared front door, one shared crisis check, and one shared rate limiter and budget. No skill gets its own safety net or its own spending cap.
 
 
-HOW IT WORKS (Retrieval-Augmented Generation, plain terms)
+HOW IT'S BUILT (agentic engineering, not a one-shot script)
 
-The model has to find the answer in the handbook before it's allowed to
-speak. If it can't find it, it says so instead of guessing.
+Because this keeps growing, it's built like a real engineering project, not a single prompt:
+- Plan each new piece before building it, and get a go-ahead before executing anything with a real effect (a deploy, a live scrape run, a change to the safety layer, real API spend on an eval run).
+- Build and test one skill at a time, each on its own, before wiring it into the shared system.
+- Every skill has to pass its own eval (automated test pass) before it's considered done, not just "looks right."
+- The guardrails below are enforced in code, not just written down. Changing them is treated as a deliberate decision, not a side effect of adding a feature.
 
-1. Ask      — a resident types a question, in plain language, any time.
-2. Retrieve — the system searches the official handbook and pulls only the
-              exact passages that match.
-3. Answer   — the model drafts a reply using only those passages, and
-              cites the section.
-4. Escalate — no match, or a sensitive topic, and it hands off to a person
-              immediately, no model involved in that decision.
+
+HOW IT WORKS (plain terms)
+
+Every message hits the same crisis check first, no matter the topic. Only after that does the system figure out which skill the question belongs to, and that skill answers only from its own cached, official source, never from general knowledge, never guessing.
+
+1. Ask      - a resident types a message, in plain language, any time.
+2. Check    - a crisis/safety check runs first, before anything else, on every message, regardless of what it's about.
+3. Route    - an orchestrator labels the topic: handbook, dining, events, hall contact, or off-topic.
+4. Answer   - the matched skill answers from its own cached source only (the handbook's text, or today's dining/events data), and says what it drew from.
+5. No match - the skill has no relevant data for the question, or the topic's off-topic entirely, it says so plainly and points to a person or an official source, it never fills the gap with a guess.
+
+
+BUILT TO BE SAFE, THE GUARDRAILS (now spanning every skill, not just one)
+
+- No student data, in any skill. No logins, no personal info, no access to housing systems. Dining and events data is public and identical for every viewer, it's never paired with who asked. Anonymous by design.
+- Approved sources only, per skill. Each skill answers only from its own official source and cites or states what it used. Off-topic questions are refused, not improvised on.
+- Zero-creativity answers. Model temperature locked to 0.0, in every skill. No match in a skill's own data means it says so, it never guesses or blends in another skill's information.
+- Hardcoded escalation, fail closed, first in line for every message. A keyword list plus a separate safety-classifier call (a dedicated AI call forced to answer only "safe" or "escalate," never free text) run before any skill ever answers, on dining and events questions exactly as on handbook questions. Anything uncertain defaults to escalating, never to a generic "I didn't understand." Routes straight to a fixed, unchangeable screen with real resources (988, MSU CAPS, Crisis Text Line, MSU Police) and a permanent "Get help now" link, visible on every screen regardless of whether the classifier fired.
+- One shared rate limiter and one shared daily budget, no matter how many skills exist behind it. New skills plug into the existing limits, they don't add a new spending ceiling.
+- Contained scope, per skill. Each skill's data lives in its own daily-refreshed cache, never hardcoded into the model, never shared across skills. No accounts, no write access into any MSU system, no per-skill admin tooling.
+- Tested before launch, per skill. Real questions with known answers for each one, plus a stress-test pass trying to break it or sneak a crisis message past it mid-conversation.
 
 
 THE NUMBERS (conservative planning estimates, not promises)
 
 One hall (Wilson Hall, as the worked example):
-  1,200 residents × 25% ask a question a month × 2 min average per question
-  = 10 hours of staff time back every month.
+  1,200 residents x 25% ask a question a month x 2 min average per question
+  = 10 hours of staff time back every month, from the handbook skill alone.
 
 MSU-wide (28 residence halls, ~15,000 residents), same assumptions:
   = roughly 125 hours back every month.
 
-Not every resident asks, and not every question takes the same time, these
-are deliberately conservative. Running cost during build and testing: about
-$15 a month. The pilot replaces all of this with a measured baseline.
+Dining and events add volume on top of this baseline, residents who weren't asking a staff member a "policy" question at all, but who'd otherwise be checking a website by hand or asking around. Not every resident asks, and not every question takes the same time, these are deliberately conservative. Running cost stays in the same ballpark as before: Claude Haiku 4.5 is roughly $0.005 per question warm, with a daily budget cap that enforces a hard ceiling regardless of volume.
 
 
-BUILT TO BE SAFE — THE GUARDRAILS
+HOW WE'LL KNOW IT'S WORKING
 
-- No student data. No logins, no personal info, no access to housing
-  systems. Anonymous by design, keeps privacy review simple.
-- Approved sources only. Answers come only from REHS documents, with the
-  section cited. Off-topic questions are refused. Rate limits stop abuse.
-- Zero-creativity RAG. Model temperature locked to 0.0. If the answer isn't
-  in the retrieved passages, it says so, it never guesses or fills in from
-  general knowledge.
-- Hardcoded escalation. Self-harm, safety, conduct, and roommate-conflict
-  topics never reach the model's judgment. A keyword list plus a separate
-  safety-classifier call run before generation, and anything uncertain
-  defaults to escalating, not to a generic "I didn't understand." Routes
-  straight to a fixed, unchangeable screen with real resources (988, MSU
-  CAPS, Crisis Text Line, MSU Police) and a click-to-call. The model
-  cannot improvise its way around this.
-- Sensitive topics go to a person. Conduct, safety, or roommate conflicts
-  are handed off immediately to an RA, the hall office, or the right
-  emergency number.
-- Contained scope. One handbook, no accounts, no connection to housing
-  systems: it serves residents of every hall without touching any student
-  data.
-- Tested before launch. 50 to 100 real questions with known answers, plus a
-  stress test to try to break it, before any resident sees it.
-
-
-HOW WE'LL KNOW IT WORKED
-
-- 90%+ accuracy on the test set, counting correct answers or proper
-  hand-offs, not just "sounds plausible."
-- Baseline comparison: questions the assistant handles vs. what used to
-  reach staff.
+- 90%+ accuracy per skill on a test set, counting correct answers or proper hand-offs, not just "sounds plausible."
+- 100% on the escalation pass, across every skill, including crisis messages sent mid-conversation about dining or events.
+- Baseline comparison: questions the assistant handles vs. what used to reach staff.
 - Thumbs up/down from residents on every answer.
-- Actual monthly cost vs. the ~$15 planning number.
+- Actual monthly cost vs. the planning number, per the shared daily budget.
 
 
-IF THIS WORKS, WHAT IT ADDS UP TO
+IF THIS KEEPS GROWING, WHAT IT ADDS UP TO
 
-- RA Burnout Protection — low-stakes volume stops crowding out attention
-  for the moments that actually matter.
-- Staff Time Back — hours returned to community building, not repeating
-  the handbook.
-- Early Policy Tackling — common, confusing policies get flagged and
-  clarified before they cause real disputes.
-- Consistent, Cited Answers — every resident gets the same accurate
-  answer, day or night, hall to hall.
+- RA Burnout Protection, low-stakes volume, across more of a student's day, stops crowding out attention for the moments that actually matter.
+- Staff Time Back, hours returned to community building, not repeating the handbook or pointing people to a dining website.
+- One Front Door, a student stops needing to know which of five MSU websites has the answer, they just ask.
+- Consistent, Cited, Safe Answers, every resident gets the same accurate answer, day or night, hall to hall, topic to topic, with the same crisis net underneath all of it.
 
 
-TECH STACK (v1)
+TECH STACK
 
-- Model: Claude API, Claude Haiku 4.5
-- RAG over the current MSU on-campus housing handbook PDF (chunk + embed
-  the handbook, vector search for retrieval)
-- Frontend: simple web app, hosted free on Vercel
-- No accounts, no persistent per-resident data
+- Model: Claude API, Claude Haiku 4.5, for answer generation, the safety classifier, and the topic router.
+- Handbook retrieval: no vector database, the handbook is small enough (~22k tokens) to send whole, prompt-cached, with Claude's Citations feature reporting exactly which part of the handbook an answer used.
+- Dining and events: no retrieval needed, small daily JSON caches, refreshed once a day by a scheduled job, read directly by a query function.
+- Structured outputs: the safety check and the topic router both use forced tool calls instead of free text, so their output is always one of a fixed, predictable set of values.
+- Frontend: Next.js, hosted on Vercel. Redis (Upstash or similar) for shared rate-limit and cost state across serverless instances.
+- No accounts, no persistent per-resident data, in any skill.
 
 
 WHAT'S DELIBERATELY OUT OF SCOPE FOR THIS FILE
 
-Timeline, rollout sequencing, stakeholder approvals, and the MSU-wide
-push are being handled separately by Krish. This brief is about what the
-product is and the rules it has to follow, not when things happen.
+Timeline, rollout sequencing, stakeholder approvals, and the MSU-wide push are being handled separately by Krish. This brief is about what the product is and the rules it has to follow, not when things happen.
+
+Also explicitly out of scope for now: anything identity-tied (package or mail pickup status, printing balance, anything that would need to know who's asking). Dining and events are public, same-answer-for-everyone data, that's why they're safe to add without touching the no-student-data guardrail. Identity-tied data is a deliberate, bigger decision for later, not something to add by accident.
