@@ -35,6 +35,31 @@ export const CONFIG = {
     timeZone: "America/Detroit",
   },
 
+  // ── Dining skill (see lib/skills/dining/) ─────────────────────────────────
+  dining: {
+    // OFF until the menu source is authorized and the dining eval has passed.
+    // Turn on by setting DINING_ENABLED=1 (in .env.local or Vercel).
+    enabled: process.env.DINING_ENABLED === "1",
+    defaultHallId: "south-pointe-at-case", // v1 covers Case Hall only
+    cacheDays: 10, // how long a day's menu stays in the cache
+    // Used only to guess which meal someone means when they don't say. These are
+    // rough, not real serving hours (we don't have those yet).
+    mealCutoffs: { breakfastUntil: 10.5, lunchUntil: 15 }, // hours in Michigan time (10.5 = 10:30 a.m.)
+  },
+
+  // ── Events skill (see lib/skills/events/) ────────────────────────────────
+  events: {
+    // OFF until the daily feed job is set up and the events eval has passed.
+    // Turn on by setting EVENTS_ENABLED=1 (in .env.local or Vercel).
+    enabled: process.env.EVENTS_ENABLED === "1",
+    // UAB (MSU University Activities Board) publishes this RSS feed for programs to read.
+    feedUrl: "https://uabevents.com/calendar/rss.xml",
+    siteUrl: "https://uabevents.com/",
+    cacheDays: 3, // how long the saved calendar is kept if the daily job stops working
+    maxStaleHours: 48, // older than this and the bot says it doesn't have a current calendar
+    maxEventsInAnswer: 6,
+  },
+
   // ── Cost and abuse limits (see lib/limits.ts) ────────────────────────────
   maxQuestionLength: 500,
   limits: {

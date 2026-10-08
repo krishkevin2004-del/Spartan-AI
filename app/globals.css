@@ -708,3 +708,15 @@ button {
   letter-spacing: 0.02em;
   color: var(--green);
 }
+
+a.chip {
+  text-decoration: none;
+}
+
+.cite-link {
+  display: inline-block;
+  margin: 0 14px 12px;
+  color: var(--green);
+  font-weight: 600;
+  font-size: 14px;
+}

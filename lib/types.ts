@@ -27,6 +27,7 @@ export type Citation = {
   section: string;
   pages?: string; // "p. 15" or "pp. 15-16" (handbook only)
   passage: string; // the exact text that was cited
+  url?: string; // a page the resident can open for more (events link to the event page)
 };
 
 /** One earlier message, sent along so follow-up questions make sense. */
@@ -39,7 +40,8 @@ export type AssistantReply =
   | { type: "ra_lookup"; hallId?: string } // show RA contacts (asks for the hall if unknown)
   // layer = which check fired, for the anonymous audit log (never shown to residents)
   | { type: "escalate"; category: EscalationCategory; layer?: "keyword" | "classifier" | "fail_closed" }
-  | { type: "not_found"; note?: string }
+  // source/link: set by skills with their own "no data" wording (e.g. dining) so the page can show a link instead of the RA hint
+  | { type: "not_found"; note?: string; source?: "dining" | "events"; link?: { label: string; url: string } }
   | { type: "off_topic" }
   // visitor = this person asked too much; busy = the whole site is flooded; budget = today's spending cap is reached
   | { type: "rate_limited"; reason: "visitor" | "busy" | "budget" }

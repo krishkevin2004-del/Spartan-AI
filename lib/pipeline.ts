@@ -6,6 +6,7 @@
 //   4. Escalate  → layer 1: keyword rules (no AI)
 //                  layer 2: safety classifier (separate call, fails closed)
 //      RA lookup → "what's my RA's number?" answered from hall-contacts.json
+//      Skills    → (only if switched on) food questions → dining, event questions → events
 //   2+3. Answer  → Claude answers from the handbook, with checked citations
 //
 // Escalation runs before the answer step, every time. A message that
@@ -17,7 +18,10 @@ import { CONFIG } from "./config";
 import { checkEscalation } from "./escalation";
 import { isRaContactRequest, matchHall } from "./halls";
 import { checkLimits } from "./limits";
+import { routeMessage, shouldRoute } from "./router";
 import { classifySafety } from "./safety";
+import { answerDining } from "./skills/dining/answer";
+import { answerEvents } from "./skills/events/answer";
 import type { AssistantReply, HistoryTurn } from "./types";
 
 export async function askHandbook(
@@ -55,6 +59,17 @@ export async function askHandbook(
 
   // ── RA contact lookup (no AI answer needed) ──
   if (isRaContactRequest(question)) return { type: "ra_lookup", hallId: matchHall(question)?.id };
+
+  // ── Extra skills (dining, events) ──
+  // Each is OFF unless its switch is on (DINING_ENABLED=1, EVENTS_ENABLED=1).
+  // Only messages that look like they could be about an enabled skill get
+  // routed; anything the router doesn't claim continues to the handbook below,
+  // exactly as before.
+  if (shouldRoute(question, history)) {
+    const route = await routeMessage(question, history);
+    if (route.label === "dining") return answerDining(question, route.dining);
+    if (route.label === "events") return answerEvents(question, route.events);
+  }
 
   // ── 2 + 3. Answer from the handbook ──
   const reply = await answerQuestion(question, history);

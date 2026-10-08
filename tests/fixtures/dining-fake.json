@@ -1,0 +1,255 @@
+{
+ "_note": "FAKE SAMPLE DATA for tests only. Every dish is invented and named 'Sample ...'. Keys '+0', '+1' mean today and tomorrow; the test loader turns them into real dates. There is intentionally no '+2'.",
+ "hallId": "south-pointe-at-case",
+ "source": "FAKE test fixture (not real menu data)",
+ "days": {
+  "+0": {
+   "meals": [
+    {
+     "name": "Breakfast",
+     "stations": [
+      {
+       "name": "Eggs & More",
+       "items": [
+        {
+         "name": "Sample Scrambled Eggs",
+         "tags": [],
+         "allergens": [
+          "egg"
+         ]
+        },
+        {
+         "name": "Sample Oatmeal",
+         "tags": [
+          "vegan"
+         ],
+         "allergens": []
+        }
+       ]
+      },
+      {
+       "name": "Bakery",
+       "items": [
+        {
+         "name": "Sample Blueberry Muffin",
+         "tags": [
+          "vegetarian"
+         ],
+         "allergens": [
+          "wheat",
+          "egg"
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Lunch",
+     "stations": [
+      {
+       "name": "Grill",
+       "items": [
+        {
+         "name": "Sample Cheeseburger",
+         "tags": [],
+         "allergens": [
+          "milk",
+          "wheat"
+         ]
+        },
+        {
+         "name": "Sample Veggie Burger",
+         "tags": [
+          "vegan"
+         ],
+         "allergens": [
+          "soy",
+          "wheat"
+         ]
+        }
+       ]
+      },
+      {
+       "name": "Pizza",
+       "items": [
+        {
+         "name": "Sample Cheese Pizza",
+         "tags": [
+          "vegetarian"
+         ],
+         "allergens": [
+          "milk",
+          "wheat"
+         ]
+        },
+        {
+         "name": "Sample Pepperoni Pizza",
+         "tags": [],
+         "allergens": [
+          "milk",
+          "wheat"
+         ]
+        }
+       ]
+      },
+      {
+       "name": "Global",
+       "items": [
+        {
+         "name": "Sample Chicken Tikka Masala",
+         "description": "Indian-style curry",
+         "tags": [],
+         "allergens": [
+          "milk"
+         ]
+        },
+        {
+         "name": "Sample Basmati Rice",
+         "tags": [
+          "vegan"
+         ],
+         "allergens": []
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Dinner",
+     "stations": [
+      {
+       "name": "Pasta",
+       "items": [
+        {
+         "name": "Sample Penne Marinara",
+         "tags": [
+          "vegan"
+         ],
+         "allergens": [
+          "wheat"
+         ]
+        },
+        {
+         "name": "Sample Chicken Alfredo",
+         "tags": [],
+         "allergens": [
+          "milk",
+          "wheat"
+         ]
+        }
+       ]
+      },
+      {
+       "name": "Carving",
+       "items": [
+        {
+         "name": "Sample Roast Turkey",
+         "tags": [],
+         "allergens": []
+        }
+       ]
+      },
+      {
+       "name": "Dessert",
+       "items": [
+        {
+         "name": "Sample Chocolate Cake",
+         "tags": [
+          "vegetarian"
+         ],
+         "allergens": [
+          "milk",
+          "egg",
+          "wheat"
+         ]
+        },
+        {
+         "name": "Sample Fruit Cup",
+         "tags": [
+          "vegan"
+         ],
+         "allergens": []
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "+1": {
+   "meals": [
+    {
+     "name": "Lunch",
+     "stations": [
+      {
+       "name": "Tacos",
+       "items": [
+        {
+         "name": "Sample Beef Taco",
+         "tags": [],
+         "allergens": [
+          "wheat"
+         ]
+        },
+        {
+         "name": "Sample Black Bean Taco",
+         "tags": [
+          "vegan"
+         ],
+         "allergens": []
+        }
+       ]
+      },
+      {
+       "name": "Soup & Salad",
+       "items": [
+        {
+         "name": "Sample Tomato Soup",
+         "tags": [
+          "vegetarian"
+         ],
+         "allergens": [
+          "milk"
+         ]
+        },
+        {
+         "name": "Sample Garden Salad",
+         "tags": [
+          "vegan"
+         ],
+         "allergens": []
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Dinner",
+     "stations": [
+      {
+       "name": "Entree",
+       "items": [
+        {
+         "name": "Sample Baked Ziti",
+         "tags": [
+          "vegetarian"
+         ],
+         "allergens": [
+          "milk",
+          "wheat"
+         ]
+        },
+        {
+         "name": "Sample Grilled Chicken",
+         "tags": [],
+         "allergens": []
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ }
+}

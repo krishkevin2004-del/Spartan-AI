@@ -9,7 +9,11 @@
     "start": "next start",
     "ingest": "tsx scripts/ingest.ts",
     "eval": "tsx scripts/eval.ts",
-    "test:escalation": "tsx scripts/eval.ts --escalation-only"
+    "test:escalation": "tsx scripts/eval.ts --escalation-only",
+    "test:dining": "tsx scripts/dining-eval.ts",
+    "eval:dining": "tsx scripts/dining-eval.ts",
+    "test:events": "tsx scripts/events-eval.ts",
+    "eval:events": "tsx scripts/events-eval.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.129.0",

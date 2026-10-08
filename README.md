@@ -78,6 +78,75 @@ everything else 92/93. Add real questions from residents to `tests/questions.jso
   (e.g. finals quiet hours). Cited separately from the handbook.
 - `lib/escalation.ts`: crisis contacts and the fixed screens. Have REHS review changes.
 
+## Events skill (built, switched OFF until you enable it)
+
+Answers "what's happening on campus?" from UAB's (University Activities Board) calendar. The data
+comes from the **official RSS feed** UAB publishes for this purpose (`uabevents.com/calendar/rss.xml`);
+the site's `robots.txt` doesn't restrict it. One request a day, with a User-Agent that names this project.
+
+```
+Vercel Cron, daily ~7 a.m. ET → /api/cron/events → fetch the feed once → parse → check → cache (Redis)
+message → crisis check → RA lookup → "does it look like an events question?" word check (free)
+        → router (one small Claude call) → events: plain-code filter by day and keyword
+        → Claude words the answer from the matching events, with a citation and link per event
+```
+
+| Piece | File |
+|---|---|
+| Switch (off unless `EVENTS_ENABLED=1`) | `lib/config.ts` → `events`, hook in `lib/pipeline.ts` |
+| Router (shared with dining) | `lib/router.ts` |
+| Feed fetch, parser, checks | `lib/skills/events/fetch.ts`, `parse.ts`, `validate.ts` |
+| Calendar cache | `lib/skills/events/cache.ts`, `lib/store.ts` |
+| Day and keyword filter | `lib/skills/events/query.ts` |
+| Answer step and every "no match" reply | `lib/skills/events/answer.ts` |
+| Daily job | `app/api/cron/events/route.ts`, schedule in `vercel.json` |
+| Tests | `npm run test:events` (free, offline), `npm run eval:events -- --live` (uses API credit) |
+
+Honest limits, stated in the answers themselves: it only sees **UAB's** calendar (not athletics,
+clubs or every campus event), and "free food" is a word match on free-text listings, so it can miss some.
+If the daily job fails, the last good calendar is kept; after 48 hours without a refresh the bot says
+it has no current list instead of showing stale events.
+
+**To turn it on** (after a passing live eval and a go-ahead): in Vercel set `CRON_SECRET`
+(24+ random characters) and `EVENTS_ENABLED=1`, then redeploy. Vercel Cron picks up `vercel.json` and
+sends the secret automatically.
+
+## Dining skill (built, switched OFF, ON HOLD while permission for the menu data is requested)
+
+Answers "what's for lunch at Case?" from a cached daily menu. v1 covers **South Pointe at Case**.
+It follows the same rules as the handbook: only the cached menu, cited, says how fresh it is,
+never claims a dish is safe or allergen-free, and sits behind the same crisis check and the
+same rate limits and daily budget.
+
+```
+message → crisis check (unchanged) → RA lookup (unchanged)
+        → "does it mention food?" word check (free)
+        → router: one small Claude call, forced tool, picks dining or other
+        → dining: plain-code filter over the cached menu → Claude words the answer, with citations
+          (anything the router doesn't call "dining" continues to the handbook, exactly as before)
+```
+
+| Piece | File |
+|---|---|
+| Switch (off unless `DINING_ENABLED=1`) | `lib/config.ts` → `dining`, hook in `lib/pipeline.ts` |
+| Router | `lib/router.ts` |
+| Answer step and every "no data" reply | `lib/skills/dining/answer.ts` |
+| Menu cache (one entry per hall per day) | `lib/skills/dining/cache.ts`, `lib/store.ts` |
+| Filtering by meal and food | `lib/skills/dining/query.ts` |
+| Checking incoming menu data | `lib/skills/dining/validate.ts` |
+| How menu data gets in | `POST /api/dining/ingest` (needs `INGEST_SECRET`) |
+| Tests | `npm run test:dining` (free, offline), `npm run eval:dining -- --live` (uses API credit) |
+
+**There is no menu scraper yet, on purpose.** Nutrislice (which hosts MSU's menus) forbids
+automated access without authorization: its terms prohibit it, and its data server's
+`robots.txt` disallows all bots. Permission has been requested from MSU Dining. When it
+arrives, whatever they allow (an official feed, a file, or authorized access for a once-a-day
+job) just has to send menu data in the shape in `lib/skills/dining/types.ts` to the ingest
+endpoint. Nothing else needs to change.
+
+**To turn it on** (only after authorization, a passing live eval, and a go-ahead):
+set `INGEST_SECRET` and `DINING_ENABLED=1` in Vercel and redeploy.
+
 ## If the assistant isn't answering
 
 Symptom: every question shows the "Let's get you to a person" help screen. That's the safety

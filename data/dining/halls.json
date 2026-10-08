@@ -1,0 +1,14 @@
+{
+  "_readme": "Dining halls the dining skill knows about. v1 covers Case Hall only. menuUrl is just a LINK to the hall's official menu page (we show it to residents); it is not scraped by anything. hubUrl is eatatstate.msu.edu, where every hall is listed. Hours are left empty on purpose until they come from an official source.",
+  "hubUrl": "https://eatatstate.msu.edu/",
+  "halls": [
+    {
+      "id": "south-pointe-at-case",
+      "name": "South Pointe at Case",
+      "building": "Case Hall",
+      "menuUrl": "https://msu.nutrislice.com/menu/south-pointe-at-case",
+      "enabled": true,
+      "hours": null
+    }
+  ]
+}

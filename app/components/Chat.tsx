@@ -332,6 +332,18 @@ function AssistantMessage({
       );
 
     case "not_found":
+      if (reply.source) {
+        return (
+          <div className="bubble assistant handoff">
+            <p>{reply.note}</p>
+            {reply.link && (
+              <a className="chip inline" href={reply.link.url} target="_blank" rel="noopener noreferrer">
+                {reply.link.label}
+              </a>
+            )}
+          </div>
+        );
+      }
       return (
         <div className="bubble assistant handoff">
           <p>{reply.note ?? "I couldn't find this in the handbook."}</p>
@@ -411,6 +423,11 @@ function AnswerCard({ reply }: { reply: Extract<AssistantReply, { type: "answer"
               </span>
             </summary>
             <blockquote>{c.passage}</blockquote>
+            {c.url && (
+              <a className="cite-link" href={c.url} target="_blank" rel="noopener noreferrer">
+                Open the event page
+              </a>
+            )}
           </details>
         ))}
       </div>
