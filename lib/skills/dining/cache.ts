@@ -5,7 +5,7 @@
 import hallData from "../../../data/dining/halls.json";
 import { CONFIG } from "../../config";
 import { getJson, setJson } from "../../store";
-import type { DiningDay, DiningHall, DiningSnapshot } from "./types";
+import type { DiningDay, DiningHall, DiningHallInfo, DiningSnapshot } from "./types";
 
 export const DINING_HALLS: DiningHall[] = hallData.halls as DiningHall[];
 export const DINING_HUB_URL: string = hallData.hubUrl;
@@ -13,7 +13,7 @@ export const DINING_HUB_URL: string = hallData.hubUrl;
 const dayKey = (hallId: string, date: string) => `dining:${hallId}:day:${date}`;
 const metaKey = (hallId: string) => `dining:${hallId}:meta`;
 
-type Meta = { scrapedAt: string; source: string; dates: string[] };
+type Meta = { scrapedAt: string; source: string; dates: string[]; hallInfo?: DiningHallInfo };
 
 const TTL_SECONDS = CONFIG.dining.cacheDays * 24 * 3600;
 
@@ -21,7 +21,7 @@ const TTL_SECONDS = CONFIG.dining.cacheDays * 24 * 3600;
 export async function saveSnapshot(snapshot: DiningSnapshot): Promise<{ days: number }> {
   const dates = Object.keys(snapshot.days);
   for (const date of dates) await setJson(dayKey(snapshot.hallId, date), snapshot.days[date], TTL_SECONDS);
-  const meta: Meta = { scrapedAt: snapshot.scrapedAt, source: snapshot.source, dates };
+  const meta: Meta = { scrapedAt: snapshot.scrapedAt, source: snapshot.source, dates, ...(snapshot.hallInfo ? { hallInfo: snapshot.hallInfo } : {}) };
   await setJson(metaKey(snapshot.hallId), meta, TTL_SECONDS);
   return { days: dates.length };
 }
@@ -32,7 +32,7 @@ export async function getDay(hallId: string, date: string): Promise<DiningDay | 
 }
 
 /** When the data was last fetched, and from where. */
-export async function getMeta(hallId: string): Promise<{ scrapedAt: string; source: string } | null> {
+export async function getMeta(hallId: string): Promise<{ scrapedAt: string; source: string; hallInfo?: DiningHallInfo } | null> {
   const meta = await getJson<Meta>(metaKey(hallId));
-  return meta ? { scrapedAt: meta.scrapedAt, source: meta.source } : null;
+  return meta ? { scrapedAt: meta.scrapedAt, source: meta.source, hallInfo: meta.hallInfo } : null;
 }

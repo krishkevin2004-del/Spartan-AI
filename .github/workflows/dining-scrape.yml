@@ -1,0 +1,44 @@
+# Daily dining menu refresh for South Pointe at Case.
+#
+# Runs the scraper (scripts/dining-scrape.ts) in a headless browser and sends the
+# result to the site's /api/dining/ingest. MSU Dining authorized this access.
+# Keep their email on file; if they ever ask us to stop, disable this workflow.
+#
+# Notes for whoever maintains this:
+#   - 12:45 UTC is 8:45 a.m. in summer (EDT) and 7:45 a.m. in winter (EST): always
+#     after the menu site's 7 a.m. update. GitHub can start scheduled runs late.
+#   - GitHub turns scheduled workflows OFF after 60 days with no commits to the repo.
+#     If menus stop updating, check the Actions tab and click "Enable workflow".
+#   - If a run fails, the site keeps the last good menus; "Run workflow" below retries.
+#   - Secret needed: INGEST_SECRET (the same value as in Vercel).
+
+name: dining-scrape
+
+on:
+  schedule:
+    - cron: "45 12 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dining-scrape
+  cancel-in-progress: false
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Fetch menus and send them to the site
+        run: npm run dining:scrape -- --post
+        env:
+          INGEST_URL: https://spartan-ai-one.vercel.app/api/dining/ingest
+          INGEST_SECRET: ${{ secrets.INGEST_SECRET }}

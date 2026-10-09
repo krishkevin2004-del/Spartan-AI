@@ -150,7 +150,53 @@ async function offline() {
   await nf("a day long past → refused", { date: t.addDays(today, -5) }, /south-pointe-at-case/, /today's menu and upcoming/);
   await nf("a meal that isn't on the menu → says so", { date: t.addDays(today, 1), meal: "breakfast" }, /south-pointe-at-case/, /breakfast menu/);
 
-  // 7. The update endpoint's locks
+  // 7. The Nutrislice mapper, tested on trimmed real samples of the platform's own data
+  const { mapWeek, mapHallInfo, describeHours, tidyStationName } = await import("../lib/skills/dining/nutrislice");
+  const week = JSON.parse(readFileSync("tests/fixtures/nutrislice-week.json", "utf8"));
+  const school = JSON.parse(readFileSync("tests/fixtures/nutrislice-school.json", "utf8")).school;
+  const mapped = mapWeek(week, "2026-10-09");
+  check("mapper keeps the days that have menus and skips the unpublished one", Object.keys(mapped).join() === "2026-10-09,2026-10-10", Object.keys(mapped).join());
+  check("mapper drops days before 'since'", Object.keys(mapWeek(week, "2026-10-10")).join() === "2026-10-10");
+  const stationNames = mapped["2026-10-09"].map((st) => st.name);
+  check("stations get tidy names with their sub-heading", stationNames.includes("Brimstone · Sandwiches") && stationNames.includes("Bliss · Desserts"), stationNames.slice(0, 5).join(", "));
+  check("no station name is left in ALL CAPS", stationNames.every((n) => n !== n.toUpperCase() || /\d/.test(n)));
+  const items = mapped["2026-10-09"].flatMap((st) => st.items);
+  const find = (name: string) => items.find((i) => i.name === name);
+  check("'contains' icons become allergen labels", Boolean(find("Cheeseburger")?.allergens?.includes("milk") && find("Cheeseburger")?.allergens?.includes("beef")));
+  check("dietary icons become tags", Boolean(find("Black Bean Burger")?.tags?.includes("vegan")));
+  check("a dish with no icons has no labels", find("Case Brimstone Toppings")?.tags?.length === 0 && find("Case Brimstone Toppings")?.allergens?.length === 0);
+  check("mapper survives garbage", Object.keys(mapWeek(null, "2026-10-01")).length === 0 && Object.keys(mapWeek({ days: [{ date: "2026-10-09", menu_items: [{ food: { name: 5 } }, null] }] }, "2026-10-01")).length === 0);
+  check("tidyStationName", tidyStationName("CIAO!") === "Ciao!" && tidyStationName("GREAT LAKES PLATE") === "Great Lakes Plate" && tidyStationName("S2") === "S2");
+
+  const info = mapHallInfo(school);
+  check("hall info: address and 'daily' hours", info.address === "842 Chestnut Rd, East Lansing" && info.hours === "7:00 a.m. to 9:00 p.m. daily", JSON.stringify(info));
+  const split = { ...school, sat_start: "09:00:00", sat_end: "20:00:00", sun_start: "09:00:00", sun_end: "20:00:00" };
+  check("hall info: weekday and weekend hours are grouped", describeHours(split) === "Mon–Fri 7:00 a.m. to 9:00 p.m.; Sat–Sun 9:00 a.m. to 8:00 p.m.", describeHours(split));
+  check("hall info: a closed day is said so", /Sun closed/.test(describeHours({ ...split, sun_enabled: false }) ?? ""));
+  check("hall info: open-24-hours is said so", /open 24 hours/.test(describeHours({ ...school, mon_is_24_hours: true }) ?? ""));
+  check("hall info: missing times give no hours (never guessed)", describeHours({ ...school, tue_start: null }) === undefined);
+
+  // The whole chain: platform data → our snapshot → the same validator the server uses
+  const chainNow = new Date("2026-10-09T15:00:00Z");
+  const chain = { hallId: "south-pointe-at-case", hallInfo: info, scrapedAt: chainNow.toISOString(), source: "test", days: Object.fromEntries(Object.entries(mapped).map(([date, stations]) => [date, { meals: [{ name: "Dinner", stations }] }])) };
+  const chained = validateSnapshot(chain, DINING_HALLS, chainNow);
+  check("real-shaped data passes the server's validator", chained.ok, chained.ok ? "" : chained.error);
+  check("hall info survives validation; junk hall info is dropped", chained.ok && chained.snapshot.hallInfo?.hours === "7:00 a.m. to 9:00 p.m. daily" && !validateSnapshot({ ...chain, hallInfo: { hours: 5, address: "x".repeat(500) } }, DINING_HALLS, chainNow).ok === false);
+
+  // 8. Hours and location questions are answered in plain code, with a citation
+  if (chained.ok) await saveSnapshot(chained.snapshot);
+  const hours = await answerDining("What time does South Pointe close?", route({ meal: "none" }), chainNow);
+  check(
+    "'what time does it close?' → cited reply from the posted hours",
+    hours.type === "answer" && /7:00 a\.m\. to 9:00 p\.m\. daily/.test(hours.answer) && /842 Chestnut/.test(hours.answer) && hours.citations.length === 1 && hours.citations[0].section === "Hall information",
+    JSON.stringify(hours).slice(0, 200),
+  );
+  const noInfo = validateSnapshot({ ...chain, hallInfo: undefined }, DINING_HALLS, chainNow);
+  if (noInfo.ok) await saveSnapshot(noInfo.snapshot);
+  const noHours = await answerDining("Where is South Pointe?", route({}), chainNow);
+  check("no hall info saved → says so, links to the menu page (never invents hours)", noHours.type === "not_found" && /south-pointe-at-case/.test(noHours.link?.url ?? ""), JSON.stringify(noHours).slice(0, 160));
+
+  // 9. The update endpoint's locks
   const post = (body: unknown, auth?: string) =>
     ingest(
       new Request("http://localhost/api/dining/ingest", {

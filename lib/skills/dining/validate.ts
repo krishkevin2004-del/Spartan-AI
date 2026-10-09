@@ -101,5 +101,11 @@ export function validateSnapshot(input: unknown, halls: DiningHall[], now: Date 
     days[date] = { meals };
   }
 
-  return { ok: true, snapshot: { hallId: hall.id, scrapedAt: scrapedAt.toISOString(), source, days } };
+  // Optional hall information. Anything that isn't a short plain string is dropped.
+  const rawInfo = (typeof raw.hallInfo === "object" && raw.hallInfo !== null ? raw.hallInfo : {}) as Record<string, unknown>;
+  const address = cleanString(rawInfo.address, 160);
+  const hours = cleanString(rawInfo.hours, 240);
+  const hallInfo = address || hours ? { ...(address ? { address } : {}), ...(hours ? { hours } : {}) } : undefined;
+
+  return { ok: true, snapshot: { hallId: hall.id, ...(hallInfo ? { hallInfo } : {}), scrapedAt: scrapedAt.toISOString(), source, days } };
 }

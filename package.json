@@ -13,7 +13,8 @@
     "test:dining": "tsx scripts/dining-eval.ts",
     "eval:dining": "tsx scripts/dining-eval.ts",
     "test:events": "tsx scripts/events-eval.ts",
-    "eval:events": "tsx scripts/events-eval.ts"
+    "eval:events": "tsx scripts/events-eval.ts",
+    "dining:scrape": "tsx scripts/dining-scrape.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.129.0",
@@ -28,6 +29,7 @@
   "devDependencies": {
     "@types/node": "^26.6.3",
     "@types/react": "^19.3.0",
+    "playwright-core": "^1.64.0",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
     "unpdf": "^1.8.1"

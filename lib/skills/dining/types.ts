@@ -12,8 +12,11 @@ export type DiningMeal = { name: string; stations: DiningStation[] }; // name: "
 export type DiningDay = { meals: DiningMeal[] };
 
 /** What the daily update sends in: one hall, several days. */
+export type DiningHallInfo = { address?: string; hours?: string };
+
 export type DiningSnapshot = {
   hallId: string;
+  hallInfo?: DiningHallInfo; // address and posted hours, if the source has them
   scrapedAt: string; // ISO time the menu was fetched, shown as "as of ..." in answers
   source: string; // where it came from, e.g. the official menu page
   days: Record<string, DiningDay>; // keys are dates like "2026-10-08"

@@ -50,6 +50,9 @@ const DIETARY =
 const ALLERGY_NOTE =
   "Labels come from the posted menu. When you're at the dining hall, ask the staff too, just in case.";
 
+// "When is it open?", "where is it?": answered from the posted hall information, in plain code.
+const HALL_INFO_QUESTION = /\b(hours?|open|opens|opening|close|closes|closing|address|located|location|where is|how do i get to)\b/i;
+
 function notFound(note: string, label: string, url: string): AssistantReply {
   return { type: "not_found", source: "dining", note, link: { label, url } };
 }
@@ -85,6 +88,30 @@ export async function answerDining(
   const today = michiganDate(now);
   const date = isValidDate(route.date) ? route.date : today;
   const menuLink = `Open ${hall.name}'s menu`;
+
+  if (HALL_INFO_QUESTION.test(question)) {
+    const meta = await getMeta(hall.id);
+    const info = meta?.hallInfo;
+    if (info && (info.hours || info.address)) {
+      const asOf = describeAsOf(meta!.scrapedAt, now);
+      const where = info.address ? ` at ${info.address}` : "";
+      const when = info.hours ? ` Its posted hours are ${info.hours}.` : "";
+      const caveat = info.hours ? " Times for each meal within those hours aren't posted that I can see, so check the official page if you're cutting it close." : "";
+      return {
+        type: "answer",
+        answer: `${hall.name} (${hall.building}) is${where || " in " + hall.building}.${when}${caveat}\n\nAs of ${asOf}.`,
+        citations: [
+          {
+            source: `${hall.name} on eatatstate.msu.edu · updated ${asOf}`,
+            section: "Hall information",
+            passage: `${hall.name}${info.address ? `, ${info.address}` : ""}.${info.hours ? ` Posted hours: ${info.hours}.` : ""}`,
+            url: hall.menuUrl,
+          },
+        ],
+      };
+    }
+    return notFound(`I don't have ${hall.name}'s hours right now. The official page has them.`, menuLink, hall.menuUrl);
+  }
 
   if (date < addDays(today, -1)) {
     return notFound(

@@ -1,0 +1,3415 @@
+{
+ "_note": "Trimmed real sample of Nutrislice's weekly menu JSON for South Pointe at Case dinner (fields we use only). The last day is an unpublished day (empty).",
+ "menu_type_id": 42074,
+ "start_date": "2026-10-05",
+ "days": [
+  {
+   "date": "2026-10-09",
+   "menu_info": {
+    "353007": {
+     "position": 0,
+     "section_options": {
+      "display_name": "BLISS"
+     }
+    },
+    "353008": {
+     "position": 1,
+     "section_options": {
+      "display_name": "BRIMSTONE"
+     }
+    },
+    "353019": {
+     "position": 2,
+     "section_options": {
+      "display_name": "CIAO!"
+     }
+    },
+    "353012": {
+     "position": 3,
+     "section_options": {
+      "display_name": "GREAT LAKES PLATE"
+     }
+    },
+    "353022": {
+     "position": 4,
+     "section_options": {
+      "display_name": "MIBOWL GRAIN"
+     }
+    },
+    "353027": {
+     "position": 5,
+     "section_options": {
+      "display_name": "S2"
+     }
+    },
+    "353006": {
+     "position": 6,
+     "section_options": {
+      "display_name": "SALAD BAR"
+     }
+    },
+    "353029": {
+     "position": 7,
+     "section_options": {
+      "display_name": "SOUP"
+     }
+    },
+    "353033": {
+     "position": 8,
+     "section_options": {
+      "display_name": "VEG OUT"
+     }
+    }
+   },
+   "menu_items": [
+    {
+     "is_section_title": true,
+     "text": "Desserts",
+     "menu_id": 353007,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353007,
+     "food": {
+      "name": "Chocolate Chip Cookie",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "egg",
+         "name": "Egg",
+         "help_text": "This contains egg",
+         "behavior": 1
+        },
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "alcohol",
+         "name": "Alcohol",
+         "help_text": "This contains alcohol",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353007,
+     "food": {
+      "name": "Double Chocolate Cookie",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "egg",
+         "name": "Egg",
+         "help_text": "This contains egg",
+         "behavior": 1
+        },
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "alcohol",
+         "name": "Alcohol",
+         "help_text": "This contains alcohol",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353007,
+     "food": {
+      "name": "M&M Cookie",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "egg",
+         "name": "Egg",
+         "help_text": "This contains egg",
+         "behavior": 1
+        },
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "alcohol",
+         "name": "Alcohol",
+         "help_text": "This contains alcohol",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353007,
+     "food": {
+      "name": "Lemon Coconut Bar",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "egg",
+         "name": "Egg",
+         "help_text": "This contains egg",
+         "behavior": 1
+        },
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "coconut",
+         "name": "Coconut",
+         "help_text": "This contains coconut",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353007,
+     "food": {
+      "name": "Vegan Chocolate Cake",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353007,
+     "food": {
+      "name": "Chocolate Iced Chocolate Sheet Cake",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "egg",
+         "name": "Egg",
+         "help_text": "This contains egg",
+         "behavior": 1
+        },
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "alcohol",
+         "name": "Alcohol",
+         "help_text": "This contains alcohol",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353007,
+     "food": {
+      "name": "Nutella Marshmallow Crepe",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "egg",
+         "name": "Egg",
+         "help_text": "This contains egg",
+         "behavior": 1
+        },
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "tree-nuts",
+         "name": "Tree Nuts",
+         "help_text": "This contains tree nuts",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Build Your Own",
+     "menu_id": 353007,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353007,
+     "food": {
+      "name": "Gummi Worms",
+      "description": "",
+      "icons": {
+       "food_icons": []
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353007,
+     "food": {
+      "name": "Natural Creamy Peanut Butter",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "peanuts",
+         "name": "Peanuts",
+         "help_text": "This contains peanuts",
+         "behavior": 1
+        },
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353007,
+     "food": {
+      "name": "Chocolate Syrup",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353007,
+     "food": {
+      "name": "Oreo Cookie Crumbs",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353007,
+     "food": {
+      "name": "Chopped Reese's Peanut Butter Cups",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "peanuts",
+         "name": "Peanuts",
+         "help_text": "This contains peanuts",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353007,
+     "food": {
+      "name": "Chopped Snickers",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "egg",
+         "name": "Egg",
+         "help_text": "This contains egg",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "peanuts",
+         "name": "Peanuts",
+         "help_text": "This contains peanuts",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Entrees",
+     "menu_id": 353008,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353008,
+     "food": {
+      "name": "Battered Pollock",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "fish",
+         "name": "Fish",
+         "help_text": "This contains fish",
+         "behavior": 1
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Sandwiches",
+     "menu_id": 353008,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353008,
+     "food": {
+      "name": "Black Bean Burger",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "sesame",
+         "name": "Sesame",
+         "help_text": "This contains sesame",
+         "behavior": 1
+        },
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353008,
+     "food": {
+      "name": "Cheeseburger",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "sesame",
+         "name": "Sesame",
+         "help_text": "This contains sesame",
+         "behavior": 1
+        },
+        {
+         "slug": "beef",
+         "name": "Beef",
+         "help_text": "This contains beef",
+         "behavior": 1
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353008,
+     "food": {
+      "name": "Hamburger",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "sesame",
+         "name": "Sesame",
+         "help_text": "This contains sesame",
+         "behavior": 1
+        },
+        {
+         "slug": "beef",
+         "name": "Beef",
+         "help_text": "This contains beef",
+         "behavior": 1
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353008,
+     "food": {
+      "name": "Grilled Chicken Sandwich",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "sesame",
+         "name": "Sesame",
+         "help_text": "This contains sesame",
+         "behavior": 1
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353008,
+     "food": {
+      "name": "Chicken Patty Sandwich",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "sesame",
+         "name": "Sesame",
+         "help_text": "This contains sesame",
+         "behavior": 1
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Sides",
+     "menu_id": 353008,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353008,
+     "food": {
+      "name": "Crinkle Fries",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Build Your Own",
+     "menu_id": 353008,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353008,
+     "food": {
+      "name": "Case Brimstone Toppings",
+      "description": "",
+      "icons": {
+       "food_icons": []
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353008,
+     "food": {
+      "name": "Case Brimstone Sauces",
+      "description": "",
+      "icons": {
+       "food_icons": []
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Entrees",
+     "menu_id": 353019,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353019,
+     "food": {
+      "name": "Cheese Pizza",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353019,
+     "food": {
+      "name": "Philly Steak and Cheese Pizza",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "egg",
+         "name": "Egg",
+         "help_text": "This contains egg",
+         "behavior": 1
+        },
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "beef",
+         "name": "Beef",
+         "help_text": "This contains beef",
+         "behavior": 1
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Breads",
+     "menu_id": 353019,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353019,
+     "food": {
+      "name": "Cheese Bread with Garlic Butter",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Sandwiches",
+     "menu_id": 353019,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353019,
+     "food": {
+      "name": "Made to Order Sandwiches",
+      "description": "",
+      "icons": {
+       "food_icons": []
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Entrees",
+     "menu_id": 353012,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353012,
+     "food": {
+      "name": "Pollock Scampi",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "fish",
+         "name": "Fish",
+         "help_text": "This contains fish",
+         "behavior": 1
+        },
+        {
+         "slug": "alcohol",
+         "name": "Alcohol",
+         "help_text": "This contains alcohol",
+         "behavior": 1
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Sides",
+     "menu_id": 353012,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353012,
+     "food": {
+      "name": "Green Beans and Tomatoes",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353012,
+     "food": {
+      "name": "Broccoli and Cheddar Quinoa Casserole",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Entrees",
+     "menu_id": 353022,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353022,
+     "food": {
+      "name": "Halal Chicken Pesto Grain Bowl",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Build Your Own",
+     "menu_id": 353027,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353027,
+     "food": {
+      "name": "South Pointe S2 Protein",
+      "description": "",
+      "icons": {
+       "food_icons": []
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353027,
+     "food": {
+      "name": "South Pointe S2 Toppings",
+      "description": "",
+      "icons": {
+       "food_icons": []
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353027,
+     "food": {
+      "name": "South Pointe Dressings and Sauces",
+      "description": "",
+      "icons": {
+       "food_icons": []
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353027,
+     "food": {
+      "name": "South Pointe Greens",
+      "description": "",
+      "icons": {
+       "food_icons": []
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Salads",
+     "menu_id": 353027,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353027,
+     "food": {
+      "name": "Coleslaw",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353027,
+     "food": {
+      "name": "BLT Chicken Salad",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "egg",
+         "name": "Egg",
+         "help_text": "This contains egg",
+         "behavior": 1
+        },
+        {
+         "slug": "pork",
+         "name": "Pork",
+         "help_text": "This contains pork",
+         "behavior": 1
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353027,
+     "food": {
+      "name": "Italian Pasta Salad",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "alcohol",
+         "name": "Alcohol",
+         "help_text": "This contains alcohol",
+         "behavior": 1
+        },
+        {
+         "slug": "beef",
+         "name": "Beef",
+         "help_text": "This contains beef",
+         "behavior": 1
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353027,
+     "food": {
+      "name": "Potato Salad",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "egg",
+         "name": "Egg",
+         "help_text": "This contains egg",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Build Your Own",
+     "menu_id": 353006,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353006,
+     "food": {
+      "name": "Unsalted Butter",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353006,
+     "food": {
+      "name": "Plain Cream Cheese",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353006,
+     "food": {
+      "name": "Cucumbers",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353006,
+     "food": {
+      "name": "Buttermilk Ranch Dressing",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "egg",
+         "name": "Egg",
+         "help_text": "This contains egg",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353006,
+     "food": {
+      "name": "Hard Boiled Eggs",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "egg",
+         "name": "Egg",
+         "help_text": "This contains egg",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353006,
+     "food": {
+      "name": "Romaine",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353006,
+     "food": {
+      "name": "Sliced Peaches",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353006,
+     "food": {
+      "name": "Tofu",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353006,
+     "food": {
+      "name": "Grape Tomatoes",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353006,
+     "food": {
+      "name": "Tuna",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "fish",
+         "name": "Fish",
+         "help_text": "This contains fish",
+         "behavior": 1
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Desserts",
+     "menu_id": 353006,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353006,
+     "food": {
+      "name": "Chocolate Pudding",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Sides",
+     "menu_id": 353006,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353006,
+     "food": {
+      "name": "Cottage Cheese",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353006,
+     "food": {
+      "name": "Pineapple",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Soup",
+     "menu_id": 353029,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353029,
+     "food": {
+      "name": "Homestyle Chicken Noodle Soup",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "egg",
+         "name": "Egg",
+         "help_text": "This contains egg",
+         "behavior": 1
+        },
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353029,
+     "food": {
+      "name": "Tomato Basil Soup Cup",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Entrees",
+     "menu_id": 353033,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353033,
+     "food": {
+      "name": "Tofu and Vegan Chorizo Breakfast Burrito",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353033,
+     "food": {
+      "name": "Sweet Potato Hash",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353033,
+     "food": {
+      "name": "Tofu Scramble",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Sides",
+     "menu_id": 353033,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353033,
+     "food": {
+      "name": "Veggie Sausage Patties",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "date": "2026-10-10",
+   "menu_info": {
+    "353007": {
+     "position": 0,
+     "section_options": {
+      "display_name": "BLISS"
+     }
+    },
+    "353008": {
+     "position": 1,
+     "section_options": {
+      "display_name": "BRIMSTONE"
+     }
+    },
+    "353019": {
+     "position": 2,
+     "section_options": {
+      "display_name": "CIAO!"
+     }
+    },
+    "353012": {
+     "position": 3,
+     "section_options": {
+      "display_name": "GREAT LAKES PLATE"
+     }
+    },
+    "353014": {
+     "position": 4,
+     "section_options": {
+      "display_name": "MIBOWL"
+     }
+    },
+    "353027": {
+     "position": 5,
+     "section_options": {
+      "display_name": "S2"
+     }
+    },
+    "353006": {
+     "position": 6,
+     "section_options": {
+      "display_name": "SALAD BAR"
+     }
+    },
+    "353029": {
+     "position": 7,
+     "section_options": {
+      "display_name": "SOUP"
+     }
+    },
+    "353033": {
+     "position": 8,
+     "section_options": {
+      "display_name": "VEG OUT"
+     }
+    }
+   },
+   "menu_items": [
+    {
+     "is_section_title": true,
+     "text": "Desserts",
+     "menu_id": 353007,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353007,
+     "food": {
+      "name": "Chocolate Chip Cookie",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "egg",
+         "name": "Egg",
+         "help_text": "This contains egg",
+         "behavior": 1
+        },
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "alcohol",
+         "name": "Alcohol",
+         "help_text": "This contains alcohol",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353007,
+     "food": {
+      "name": "Double Chocolate Cookie",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "egg",
+         "name": "Egg",
+         "help_text": "This contains egg",
+         "behavior": 1
+        },
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "alcohol",
+         "name": "Alcohol",
+         "help_text": "This contains alcohol",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353007,
+     "food": {
+      "name": "M&M Cookie",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "egg",
+         "name": "Egg",
+         "help_text": "This contains egg",
+         "behavior": 1
+        },
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "alcohol",
+         "name": "Alcohol",
+         "help_text": "This contains alcohol",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353007,
+     "food": {
+      "name": "Iced Angel Food Cake",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "egg",
+         "name": "Egg",
+         "help_text": "This contains egg",
+         "behavior": 1
+        },
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353007,
+     "food": {
+      "name": "Cheesecake",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "egg",
+         "name": "Egg",
+         "help_text": "This contains egg",
+         "behavior": 1
+        },
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353007,
+     "food": {
+      "name": "Vegan Vanilla Cupcake",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Build Your Own",
+     "menu_id": 353007,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353007,
+     "food": {
+      "name": "Crepe Shell",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "egg",
+         "name": "Egg",
+         "help_text": "This contains egg",
+         "behavior": 1
+        },
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353007,
+     "food": {
+      "name": "Gummi Worms",
+      "description": "",
+      "icons": {
+       "food_icons": []
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353007,
+     "food": {
+      "name": "Natural Creamy Peanut Butter",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "peanuts",
+         "name": "Peanuts",
+         "help_text": "This contains peanuts",
+         "behavior": 1
+        },
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353007,
+     "food": {
+      "name": "Chocolate Syrup",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353007,
+     "food": {
+      "name": "Oreo Cookie Crumbs",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353007,
+     "food": {
+      "name": "Chopped Reese's Peanut Butter Cups",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "peanuts",
+         "name": "Peanuts",
+         "help_text": "This contains peanuts",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353007,
+     "food": {
+      "name": "Chopped Snickers",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "egg",
+         "name": "Egg",
+         "help_text": "This contains egg",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "peanuts",
+         "name": "Peanuts",
+         "help_text": "This contains peanuts",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Sandwiches",
+     "menu_id": 353008,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353008,
+     "food": {
+      "name": "Black Bean Burger",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "sesame",
+         "name": "Sesame",
+         "help_text": "This contains sesame",
+         "behavior": 1
+        },
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353008,
+     "food": {
+      "name": "Cheeseburger",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "sesame",
+         "name": "Sesame",
+         "help_text": "This contains sesame",
+         "behavior": 1
+        },
+        {
+         "slug": "beef",
+         "name": "Beef",
+         "help_text": "This contains beef",
+         "behavior": 1
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353008,
+     "food": {
+      "name": "Hamburger",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "sesame",
+         "name": "Sesame",
+         "help_text": "This contains sesame",
+         "behavior": 1
+        },
+        {
+         "slug": "beef",
+         "name": "Beef",
+         "help_text": "This contains beef",
+         "behavior": 1
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353008,
+     "food": {
+      "name": "Grilled Chicken Sandwich",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "sesame",
+         "name": "Sesame",
+         "help_text": "This contains sesame",
+         "behavior": 1
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353008,
+     "food": {
+      "name": "Chicken Patty Sandwich",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "sesame",
+         "name": "Sesame",
+         "help_text": "This contains sesame",
+         "behavior": 1
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Sides",
+     "menu_id": 353008,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353008,
+     "food": {
+      "name": "Crinkle Fries",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Build Your Own",
+     "menu_id": 353008,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353008,
+     "food": {
+      "name": "Case Brimstone Toppings",
+      "description": "",
+      "icons": {
+       "food_icons": []
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353008,
+     "food": {
+      "name": "Case Brimstone Sauces",
+      "description": "",
+      "icons": {
+       "food_icons": []
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Entrees",
+     "menu_id": 353019,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353019,
+     "food": {
+      "name": "Detroit Style Deep Dish Cheese Pizza",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353019,
+     "food": {
+      "name": "Halal Pepperoni Pizza",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "beef",
+         "name": "Beef",
+         "help_text": "This contains beef",
+         "behavior": 1
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Breads",
+     "menu_id": 353019,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353019,
+     "food": {
+      "name": "Breadsticks",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Sandwiches",
+     "menu_id": 353019,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353019,
+     "food": {
+      "name": "Made to Order Sandwiches",
+      "description": "",
+      "icons": {
+       "food_icons": []
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Entrees",
+     "menu_id": 353012,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353012,
+     "food": {
+      "name": "Harissa Roast Halal Lamb",
+      "description": "",
+      "icons": {
+       "food_icons": []
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Sides",
+     "menu_id": 353012,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353012,
+     "food": {
+      "name": "Indian Basmati Rice",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353012,
+     "food": {
+      "name": "Mediterranean Vegetables",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Build Your Own",
+     "menu_id": 353012,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353012,
+     "food": {
+      "name": "Lime Cilantro Yogurt Sauce",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Entrees",
+     "menu_id": 353014,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353014,
+     "food": {
+      "name": "Grain Bowl with Halal Beef",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "beef",
+         "name": "Beef",
+         "help_text": "This contains beef",
+         "behavior": 1
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Build Your Own",
+     "menu_id": 353027,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353027,
+     "food": {
+      "name": "South Pointe S2 Protein",
+      "description": "",
+      "icons": {
+       "food_icons": []
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353027,
+     "food": {
+      "name": "South Pointe S2 Toppings",
+      "description": "",
+      "icons": {
+       "food_icons": []
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353027,
+     "food": {
+      "name": "South Pointe Dressings and Sauces",
+      "description": "",
+      "icons": {
+       "food_icons": []
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353027,
+     "food": {
+      "name": "South Pointe Greens",
+      "description": "",
+      "icons": {
+       "food_icons": []
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Salads",
+     "menu_id": 353027,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353027,
+     "food": {
+      "name": "Coleslaw",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353027,
+     "food": {
+      "name": "Italian Pasta Salad",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "alcohol",
+         "name": "Alcohol",
+         "help_text": "This contains alcohol",
+         "behavior": 1
+        },
+        {
+         "slug": "beef",
+         "name": "Beef",
+         "help_text": "This contains beef",
+         "behavior": 1
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353027,
+     "food": {
+      "name": "Potato Salad",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "egg",
+         "name": "Egg",
+         "help_text": "This contains egg",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Build Your Own",
+     "menu_id": 353006,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353006,
+     "food": {
+      "name": "Unsalted Butter",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353006,
+     "food": {
+      "name": "Plain Cream Cheese",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353006,
+     "food": {
+      "name": "Cucumbers",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353006,
+     "food": {
+      "name": "Buttermilk Ranch Dressing",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "egg",
+         "name": "Egg",
+         "help_text": "This contains egg",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353006,
+     "food": {
+      "name": "Hard Boiled Eggs",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "egg",
+         "name": "Egg",
+         "help_text": "This contains egg",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353006,
+     "food": {
+      "name": "Romaine",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353006,
+     "food": {
+      "name": "Sliced Peaches",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353006,
+     "food": {
+      "name": "Tofu",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353006,
+     "food": {
+      "name": "Grape Tomatoes",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353006,
+     "food": {
+      "name": "Tuna",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "fish",
+         "name": "Fish",
+         "help_text": "This contains fish",
+         "behavior": 1
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Desserts",
+     "menu_id": 353006,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353006,
+     "food": {
+      "name": "Chocolate Pudding",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Sides",
+     "menu_id": 353006,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353006,
+     "food": {
+      "name": "Cottage Cheese",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "vegetarian",
+         "name": "Vegetarian",
+         "help_text": "Vegetarian",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353006,
+     "food": {
+      "name": "Pineapple",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Soup",
+     "menu_id": 353029,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353029,
+     "food": {
+      "name": "Beef and Vegetable Soup",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "milk",
+         "name": "Milk",
+         "help_text": "This contains milk",
+         "behavior": 1
+        },
+        {
+         "slug": "beef",
+         "name": "Beef",
+         "help_text": "This contains beef",
+         "behavior": 1
+        },
+        {
+         "slug": "msu-beef",
+         "name": "MSU Beef",
+         "help_text": "This is a MSU beef product.",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353029,
+     "food": {
+      "name": "Soup of the Day",
+      "description": "",
+      "icons": {
+       "food_icons": []
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Entrees",
+     "menu_id": 353033,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353033,
+     "food": {
+      "name": "General Tso's Tofu and Vegetables",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "alcohol",
+         "name": "Alcohol",
+         "help_text": "This contains alcohol",
+         "behavior": 1
+        },
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Sides",
+     "menu_id": 353033,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353033,
+     "food": {
+      "name": "Thai Vegetable Dumpling",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "wheatgluten",
+         "name": "Wheat/Gluten",
+         "help_text": "This contains wheat/gluten.",
+         "behavior": 1
+        },
+        {
+         "slug": "soy",
+         "name": "Soy",
+         "help_text": "This contains soy",
+         "behavior": 1
+        },
+        {
+         "slug": "sesame",
+         "name": "Sesame",
+         "help_text": "This contains sesame",
+         "behavior": 1
+        },
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353033,
+     "food": {
+      "name": "Brown Rice",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    },
+    {
+     "is_section_title": true,
+     "text": "Build Your Own",
+     "menu_id": 353033,
+     "food": null
+    },
+    {
+     "is_section_title": false,
+     "text": "",
+     "menu_id": 353033,
+     "food": {
+      "name": "Sweet and Sour Sauce",
+      "description": "",
+      "icons": {
+       "food_icons": [
+        {
+         "slug": "vegan",
+         "name": "Vegan",
+         "help_text": "Vegan",
+         "behavior": 2
+        }
+       ]
+      }
+     }
+    }
+   ]
+  },
+  {
+   "date": "2026-10-17",
+   "menu_info": {},
+   "menu_items": []
+  }
+ ]
+}
