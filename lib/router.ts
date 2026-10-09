@@ -23,12 +23,12 @@ import type { HistoryTurn } from "./types";
 
 // Deliberately generous: a false "yes" only costs one small router call.
 const FOOD_WORDS =
-  /\b(eat|eating|ate|food|foods|lunch|dinner|breakfast|brunch|supper|menu|menus|dining|hungry|meal|meals|snack|snacks|dessert|cafeteria|serving|served|pizza|burger|burgers|pasta|salad|sandwich|taco|tacos|sushi|stir ?fry|grill|vegan|vegetarian|gluten|halal|kosher|dairy|allergen|allergens|allergic|south pointe|late night|all you care to eat)\b/i;
+  /\b(eat|eating|ate|food|foods|lunch|dinner|breakfast|brunch|supper|menu|menus|dining|hungry|meal|meals|snack|snacks|dessert|cafeteria|serving|served|pizza|burger|burgers|pasta|salad|sandwich|taco|tacos|sushi|stir ?fry|grill|vegan|vegetarian|gluten|halal|kosher|dairy|allergen|allergens|allergic|south pointe|late night|all you care to eat|calorie|calories|nutrition|protein|carbs|macros)\b/i;
 
 // Event words. "weekend" and "tonight" alone are left out on purpose: they show up in
 // ordinary housing questions ("can my friend stay this weekend?").
 const EVENT_WORDS =
-  /\b(event|events|happening|going on|things to do|something to do|anything to do|activities|concert|concerts|comedian|comedy|movie|movies|film|trivia|karaoke|performance|performer|performers|uab|free food|homecoming|festival|calendar|what's on|whats on|show tonight|anything (fun|cool|good|interesting))\b/i;
+  /(\b(is|are) there (a|an|any|anything)\b.*\b(on|at|around) campus\b|\bon campus (today|tonight|tomorrow|this (week|weekend))\b)|\b(event|events|happening|going on|things to do|something to do|anything to do|activities|concert|concerts|comedian|comedy|movie|movies|film|trivia|karaoke|performance|performer|performers|uab|free food|homecoming|festival|calendar|what's on|whats on|show tonight|anything (fun|cool|good|interesting))\b/i;
 
 /** Could this message be about food or dining? (Also true for a follow-up to a food question.) */
 export function looksLikeDining(

@@ -636,6 +636,25 @@ async function offline() {
     listed.type === "answer" && /ask the staff too/.test(listed.answer),
   );
 
+  // 9c. Calorie and nutrition questions get an honest pointer (we don't carry those numbers)
+  const cal = await answerDining(
+    "How many calories are in the cheeseburger?",
+    route({ keywords: ["cheeseburger"] }),
+    chainNow,
+  );
+  check(
+    "calories → says it has no nutrition details, links to the menu page, invents no number",
+    cal.type === "not_found" &&
+      /don't have calorie or nutrition details/.test(cal.note ?? "") &&
+      !/\d+ cal/.test(cal.note ?? "") &&
+      /south-pointe-at-case/.test(cal.link?.url ?? ""),
+    JSON.stringify(cal).slice(0, 200),
+  );
+  check(
+    "the food-word gate now includes calorie questions",
+    looksLikeDining("how many calories are in the cheeseburger?"),
+  );
+
   // 10. The update endpoint's locks
   const post = (body: unknown, auth?: string) =>
     ingest(
