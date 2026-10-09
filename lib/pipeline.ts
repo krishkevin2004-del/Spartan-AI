@@ -32,47 +32,71 @@ export async function askHandbook(
   const question = rawQuestion.trim();
   if (!question) return { type: "error", message: "Type a question first." };
   if (question.length > CONFIG.maxQuestionLength) {
-    return { type: "error", message: `Please keep questions under ${CONFIG.maxQuestionLength} characters.` };
+    return {
+      type: "error",
+      message: `Please keep questions under ${CONFIG.maxQuestionLength} characters.`,
+    };
   }
 
   // ── 4. Escalate, layer 1: keywords ──
   // Runs before rate limiting: an obvious crisis always gets the help screen.
   const keywordHit = checkEscalation(question);
-  if (keywordHit) return { type: "escalate", category: keywordHit, layer: "keyword" };
+  if (keywordHit)
+    return { type: "escalate", category: keywordHit, layer: "keyword" };
 
   // Cost and abuse limits, before any paid AI call. (The "Get help now" link
   // stays on screen, and the reply below points to help too.)
   if (options.ip) {
     const limit = await checkLimits(options.ip);
-    if (limit === "visitor_limit") return { type: "rate_limited", reason: "visitor" };
+    if (limit === "visitor_limit")
+      return { type: "rate_limited", reason: "visitor" };
     if (limit === "site_busy") return { type: "rate_limited", reason: "busy" };
-    if (limit === "budget_reached") return { type: "rate_limited", reason: "budget" };
+    if (limit === "budget_reached")
+      return { type: "rate_limited", reason: "budget" };
   }
 
   // ── 4. Escalate, layer 2: safety classifier (fails closed) ──
   const history = (options.history ?? []).slice(-CONFIG.historyTurns);
-  const previousUserMessage = [...history].reverse().find((t) => t.role === "user")?.text;
+  const previousUserMessage = [...history]
+    .reverse()
+    .find((t) => t.role === "user")?.text;
   const safety = await classifySafety(question, previousUserMessage);
   if (safety.label !== "safe") {
-    return { type: "escalate", category: "general", layer: safety.failedClosed ? "fail_closed" : "classifier" };
+    return {
+      type: "escalate",
+      category: "general",
+      layer: safety.failedClosed ? "fail_closed" : "classifier",
+    };
   }
 
   // ── RA contact lookup (no AI answer needed) ──
-  if (isRaContactRequest(question)) return { type: "ra_lookup", hallId: matchHall(question)?.id };
+  if (isRaContactRequest(question))
+    return { type: "ra_lookup", hallId: matchHall(question)?.id };
 
   // ── Extra skills (dining, events) ──
   // Each is OFF unless its switch is on (DINING_ENABLED=1, EVENTS_ENABLED=1).
   // Only messages that look like they could be about an enabled skill get
   // routed; anything the router doesn't claim continues to the handbook below,
   // exactly as before.
+  let routerFailed = false;
   if (shouldRoute(question, history)) {
     const route = await routeMessage(question, history);
+    routerFailed = Boolean(route.failed);
     if (route.label === "dining") return answerDining(question, route.dining);
     if (route.label === "events") return answerEvents(question, route.events);
   }
 
   // ── 2 + 3. Answer from the handbook ──
   const reply = await answerQuestion(question, history);
-  if (reply.type === "ra_lookup") return { type: "ra_lookup", hallId: matchHall(question)?.id };
+  // If the router couldn't decide and the handbook says "off topic", this was probably a food or
+  // events question that fell through. A retry prompt is kinder (and more accurate) than a refusal.
+  if (routerFailed && reply.type === "off_topic") {
+    return {
+      type: "error",
+      message: "I'm having a slow moment. Please ask again in a few seconds.",
+    };
+  }
+  if (reply.type === "ra_lookup")
+    return { type: "ra_lookup", hallId: matchHall(question)?.id };
   return reply;
 }
