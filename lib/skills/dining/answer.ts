@@ -216,13 +216,11 @@ export async function answerDining(
     return {
       type: "answer",
       answer: `${intro} What the posted menu does label as containing ${what} on the ${when}: ${listed}${more}. That doesn't mean everything else is safe.${asOf ? `\n\nMenu as of ${asOf}.` : ""}\n\n${ALLERGY_NOTE}`,
-      citations: labeled
-        .slice(0, 6)
-        .map((b) => ({
-          source: title,
-          section: `${b.meal} · ${b.station}`,
-          passage: blockText(b),
-        })),
+      citations: labeled.slice(0, 6).map((b) => ({
+        source: title,
+        section: `${b.meal} · ${b.station}`,
+        passage: blockText(b),
+      })),
     };
   }
 
@@ -293,12 +291,26 @@ export async function answerDining(
   const body = text.replace(/^\[[A-Z_]+\]\s*/, "").trim();
   const citations = collectCitations(blocks, response.content, documentTitle);
 
-  // No citation, no answer.
+  // No citation, no answer. If the model's wording can't be cited (it sometimes can't on a very
+  // big menu), fall back to a plain list straight from the menu data, which is cited by construction.
+  // Counts only in the log, never the question.
   if (tag !== "ANSWER" || !body || citations.length === 0) {
-    return notFound(
-      `I couldn't find that on ${hall.name}'s menu for ${prettyDate(date)}.`,
-      menuLink,
-      hall.menuUrl,
+    console.log(
+      JSON.stringify({
+        event: "dining_uncited",
+        tag: tag ?? null,
+        hasBody: Boolean(body),
+        citations: citations.length,
+        blocks: blocks.length,
+        stop: response.stop_reason,
+      }),
+    );
+    return listFromMenu(
+      blocks,
+      `${hall.name} menu · ${prettyDate(date)}${asOf ? ` · updated ${asOf}` : ""}`,
+      `${mealWord(meal)}, ${prettyDate(date)}`,
+      hall.name,
+      asOf,
     );
   }
 
@@ -307,6 +319,38 @@ export async function answerDining(
   if (DIETARY.test(question) || DIETARY.test(body))
     answer += `\n\n${ALLERGY_NOTE}`;
   return { type: "answer", answer, citations };
+}
+
+/** A plain, cited list of what's on the menu, built in code. Used when the model's wording can't be cited. */
+export function listFromMenu(
+  blocks: MenuBlock[],
+  title: string,
+  when: string,
+  hallName: string,
+  asOf: string | null,
+): AssistantReply {
+  const shown = blocks.slice(0, 8);
+  const lines = shown.map(
+    (b) =>
+      `- ${b.station.replace(" · ", ", ")}: ${b.items
+        .slice(0, 4)
+        .map((i) => i.name)
+        .join(", ")}${b.items.length > 4 ? ", and more" : ""}`,
+  );
+  const more =
+    blocks.length > shown.length ? `\n\nThere's more on the full menu.` : "";
+  const sawLabels = blocks.some((b) =>
+    b.items.some((i) => (i.tags?.length ?? 0) + (i.allergens?.length ?? 0) > 0),
+  );
+  return {
+    type: "answer",
+    answer: `Here's a look at ${hallName}'s ${when}:\n${lines.join("\n")}${more}${asOf ? `\n\nMenu as of ${asOf}.` : ""}${sawLabels ? `\n\n${ALLERGY_NOTE}` : ""}`,
+    citations: shown.map((b) => ({
+      source: title,
+      section: `${b.meal} · ${b.station}`,
+      passage: blockText(b),
+    })),
+  };
 }
 
 /** Turn the cited block numbers back into the menu lines the resident can read. */

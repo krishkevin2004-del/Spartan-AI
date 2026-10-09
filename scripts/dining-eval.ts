@@ -601,6 +601,41 @@ async function offline() {
     ),
   );
 
+  // 9b. When the model's wording can't be cited, a plain list is built straight from the menu data
+  const { listFromMenu } = await import("../lib/skills/dining/answer");
+  const lunchBlocks = filterDay(day, "lunch", []);
+  const listed = listFromMenu(
+    lunchBlocks,
+    "Test menu",
+    "lunch menu, Friday, Oct 9",
+    "South Pointe at Case",
+    "3:20 p.m. today",
+  );
+  check(
+    "fallback list: names stations and dishes, says when, is cited",
+    listed.type === "answer" &&
+      /Here's a look at South Pointe at Case's lunch menu/.test(
+        listed.answer,
+      ) &&
+      /Menu as of 3:20 p\.m\. today/.test(listed.answer) &&
+      listed.citations.length > 0,
+    listed.type === "answer" ? listed.answer.slice(0, 160) : "",
+  );
+  check(
+    "fallback list: every dish it names comes from a cited station",
+    listed.type === "answer" &&
+      listed.citations.every((c) => c.passage.length > 0) &&
+      listed.citations.length <= 8,
+  );
+  check(
+    "fallback list: plain text, no markdown",
+    listed.type === "answer" && !/\*\*|#/.test(listed.answer),
+  );
+  check(
+    "fallback list: carries the staff reminder when labels are shown",
+    listed.type === "answer" && /ask the staff too/.test(listed.answer),
+  );
+
   // 10. The update endpoint's locks
   const post = (body: unknown, auth?: string) =>
     ingest(
