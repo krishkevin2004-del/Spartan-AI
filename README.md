@@ -78,7 +78,7 @@ everything else 92/93. Add real questions from residents to `tests/questions.jso
   (e.g. finals quiet hours). Cited separately from the handbook.
 - `lib/escalation.ts`: crisis contacts and the fixed screens. Have REHS review changes.
 
-## Events skill (built, switched OFF until you enable it)
+## Events skill (LIVE: UAB calendar)
 
 Answers "what's happening on campus?" from UAB's (University Activities Board) calendar. The data
 comes from the **official RSS feed** UAB publishes for this purpose (`uabevents.com/calendar/rss.xml`);
@@ -107,45 +107,46 @@ clubs or every campus event), and "free food" is a word match on free-text listi
 If the daily job fails, the last good calendar is kept; after 48 hours without a refresh the bot says
 it has no current list instead of showing stale events.
 
-**To turn it on** (after a passing live eval and a go-ahead): in Vercel set `CRON_SECRET`
-(24+ random characters) and `EVENTS_ENABLED=1`, then redeploy. Vercel Cron picks up `vercel.json` and
-sends the secret automatically.
+**Switch:** `EVENTS_ENABLED=1` in Vercel. The daily job needs `CRON_SECRET` (24+ random characters);
+Vercel Cron sends it automatically.
 
-## Dining skill (built, switched OFF, ON HOLD while permission for the menu data is requested)
+## Dining skill (LIVE: South Pointe at Case)
 
-Answers "what's for lunch at Case?" from a cached daily menu. v1 covers **South Pointe at Case**.
-It follows the same rules as the handbook: only the cached menu, cited, says how fresh it is,
-never claims a dish is safe or allergen-free, and sits behind the same crisis check and the
-same rate limits and daily budget.
+Answers "what's for lunch at Case?", "where can I get pizza?", "when does it close?" from a cached
+daily menu. It follows the same rules as the handbook: only the cached menu, cited, says how fresh
+it is, and sits behind the same crisis check, rate limits and daily budget.
 
 ```
-message → crisis check (unchanged) → RA lookup (unchanged)
-        → "does it mention food?" word check (free)
-        → router: one small Claude call, forced tool, picks dining or other
-        → dining: plain-code filter over the cached menu → Claude words the answer, with citations
-          (anything the router doesn't call "dining" continues to the handbook, exactly as before)
+GitHub Actions, daily ~8:45 a.m. ET → scripts/dining-scrape.ts (headless Chrome, 9 page loads)
+   → POST /api/dining/ingest (secret + strict validation) → cache (Redis)
+message → crisis check → RA lookup → food-word check (free) → router → dining skill:
+   plain-code filter by day, meal and food → Claude words the answer with citations
+   hours/location questions and ALL allergy questions are answered in plain code, never by the model
 ```
 
 | Piece | File |
 |---|---|
-| Switch (off unless `DINING_ENABLED=1`) | `lib/config.ts` → `dining`, hook in `lib/pipeline.ts` |
-| Router | `lib/router.ts` |
-| Answer step and every "no data" reply | `lib/skills/dining/answer.ts` |
-| Menu cache (one entry per hall per day) | `lib/skills/dining/cache.ts`, `lib/store.ts` |
-| Filtering by meal and food | `lib/skills/dining/query.ts` |
-| Checking incoming menu data | `lib/skills/dining/validate.ts` |
-| How menu data gets in | `POST /api/dining/ingest` (needs `INGEST_SECRET`) |
+| Scraper (browser, polite, stops if blocked) | `scripts/dining-scrape.ts`, `.github/workflows/dining-scrape.yml` |
+| Turning the platform's data into ours | `lib/skills/dining/nutrislice.ts` |
+| Checking incoming data | `lib/skills/dining/validate.ts`, `app/api/dining/ingest/route.ts` |
+| Cache | `lib/skills/dining/cache.ts`, `lib/store.ts` |
+| Filtering, answers, allergy handling | `lib/skills/dining/query.ts`, `answer.ts` |
+| Switch (`DINING_ENABLED=1`) | `lib/config.ts` → `dining`, hook in `lib/pipeline.ts` |
 | Tests | `npm run test:dining` (free, offline), `npm run eval:dining -- --live` (uses API credit) |
 
-**There is no menu scraper yet, on purpose.** Nutrislice (which hosts MSU's menus) forbids
-automated access without authorization: its terms prohibit it, and its data server's
-`robots.txt` disallows all bots. Permission has been requested from MSU Dining. When it
-arrives, whatever they allow (an official feed, a file, or authorized access for a once-a-day
-job) just has to send menu data in the shape in `lib/skills/dining/types.ts` to the ingest
-endpoint. Nothing else needs to change.
+**Permission.** MSU's menus are hosted by Nutrislice, whose terms prohibit automated access unless
+authorized, and whose data server's `robots.txt` disallows bots. **MSU Dining authorized this
+access** (October 2026). Keep their email on file. The scraper identifies itself in its User-Agent,
+loads about 9 pages a day, and stops if the site ever says no (HTTP 403/429/503). If MSU Dining or
+Nutrislice asks us to stop, disable the workflow and set `DINING_ENABLED=0`.
 
-**To turn it on** (only after authorization, a passing live eval, and a go-ahead):
-set `INGEST_SECRET` and `DINING_ENABLED=1` in Vercel and redeploy.
+**Allergies.** The bot never says a dish is safe or allergen-free. For allergy questions it lists what
+the posted menu *labels* as containing that allergen, says it can't call anything safe, and tells
+the person to ask the dining staff. Every answer that touches labels carries that reminder.
+
+**If menus stop updating:** check the Actions tab. GitHub switches scheduled workflows off after
+60 days with no commits ("Enable workflow"). The site keeps the last good menus; "Run workflow"
+retries. To change the schedule or add halls, see the workflow and `scripts/dining-scrape.ts`.
 
 ## If the assistant isn't answering
 
