@@ -31,14 +31,25 @@ const FOOD_WORDS =
 const EVENT_WORDS =
   /(\b(is|are) there (a|an|any|anything)\b.*\b(on|at|around) campus\b|\bon campus (today|tonight|tomorrow|this (week|weekend))\b)|\b(event|events|happening|going on|things to do|something to do|anything to do|activities|concert|concerts|comedian|comedy|movie|movies|film|trivia|karaoke|performance|performer|performers|uab|free food|homecoming|festival|calendar|what's on|whats on|show tonight|anything (fun|cool|good|interesting))\b/i;
 
+// Hall names and nicknames ("Akers", "The Vista", "Brody Square") count as dining words too. A false
+// "yes" (like "in case of fire") only costs one small router call, which then says "other".
+const escapeRegExp = (text: string) =>
+  text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const HALL_WORDS = new RegExp(
+  `\\b(${[...new Set(DINING_HALLS.flatMap((h) => [h.name, ...(h.aliases ?? [])]))].map(escapeRegExp).join("|")}|dining halls?|dining commons)\\b`,
+  "i",
+);
+const diningWords = (text: string) =>
+  FOOD_WORDS.test(text) || HALL_WORDS.test(text);
+
 /** Could this message be about food or dining? (Also true for a follow-up to a food question.) */
 export function looksLikeDining(
   question: string,
   history: HistoryTurn[] = [],
 ): boolean {
-  if (FOOD_WORDS.test(question)) return true;
+  if (diningWords(question)) return true;
   const previousUser = [...history].reverse().find((t) => t.role === "user");
-  return Boolean(previousUser && FOOD_WORDS.test(previousUser.text));
+  return Boolean(previousUser && diningWords(previousUser.text));
 }
 
 /** Could this message be about campus events? (Also true for a follow-up to an events question.) */

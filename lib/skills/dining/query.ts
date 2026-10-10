@@ -26,6 +26,10 @@ const MAX_ITEMS_PER_BLOCK = 30;
 const LOW_VALUE_STATION =
   /beverage|build your own|condiment|topping|sauce|dressing/i;
 
+export function isLowValueStation(station: string): boolean {
+  return LOW_VALUE_STATION.test(station);
+}
+
 /** Which blocks to show or send to the model: real entrees first, toppings and drinks last, and no more than `max`. */
 export function prioritizeBlocks(
   blocks: MenuBlock[],

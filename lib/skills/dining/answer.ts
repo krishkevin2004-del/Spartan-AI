@@ -21,6 +21,7 @@ import { DINING_HALLS, DINING_HUB_URL, getDay, getMeta } from "./cache";
 import {
   blockText,
   filterDay,
+  isLowValueStation,
   prioritizeBlocks,
   type MenuBlock,
   type RequestedMeal,
@@ -407,7 +408,14 @@ async function answerAcrossHalls(
     const day = await getDay(hall.id, date);
     if (!day) continue;
     hallsWithMenu++;
-    const blocks = filterDay(day, meal, keywords);
+    // A topping or drink on its own ("Cauliflower Pizza Crust" at a build-your-own bar) isn't
+    // "where to get pizza", so only real dishes count. Real entrees are listed first.
+    const blocks = prioritizeBlocks(
+      filterDay(day, meal, keywords).filter(
+        (b) => !isLowValueStation(b.station),
+      ),
+      20,
+    );
     if (blocks.length > 0)
       results.push({
         hall,

@@ -248,6 +248,22 @@ async function offline() {
   ]) {
     check(`gate skips: "${q}"`, !looksLikeDining(q));
   }
+  for (const q of [
+    "What time does The Vista at Shaw open?",
+    "is Akers open on weekends",
+    "when does Brody close",
+    "what's good at the dining hall",
+  ]) {
+    check(
+      `gate passes a hall name or 'dining hall': "${q}"`,
+      looksLikeDining(q),
+    );
+  }
+  check(
+    "gate still skips ordinary housing questions",
+    !looksLikeDining("Can my friend stay over this weekend?") &&
+      !looksLikeDining("How do I switch rooms?"),
+  );
   const foodHistory: HistoryTurn[] = [
     { role: "user", text: "What's for lunch today?" },
   ];
@@ -735,6 +751,49 @@ async function offline() {
     everywhere.type === "answer"
       ? everywhere.answer.slice(0, 220)
       : everywhere.type,
+  );
+  check(
+    "a toppings-bar item alone doesn't count as 'where to get' a food",
+    await (async () => {
+      const bar = validateSnapshot(
+        {
+          ...base,
+          hallId: "brody-square",
+          scrapedAt: chainNow.toISOString(),
+          days: Object.fromEntries(
+            Object.entries(base.days).map(([d]) => [
+              d,
+              {
+                meals: [
+                  {
+                    name: "Lunch",
+                    stations: [
+                      {
+                        name: "Salad Bar · Build Your Own",
+                        items: [{ name: "Cauliflower Pizza Crust" }],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ]),
+          ),
+        },
+        DINING_HALLS,
+        chainNow,
+      );
+      if (bar.ok) await saveSnapshot(bar.snapshot);
+      const r = await answerDining(
+        "Where can I get pizza?",
+        route({ hall: "none", meal: "none", keywords: ["pizza"] }),
+        chainNow,
+      );
+      return (
+        r.type === "answer" &&
+        !/Brody Square/.test(r.answer) &&
+        /South Pointe at Case/.test(r.answer)
+      );
+    })(),
   );
   const nowhere = await answerDining(
     "Is there sushi anywhere?",
