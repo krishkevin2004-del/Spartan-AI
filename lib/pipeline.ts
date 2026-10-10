@@ -18,7 +18,7 @@ import { CONFIG } from "./config";
 import { checkEscalation } from "./escalation";
 import { isRaContactRequest, matchHall } from "./halls";
 import { checkLimits } from "./limits";
-import { routeMessage, shouldRoute } from "./router";
+import { looksLikeSkillQuestion, routeMessage, shouldRoute } from "./router";
 import { classifySafety } from "./safety";
 import { answerDining } from "./skills/dining/answer";
 import { answerEvents } from "./skills/events/answer";
@@ -75,22 +75,26 @@ export async function askHandbook(
 
   // ── Extra skills (dining, events) ──
   // Each is OFF unless its switch is on (DINING_ENABLED=1, EVENTS_ENABLED=1).
-  // Only messages that look like they could be about an enabled skill get
-  // routed; anything the router doesn't claim continues to the handbook below,
-  // exactly as before.
+  // When a skill is on, the router reads every message and decides who answers;
+  // anything it doesn't claim continues to the handbook below, exactly as before.
   let routerFailed = false;
-  if (shouldRoute(question, history)) {
+  if (shouldRoute()) {
     const route = await routeMessage(question, history);
     routerFailed = Boolean(route.failed);
     if (route.label === "dining") return answerDining(question, route.dining);
-    if (route.label === "events") return answerEvents(question, route.events);
+    if (route.label === "events")
+      return answerEvents(question, route.events, new Date(), history);
   }
 
   // ── 2 + 3. Answer from the handbook ──
   const reply = await answerQuestion(question, history);
-  // If the router couldn't decide and the handbook says "off topic", this was probably a food or
-  // events question that fell through. A retry prompt is kinder (and more accurate) than a refusal.
-  if (routerFailed && reply.type === "off_topic") {
+  // If the router call failed, the message looks like a food or events question, and the handbook
+  // says "off topic", it probably fell through. A retry prompt is kinder (and more accurate) than a refusal.
+  if (
+    routerFailed &&
+    reply.type === "off_topic" &&
+    looksLikeSkillQuestion(question, history)
+  ) {
     return {
       type: "error",
       message: "I'm having a slow moment. Please ask again in a few seconds.",

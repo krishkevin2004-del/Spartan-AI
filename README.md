@@ -86,9 +86,10 @@ the site's `robots.txt` doesn't restrict it. One request a day, with a User-Agen
 
 ```
 Vercel Cron, daily ~7 a.m. ET → /api/cron/events → fetch the feed once → parse → check → cache (Redis)
-message → crisis check → RA lookup → "does it look like an events question?" word check (free)
-        → router (one small Claude call) → events: plain-code filter by day and keyword
-        → Claude words the answer from the matching events, with a citation and link per event
+message → crisis check → RA lookup → router (one small Claude call, on every message)
+        → events: plain code picks the days; Claude reads every event on those days and judges
+          which ones fit ("music" can be a cellist), with a citation and link per event.
+          Nothing fits exactly → it says so and offers the closest ones. Too vague → it asks one question.
 ```
 
 | Piece | File |
@@ -120,8 +121,12 @@ it is, and sits behind the same crisis check, rate limits and daily budget.
 ```
 GitHub Actions, daily ~7:15 a.m. ET (6:15 in winter) → scripts/dining-scrape.ts (headless Chrome, about 50 page loads, each hall sent as soon as it's done)
    → POST /api/dining/ingest (secret + strict validation) → cache (Redis)
-message → crisis check → RA lookup → food-word check (free) → router → dining skill:
-   plain-code filter by day, meal and food → Claude words the answer with citations
+message → crisis check → RA lookup → router (on every message) → dining skill:
+   a dish ("pizza") → plain-code word search by day, meal and food
+   a style ("Chinese food", "something spicy") or a word search that finds nothing → Claude is shown
+     the numbered list of dishes really on the menu and picks the ones that fit (lib/skills/dining/pick.ts);
+     it can only pick by number, so it cannot invent a dish. Never used for allergies or diets.
+   → the answer is cited either way; "today and tomorrow" is answered day by day
    hours/location questions and ALL allergy questions are answered in plain code, never by the model
 ```
 
@@ -132,6 +137,7 @@ message → crisis check → RA lookup → food-word check (free) → router →
 | Checking incoming data | `lib/skills/dining/validate.ts`, `app/api/dining/ingest/route.ts` |
 | Cache | `lib/skills/dining/cache.ts`, `lib/store.ts` |
 | Filtering, answers, allergy handling | `lib/skills/dining/query.ts`, `answer.ts` |
+| Picking dishes by judgement | `lib/skills/dining/pick.ts` |
 | Switch (`DINING_ENABLED=1`) | `lib/config.ts` → `dining`, hook in `lib/pipeline.ts` |
 | Tests | `npm run test:dining` (free, offline), `npm run eval:dining -- --live` (uses API credit) |
 

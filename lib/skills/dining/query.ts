@@ -3,7 +3,12 @@
 
 import type { DiningDay, DiningItem } from "./types";
 
-export type MenuBlock = { meal: string; mealSlug?: string; station: string; items: DiningItem[] };
+export type MenuBlock = {
+  meal: string;
+  mealSlug?: string;
+  station: string;
+  items: DiningItem[];
+};
 
 export type RequestedMeal = "breakfast" | "lunch" | "dinner" | "any";
 
@@ -48,7 +53,7 @@ function stem(word: string): string {
     .replace(/(es|s)$/, "");
 }
 
-function itemMatches(
+export function itemMatches(
   item: DiningItem,
   station: string,
   keywords: string[],
@@ -110,6 +115,14 @@ export function filterDay(
   return blocks;
 }
 
+/** A dish with its posted labels but no description, e.g. "Pepperoni Pizza (contains milk, wheat)". */
+export function nameWithLabels(item: DiningItem): string {
+  const labels = [...(item.tags ?? [])];
+  if (item.allergens && item.allergens.length > 0)
+    labels.push(`contains ${item.allergens.join(", ")}`);
+  return labels.length > 0 ? `${item.name} (${labels.join("; ")})` : item.name;
+}
+
 /** One item as plain text, with the labels the menu posts, e.g. "Veggie Burger (vegan; contains soy)". */
 export function describeItem(item: DiningItem): string {
   const labels = [...(item.tags ?? [])];
@@ -121,8 +134,18 @@ export function describeItem(item: DiningItem): string {
 }
 
 /** The page on the menu site for this meal on this day, e.g. .../south-pointe-at-case/dinner/2026-10-10 */
-export function mealPageUrl(hallMenuUrl: string, block: { meal: string; mealSlug?: string }, date: string): string {
-  const slug = block.mealSlug ?? block.meal.toLowerCase().trim().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+export function mealPageUrl(
+  hallMenuUrl: string,
+  block: { meal: string; mealSlug?: string },
+  date: string,
+): string {
+  const slug =
+    block.mealSlug ??
+    block.meal
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "");
   return `${hallMenuUrl}/${slug}/${date}`;
 }
 

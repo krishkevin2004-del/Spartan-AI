@@ -37,5 +37,9 @@ export type DiningRoute = {
   hall: string; // a hall id from data/dining/halls.json, "other_hall" (a place we don't cover), or "none" (not named)
   meal: "breakfast" | "lunch" | "dinner" | "any" | "none";
   date: string; // YYYY-MM-DD, or "" if not stated
+  dateTo?: string; // last day, when they ask about more than one ("today and tomorrow")
   keywords: string[]; // specific foods or diets they asked about
+  // "dish" = something a menu would list by name (pizza, tacos, chicken): searched for by word first.
+  // "style" = a cuisine, mood or description (chinese, spicy, light, comfort food): matched by judgement.
+  kind?: "dish" | "style";
 };

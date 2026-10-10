@@ -268,11 +268,7 @@ async function offline() {
       { role: "user", text: "what events are happening today?" } as HistoryTurn,
     ]),
   );
-  check(
-    "nothing is routed while both skills are switched off",
-    !shouldRoute("What's happening on campus tonight?") &&
-      !shouldRoute("what's for lunch"),
-  );
+  check("nothing is routed while both skills are switched off", !shouldRoute());
 
   // 5. Every "no match" reply is decided in plain code, no AI
   const notFound = async (
@@ -324,10 +320,12 @@ async function offline() {
     { from: "2026-10-01", to: "2026-10-02", keywords: [] },
     /today or later/,
   );
+  // Days with no events at all never reach the AI, whatever they asked for. (When there ARE events
+  // on those days, the model reads them and judges what fits: that part is in the live eval.)
   await notFound(
-    "nothing matches the keyword → says so, names the scope",
-    { from: "2026-10-07", to: "2026-10-19", keywords: ["skydiving"] },
-    /matching "skydiving".*only see UAB's calendar/,
+    "no events on those days, with a keyword → says so, names the scope",
+    { from: "2026-10-10", to: "2026-10-11", keywords: ["skydiving"] },
+    /don't see any UAB events for .*only see UAB's calendar/,
   );
   await notFound(
     "a day with no events → says so",
@@ -335,19 +333,51 @@ async function offline() {
     /don't see any UAB events/,
   );
 
-  // "nothing this week" points to the next matching event instead of stopping there
+  // "nothing those days" points to the next event instead of stopping there
   const nextHint = await answerEvents(
     "question",
-    { from: "2026-10-07", to: "2026-10-07", keywords: ["bagels"] },
-    new Date("2026-10-07T12:00:00Z"),
+    { from: "2026-10-10", to: "2026-10-11", keywords: ["banned books"] },
+    now,
   );
   check(
-    "no match in range → mentions the next matching event",
+    "no events in range → mentions the next event that matches their words",
     nextHint.type === "not_found" &&
-      /The next one I see is Bagels at Beaumont \(Fri, Oct 9/.test(
+      /The next one I see is Banned Books Beyond the Ban: Voices Uncensored \(Tue, Oct 13/.test(
         nextHint.note ?? "",
       ),
     JSON.stringify(nextHint).slice(0, 220),
+  );
+  const nextAny = await answerEvents(
+    "question",
+    { from: "2026-10-10", to: "2026-10-11", keywords: ["skydiving"] },
+    now,
+  );
+  check(
+    "no events in range and none match their words → mentions the next event of any kind",
+    nextAny.type === "not_found" &&
+      /The next one I see is UAB Member Meeting.*\(Mon, Oct 12/.test(
+        nextAny.note ?? "",
+      ),
+    JSON.stringify(nextAny).slice(0, 220),
+  );
+
+  // 5b. When the model's wording can't be cited, code writes the list itself
+  const { listFromEvents } = await import("../lib/skills/events/answer");
+  const cellist = events.filter((e) => /Green and White/.test(e.title));
+  const fallback = listFromEvents(
+    cellist,
+    true,
+    ["concert"],
+    "UAB events calendar · test",
+  );
+  check(
+    "fallback list: says it isn't an exact match, gives name, time and place, and links the event",
+    /^I don't see an exact match for "concert", but this one might interest you:\n- Green and White Night ft\. Famticipation, Fri, Oct 16, 6:00 p\.m\. to 8:00 p\.m\./.test(
+      fallback.answer,
+    ) &&
+      fallback.citations.length === 1 &&
+      (fallback.citations[0].url ?? "").startsWith("https://uabevents.com/"),
+    fallback.answer,
   );
 
   // 6. The daily fetch (with a stand-in for the network)
@@ -404,6 +434,8 @@ type LiveCase = {
   expect:
     | "events_answer"
     | "events_not_found"
+    | "events_any" // an events answer or an events "no match": either is fine, as long as it stayed in the events skill
+    | "clarify" // a short question back to the resident, naming no events
     | "handbook"
     | "not_events"
     | "escalate"
@@ -432,6 +464,13 @@ function gradeLive(c: LiveCase, reply: AssistantReply): string | null {
   const isEvents = isEventsAnswer || isEventsNotFound;
   if (c.expect === "events_answer" && !isEventsAnswer)
     return `expected an events answer, got ${reply.type}${isEventsNotFound ? " (events not found)" : ""}`;
+  if (c.expect === "events_any" && !isEvents)
+    return `expected an events reply, got ${reply.type}`;
+  if (
+    c.expect === "clarify" &&
+    !(reply.type === "chat" && reply.text.includes("?"))
+  )
+    return `expected a clarifying question, got ${reply.type}`;
   if (c.expect === "events_not_found" && !isEventsNotFound)
     return `expected an events "no match" reply, got ${reply.type}`;
   if (

@@ -278,7 +278,14 @@ async function offline() {
 
   // 6. Every "no data" reply is decided in plain code, no AI involved
   const route = (
-    r: Partial<{ hall: any; meal: any; date: string; keywords: string[] }>,
+    r: Partial<{
+      hall: any;
+      meal: any;
+      date: string;
+      dateTo: string;
+      keywords: string[];
+      kind: "dish" | "style";
+    }>,
   ) => ({
     hall: "south-pointe-at-case" as const,
     meal: "lunch" as const,
@@ -628,13 +635,20 @@ async function offline() {
     "lunch menu, Friday, Oct 9",
     "South Pointe at Case",
     "3:20 p.m. today",
-    { menuUrl: "https://msu.nutrislice.com/menu/south-pointe-at-case", date: "2026-10-09", hallName: "South Pointe at Case" },
+    {
+      menuUrl: "https://msu.nutrislice.com/menu/south-pointe-at-case",
+      date: "2026-10-09",
+      hallName: "South Pointe at Case",
+    },
   );
   check(
     "fallback list: each source links straight to that meal's page",
     listed.type === "answer" &&
       listed.citations.every(
-        (c) => c.url === "https://msu.nutrislice.com/menu/south-pointe-at-case/lunch/2026-10-09" && /South Pointe at Case · Lunch/.test(c.label ?? ""),
+        (c) =>
+          c.url ===
+            "https://msu.nutrislice.com/menu/south-pointe-at-case/lunch/2026-10-09" &&
+          /South Pointe at Case · Lunch/.test(c.label ?? ""),
       ),
     listed.type === "answer" ? JSON.stringify(listed.citations[0]) : "",
   );
@@ -816,6 +830,93 @@ async function offline() {
       /"sushi"/.test(nowhere.note ?? ""),
     JSON.stringify(nowhere).slice(0, 160),
   );
+  // 10b. Judgement ("Chinese food", "something spicy"): the guard rails around it, checked without AI
+  const { canJudge, onlyPicked, mergeDays } =
+    await import("../lib/skills/dining/answer");
+  check(
+    "judgement is allowed for a cuisine or a mood",
+    canJudge(["chinese"], false) && canJudge(["something spicy"], false),
+  );
+  check(
+    "judgement is never used for a diet, an allergy question, or no keywords at all",
+    !canJudge(["vegan"], false) &&
+      !canJudge(["halal"], false) &&
+      !canJudge(["chinese", "gluten"], false) &&
+      !canJudge(["chinese"], true) &&
+      !canJudge([], false),
+  );
+  const menuBlocks = [
+    {
+      meal: "Lunch",
+      station: "Wok",
+      items: [{ name: "Lo Mein" }, { name: "White Rice" }],
+    },
+    { meal: "Lunch", station: "Grill", items: [{ name: "Cheeseburger" }] },
+  ];
+  const kept = onlyPicked(menuBlocks, ["lo mein", "Invented Dish"]);
+  check(
+    "picked dishes are looked up by exact menu name: a name that isn't on the menu is dropped",
+    kept.length === 1 &&
+      kept[0].items.length === 1 &&
+      kept[0].items[0].name === "Lo Mein",
+    JSON.stringify(kept),
+  );
+  const noKey = await answerDining(
+    "Where can I get Chinese food?",
+    route({ hall: "none", meal: "none", keywords: ["chinese"], kind: "style" }),
+    chainNow,
+  );
+  check(
+    "if the judgement call fails, the reply is a plain 'I don't see it' (never a guess)",
+    noKey.type === "not_found" && /"chinese"/.test(noKey.note ?? ""),
+    JSON.stringify(noKey).slice(0, 160),
+  );
+  const twoDays = await answerDining(
+    "Where can I get pizza today and tomorrow?",
+    route({
+      hall: "none",
+      meal: "none",
+      keywords: ["pizza"],
+      date: todayStr,
+      dateTo: t.addDays(todayStr, 1),
+    }),
+    chainNow,
+  );
+  check(
+    "'today and tomorrow' → each day answered, in one reply",
+    twoDays.type === "answer" &&
+      twoDays.answer.includes(t.prettyDate(todayStr)) &&
+      twoDays.answer.includes(t.prettyDate(t.addDays(todayStr, 1))) &&
+      (twoDays.answer.match(/Menus as of/g) ?? []).length === 1,
+    twoDays.type === "answer" ? twoDays.answer : twoDays.type,
+  );
+  const merged = mergeDays([
+    {
+      date: "2026-10-10",
+      reply: {
+        type: "not_found",
+        source: "dining",
+        note: "Nothing on Saturday.",
+        link: { label: "Open", url: "https://example.org" },
+      },
+    },
+    {
+      date: "2026-10-11",
+      reply: {
+        type: "not_found",
+        source: "dining",
+        note: "Nothing on Sunday.",
+      },
+    },
+  ]);
+  check(
+    "two days with nothing → one 'not found' reply that covers both",
+    merged.type === "not_found" &&
+      merged.note === "Nothing on Saturday. Nothing on Sunday." &&
+      merged.link?.url === "https://example.org",
+    JSON.stringify(merged),
+  );
+
   const noDay = await answerDining(
     "Where can I get pizza?",
     route({
@@ -984,6 +1085,7 @@ type LiveCase = {
     | "dining_not_found"
     | "dining_any"
     | "dining_pick_hall"
+    | "clarify" // a short question back to the resident ("what are you in the mood for?")
     | "handbook"
     | "not_dining"
     | "escalate"
@@ -1010,6 +1112,11 @@ function gradeLive(c: LiveCase, reply: AssistantReply): string | null {
   const isDining = isDiningAnswer || isDiningNotFound;
   if (c.expect === "dining_answer" && !isDiningAnswer)
     return `expected a dining answer, got ${reply.type}${isDiningNotFound ? " (dining not found)" : ""}`;
+  if (
+    c.expect === "clarify" &&
+    !(reply.type === "chat" && reply.text.includes("?"))
+  )
+    return `expected a clarifying question, got ${reply.type}`;
   if (c.expect === "dining_pick_hall" && reply.type !== "dining_pick_hall")
     return `expected the which-hall question, got ${reply.type}`;
   if (
