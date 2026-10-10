@@ -178,7 +178,7 @@ export async function answerDining(
         : "";
       return {
         type: "answer",
-        answer: `${hall.name} (${hall.building}) is${where || " in " + hall.building}.${when}${caveat}\n\nAs of ${asOf}.`,
+        answer: `${hall.name} (${hall.building}) is${where || " in " + hall.building}.${when}${caveat}\n\nAs of ${asOf}${asOf.endsWith(".") ? "" : "."}`,
         citations: [
           {
             source: `${hall.name} on eatatstate.msu.edu · updated ${asOf}`,
@@ -259,7 +259,7 @@ export async function answerDining(
     const title = `${hall.name} menu · ${prettyDate(date)}${asOf ? ` · updated ${asOf}` : ""}`;
     return {
       type: "answer",
-      answer: `${intro} What the posted menu does label as containing ${what} on the ${when}: ${listed}${more}. That doesn't mean everything else is safe.${asOf ? `\n\nMenu as of ${asOf}.` : ""}\n\n${ALLERGY_NOTE}`,
+      answer: `${intro} What the posted menu does label as containing ${what} on the ${when}: ${listed}${more}. That doesn't mean everything else is safe.${asOf ? `\n\nMenu as of ${asOf}${asOf.endsWith(".") ? "" : "."}` : ""}\n\n${ALLERGY_NOTE}`,
       citations: labeled.slice(0, 6).map((b) => ({
         source: title,
         section: `${b.meal} · ${b.station}`,
@@ -363,7 +363,7 @@ export async function answerDining(
   }
 
   let answer = plainText(body);
-  if (asOf) answer += `\n\nMenu as of ${asOf}.`;
+  if (asOf) answer += `\n\nMenu as of ${asOf}${asOf.endsWith(".") ? "" : "."}`;
   if (DIETARY.test(question) || DIETARY.test(body))
     answer += `\n\n${ALLERGY_NOTE}`;
   return { type: "answer", answer, citations };
@@ -453,7 +453,7 @@ async function answerAcrossHalls(
   });
 
   let answer = `Here's where I see ${what} on ${prettyDate(date)}:\n${lines.join("\n")}`;
-  if (asOf) answer += `\n\nMenus as of ${asOf}.`;
+  if (asOf) answer += `\n\nMenus as of ${asOf}${asOf.endsWith(".") ? "" : "."}`;
   if (DIETARY.test(question) || keywords.some((k) => DIETARY.test(k)))
     answer += `\n\n${ALLERGY_NOTE}`;
 
@@ -489,7 +489,7 @@ export function listFromMenu(
   );
   return {
     type: "answer",
-    answer: `Here's a look at ${hallName}'s ${when}:\n${lines.join("\n")}${more}${asOf ? `\n\nMenu as of ${asOf}.` : ""}${sawLabels ? `\n\n${ALLERGY_NOTE}` : ""}`,
+    answer: `Here's a look at ${hallName}'s ${when}:\n${lines.join("\n")}${more}${asOf ? `\n\nMenu as of ${asOf}${asOf.endsWith(".") ? "" : "."}` : ""}${sawLabels ? `\n\n${ALLERGY_NOTE}` : ""}`,
     citations: shown.map((b) => ({
       source: title,
       section: `${b.meal} · ${b.station}`,
