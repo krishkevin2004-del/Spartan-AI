@@ -11,10 +11,10 @@ import {
   type EscalationCategory,
 } from "@/lib/escalation";
 import { HALLS, isRaOnDuty, matchHall, type Hall } from "@/lib/halls";
-import type { AssistantReply, HistoryTurn } from "@/lib/types";
+import type { AssistantReply, Citation, HistoryTurn } from "@/lib/types";
 import EscalationScreen from "./EscalationScreen";
 import { HallContactCard, HallPicker } from "./HallContacts";
-import { BookIcon, HeartIcon, PhoneIcon, SendIcon } from "./Icons";
+import { ChatIcon, HeartIcon, PhoneIcon, SendIcon } from "./Icons";
 import { useRaOnDuty } from "./useRaOnDuty";
 
 type Message =
@@ -191,11 +191,11 @@ export default function Chat() {
         <div className="brand-band">
           <div className="band-inner brand">
             <span className="brand-mark">
-              <BookIcon size={20} />
+              <ChatIcon size={20} />
             </span>
             <div className="brand-text">
-              <h1>Housing Handbook Assistant</h1>
-              <small>MSU Residence Education and Housing Services</small>
+              <h1>Ask Sparty</h1>
+              <small>Your personal assistant</small>
             </div>
           </div>
         </div>
@@ -211,11 +211,11 @@ export default function Chat() {
           {messages.length === 0 && (
             <section className="welcome">
               <span className="welcome-mark">
-                <BookIcon size={30} />
+                <ChatIcon size={30} />
               </span>
               <h2>How can I help?</h2>
               <p>
-                Your friend, Spart-I, the Housing Handbook that answers back.
+                Your friendly MSU guide for housing, dining and events.
               </p>
             </section>
           )}
@@ -246,7 +246,7 @@ export default function Chat() {
                 <i />
                 <i />
               </span>
-              Checking the handbook…
+              Looking that up…
             </div>
           )}
           <div ref={bottomRef} />
@@ -405,7 +405,7 @@ function AssistantMessage({
       }
       return (
         <div className="bubble assistant handoff">
-          <p>{reply.note ?? "I couldn't find this in the handbook."}</p>
+          <p>{reply.note ?? "I couldn't find that in my sources."}</p>
           <p className="muted small">
             Rather than guess, check with your RA or your hall&apos;s Service
             Center.
@@ -503,30 +503,7 @@ function AnswerCard({
     <div className="bubble assistant answer">
       <p>{reply.answer}</p>
 
-      <div className="citations">
-        {reply.citations.map((c) => (
-          <details key={c.source + c.section} className="citation">
-            <summary>
-              <span className="cite-label">Source</span>
-              <span className="cite-name">
-                {c.source} — <strong>{c.section}</strong>
-                {c.pages ? `, ${c.pages}` : ""}
-              </span>
-            </summary>
-            <blockquote>{c.passage}</blockquote>
-            {c.url && (
-              <a
-                className="cite-link"
-                href={c.url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Open the event page
-              </a>
-            )}
-          </details>
-        ))}
-      </div>
+      <Sources citations={reply.citations} />
 
       <div className="feedback">
         {vote ? (
@@ -543,6 +520,33 @@ function AnswerCard({
           </>
         )}
       </div>
+    </div>
+  );
+}
+
+/** Where the answer came from: just links that go straight to that page. */
+function Sources({ citations }: { citations: Citation[] }) {
+  const seen = new Set<string>();
+  const items = citations
+    .map((c) => ({ url: c.url, label: c.label ?? `${c.source} · ${c.section}` }))
+    .filter((c) => {
+      const key = c.url ?? c.label;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  return (
+    <div className="sources">
+      <span className="sources-title">Sources</span>
+      {items.map((c) =>
+        c.url ? (
+          <a key={c.url} href={c.url} target="_blank" rel="noopener noreferrer">
+            {c.label} ↗
+          </a>
+        ) : (
+          <span key={c.label}>{c.label}</span>
+        ),
+      )}
     </div>
   );
 }

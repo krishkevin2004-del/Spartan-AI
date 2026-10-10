@@ -27,7 +27,8 @@ export type Citation = {
   section: string;
   pages?: string; // "p. 15" or "pp. 15-16" (handbook only)
   passage: string; // the exact text that was cited
-  url?: string; // a page the resident can open for more (events link to the event page)
+  url?: string; // the page the resident can open to see the source for themselves
+  label?: string; // short readable name for that link, e.g. "Housing Handbook · Guests, p. 14"
 };
 
 /** One earlier message, sent along so follow-up questions make sense. */
@@ -39,12 +40,25 @@ export type AssistantReply =
   | { type: "chat"; text: string } // fixed reply to greetings and thanks
   | { type: "ra_lookup"; hallId?: string } // show RA contacts (asks for the hall if unknown)
   // layer = which check fired, for the anonymous audit log (never shown to residents)
-  | { type: "escalate"; category: EscalationCategory; layer?: "keyword" | "classifier" | "fail_closed" }
+  | {
+      type: "escalate";
+      category: EscalationCategory;
+      layer?: "keyword" | "classifier" | "fail_closed";
+    }
   // source/link: set by skills with their own "no data" wording (e.g. dining) so the page can show a link instead of the RA hint
-  | { type: "not_found"; note?: string; source?: "dining" | "events"; link?: { label: string; url: string } }
+  | {
+      type: "not_found";
+      note?: string;
+      source?: "dining" | "events";
+      link?: { label: string; url: string };
+    }
   | { type: "off_topic" }
   // dining: they didn't say which hall, so the page asks, with one button per hall
-  | { type: "dining_pick_hall"; question: string; halls: { id: string; name: string; building: string }[] }
+  | {
+      type: "dining_pick_hall";
+      question: string;
+      halls: { id: string; name: string; building: string }[];
+    }
   // visitor = this person asked too much; busy = the whole site is flooded; budget = today's spending cap is reached
   | { type: "rate_limited"; reason: "visitor" | "busy" | "budget" }
   | { type: "error"; message: string };

@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Housing Handbook Assistant",
-  description: "Instant, cited answers to MSU on-campus housing policy questions, straight from the official handbook.",
+  title: "Ask Sparty",
+  description: "Your personal MSU assistant: housing policies, dining menus and campus events, with sources.",
   robots: { index: false }, // pilot: keep it out of search engines
 };
 

@@ -21,9 +21,14 @@ import guidance from "../data/staff-guidance.json";
 import { getClient } from "./claude";
 import { CONFIG } from "./config";
 import { recordSpend } from "./limits";
-import type { AssistantReply, Citation, HandbookIndex, HistoryTurn } from "./types";
+import type {
+  AssistantReply,
+  Citation,
+  HandbookIndex,
+  HistoryTurn,
+} from "./types";
 
-const SYSTEM_PROMPT = `You are Spart-I, the Housing Handbook that answers back: a friendly helper for students living in Michigan State University (MSU) on-campus housing. You answer questions using two documents you are given: the official ${CONFIG.handbookTitle} and "${guidance.title}".
+const SYSTEM_PROMPT = `You are Sparty, a friendly MSU assistant. Right now you help students living in Michigan State University (MSU) on-campus housing with their housing questions. You answer questions using two documents you are given: the official ${CONFIG.handbookTitle} and "${guidance.title}".
 
 How to answer:
 - Answer ONLY from the documents. Every fact you state (rules, limits, numbers, times, fees, steps, contacts) must come from the documents and be cited. Never use general knowledge, never fill gaps, never guess, and never suggest alternatives or imply something is allowed unless the documents say so.
@@ -49,7 +54,9 @@ function loadIndex(): HandbookIndex {
   try {
     cachedIndex = JSON.parse(readFileSync(path, "utf8")) as HandbookIndex;
   } catch {
-    throw new Error(`Handbook index not found at ${CONFIG.indexPath}. Run \`npm run ingest\` first.`);
+    throw new Error(
+      `Handbook index not found at ${CONFIG.indexPath}. Run \`npm run ingest\` first.`,
+    );
   }
   return cachedIndex;
 }
@@ -79,7 +86,10 @@ function buildDocuments(index: HandbookIndex): Anthropic.ContentBlockParam[] {
       citations: { enabled: true },
       source: {
         type: "content",
-        content: guidance.entries.map((e) => ({ type: "text" as const, text: `${e.section}: ${e.text}` })),
+        content: guidance.entries.map((e) => ({
+          type: "text" as const,
+          text: `${e.section}: ${e.text}`,
+        })),
       },
       cache_control: { type: "ephemeral", ttl: "1h" }, // caches both documents
     },
@@ -87,12 +97,32 @@ function buildDocuments(index: HandbookIndex): Anthropic.ContentBlockParam[] {
 }
 
 /** Turn the cited block numbers back into handbook sections the resident can read. */
-function collectCitations(index: HandbookIndex, blocks: Anthropic.ContentBlock[]): Citation[] {
+function collectCitations(
+  index: HandbookIndex,
+  blocks: Anthropic.ContentBlock[],
+): Citation[] {
   const citations: Citation[] = [];
-  const add = (source: string, section: string, passage: string, pages?: string) => {
-    const existing = citations.find((c) => c.source === source && c.section === section);
-    if (!existing) citations.push({ source, section, pages, passage });
-    else if (!existing.passage.includes(passage)) existing.passage += "\n\n" + passage;
+  const add = (
+    source: string,
+    section: string,
+    passage: string,
+    pages?: string,
+    link?: { url?: string; label: string },
+  ) => {
+    const existing = citations.find(
+      (c) => c.source === source && c.section === section,
+    );
+    if (!existing)
+      citations.push({
+        source,
+        section,
+        pages,
+        passage,
+        url: link?.url,
+        label: link?.label,
+      });
+    else if (!existing.passage.includes(passage))
+      existing.passage += "\n\n" + passage;
   };
 
   for (const block of blocks) {
@@ -102,10 +132,20 @@ function collectCitations(index: HandbookIndex, blocks: Anthropic.ContentBlock[]
       for (let i = cite.start_block_index; i < cite.end_block_index; i++) {
         if (cite.document_index === 0) {
           const chunk = index.chunks[i];
-          if (chunk) add(CONFIG.handbookTitle, chunk.section, chunk.text, formatPages(chunk.pageStart, chunk.pageEnd));
+          if (chunk) {
+            const pages = formatPages(chunk.pageStart, chunk.pageEnd);
+            add(CONFIG.handbookTitle, chunk.section, chunk.text, pages, {
+              url: `${CONFIG.handbookUrl}#page=${chunk.pageStart}`, // opens the PDF on the exact page
+              label: `Housing Handbook · ${chunk.section}, ${pages}`,
+            });
+          }
         } else if (cite.document_index === 1) {
           const entry = guidance.entries[i];
-          if (entry) add(guidance.title, entry.section, entry.text);
+          if (entry)
+            add(guidance.title, entry.section, entry.text, undefined, {
+              url: (entry as { url?: string }).url,
+              label: `${guidance.title} · ${entry.section}`,
+            });
         }
       }
     }
@@ -113,11 +153,18 @@ function collectCitations(index: HandbookIndex, blocks: Anthropic.ContentBlock[]
   return citations;
 }
 
-export async function answerQuestion(question: string, history: HistoryTurn[]): Promise<AssistantReply> {
+export async function answerQuestion(
+  question: string,
+  history: HistoryTurn[],
+): Promise<AssistantReply> {
   const index = loadIndex();
   const transcript = history.length
     ? "Earlier in this conversation:\n" +
-      history.map((t) => `${t.role === "user" ? "Resident" : "Assistant"}: ${t.text}`).join("\n") +
+      history
+        .map(
+          (t) => `${t.role === "user" ? "Resident" : "Assistant"}: ${t.text}`,
+        )
+        .join("\n") +
       "\n\n"
     : "";
 
@@ -131,7 +178,10 @@ export async function answerQuestion(question: string, history: HistoryTurn[]): 
         role: "user",
         content: [
           ...buildDocuments(index),
-          { type: "text", text: `${transcript}Resident's question:\n<question>\n${question}\n</question>` },
+          {
+            type: "text",
+            text: `${transcript}Resident's question:\n<question>\n${question}\n</question>`,
+          },
         ],
       },
     ],
@@ -142,7 +192,9 @@ export async function answerQuestion(question: string, history: HistoryTurn[]): 
   // Set LOG_USAGE=1 in .env.local to see token use (and whether the cache is working).
   if (process.env.LOG_USAGE) {
     const u = response.usage;
-    console.log(`[usage] in=${u.input_tokens} cache_read=${u.cache_read_input_tokens} cache_write=${u.cache_creation_input_tokens} out=${u.output_tokens}`);
+    console.log(
+      `[usage] in=${u.input_tokens} cache_read=${u.cache_read_input_tokens} cache_write=${u.cache_creation_input_tokens} out=${u.output_tokens}`,
+    );
   }
 
   if (response.stop_reason === "refusal") return { type: "not_found" };
@@ -151,7 +203,9 @@ export async function answerQuestion(question: string, history: HistoryTurn[]): 
     .map((b) => (b.type === "text" ? b.text : ""))
     .join("")
     .trim();
-  const tag = (text.match(/^\[(ANSWER|NOT_FOUND|OFF_TOPIC|CHAT|RA_CONTACT)\]/)?.[1] ?? null) as Tag | null;
+  const tag = (text.match(
+    /^\[(ANSWER|NOT_FOUND|OFF_TOPIC|CHAT|RA_CONTACT)\]/,
+  )?.[1] ?? null) as Tag | null;
   const body = text.replace(/^\[[A-Z_]+\]\s*/, "").trim();
   const citations = collectCitations(index, response.content);
 
@@ -164,7 +218,7 @@ export async function answerQuestion(question: string, history: HistoryTurn[]): 
       // A fixed, friendly reply. Greetings never need model-written text.
       return {
         type: "chat",
-        text: "Hey! I'm Spart-I. What's on your mind?",
+        text: "Hey! I'm Sparty. What's on your mind?",
       };
     case "NOT_FOUND":
       return { type: "not_found", note: body || undefined };

@@ -1,4 +1,4 @@
-# Housing Handbook Assistant
+# Ask Sparty — MSU Campus Life Assistant
 
 A small web app that answers MSU housing policy questions using **only** the official
 On-Campus Housing Handbook, and cites the section every answer came from. Sensitive

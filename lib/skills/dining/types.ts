@@ -8,7 +8,7 @@ export type DiningItem = {
   allergens?: string[]; // allergens the menu says the item contains, e.g. "milk", "wheat"
 };
 export type DiningStation = { name: string; items: DiningItem[] };
-export type DiningMeal = { name: string; stations: DiningStation[] }; // name: "Breakfast", "Lunch", "Dinner", ...
+export type DiningMeal = { name: string; slug?: string; stations: DiningStation[] }; // slug: the meal's page name on the menu site, used to link straight to it // name: "Breakfast", "Lunch", "Dinner", ...
 export type DiningDay = { meals: DiningMeal[] };
 
 /** What the daily update sends in: one hall, several days. */

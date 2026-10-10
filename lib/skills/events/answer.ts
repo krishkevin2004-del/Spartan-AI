@@ -29,7 +29,7 @@ import {
 } from "./query";
 import type { CampusEvent, EventsRoute } from "./types";
 
-const SYSTEM_PROMPT = `You are Spart-I, a friendly MSU assistant. Right now you are answering a question about what's happening on campus, using ONLY the event blocks provided (from the UAB events calendar).
+const SYSTEM_PROMPT = `You are Sparty, a friendly MSU assistant. Right now you are answering a question about what's happening on campus, using ONLY the event blocks provided (from the UAB events calendar).
 
 Rules:
 - Every event you name must come from the blocks and be cited. Never add events, times, places, prices, or promises (like "it's free") that a block doesn't say.
@@ -190,6 +190,7 @@ function collectCitations(
           section: event.title,
           passage: eventBlock(event),
           url: event.url,
+          label: event.title,
         });
       }
     }

@@ -1,4 +1,4 @@
-/* Housing Handbook Assistant: one small stylesheet, no framework.
+/* Ask Sparty: one small stylesheet, no framework.
    Built phone-first; the @media block at the bottom adds laptop touches. */
 
 :root {
@@ -281,57 +281,29 @@ button {
   font-size: 14px;
 }
 
-/* ── Citations ── */
-.citations {
+/* ── Sources: plain links straight to the page ── */
+.sources {
   margin-top: 12px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-}
-.citation {
-  background: var(--green-tint);
-  border-radius: 12px;
+  gap: 4px;
   font-size: 14px;
 }
-.citation summary {
-  display: flex;
-  gap: 8px;
-  align-items: baseline;
-  padding: 10px 12px;
-  min-height: 44px;
-  cursor: pointer;
-  color: var(--green-dark);
-  list-style: none;
-}
-.citation summary::-webkit-details-marker {
-  display: none;
-}
-.citation summary::after {
-  content: "›";
-  margin-left: auto;
-  padding-left: 8px;
-  font-size: 20px;
-  line-height: 1;
-  transition: transform 0.15s;
-}
-.citation[open] summary::after {
-  transform: rotate(90deg);
-}
-.cite-label {
-  flex-shrink: 0;
+.sources-title {
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  color: var(--muted);
 }
-.citation blockquote {
-  margin: 0;
-  padding: 0 14px 14px;
-  white-space: pre-wrap;
-  color: var(--ink);
-  line-height: 1.55;
-  max-height: 300px;
-  overflow-y: auto;
+.sources a {
+  color: var(--green);
+  font-weight: 600;
+  padding: 6px 0;
+  text-decoration: none;
+}
+.sources a:hover {
+  text-decoration: underline;
 }
 
 .feedback {
@@ -692,6 +664,21 @@ button {
   }
 }
 
+/* ── Wide screens only: logo and title sit at the far left, Get help at the far right.
+      Phones and tablets keep the centered layout above. ── */
+@media (min-width: 900px) {
+  .strip-inner,
+  .band-inner {
+    max-width: none;
+    margin: 0;
+  }
+  .msu-strip,
+  .brand-band {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -713,13 +700,6 @@ a.chip {
   text-decoration: none;
 }
 
-.cite-link {
-  display: inline-block;
-  margin: 0 14px 12px;
-  color: var(--green);
-  font-weight: 600;
-  font-size: 14px;
-}
 
 .hall-chips {
   display: flex;

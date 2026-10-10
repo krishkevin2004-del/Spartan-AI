@@ -3,7 +3,7 @@
 
 import type { DiningDay, DiningItem } from "./types";
 
-export type MenuBlock = { meal: string; station: string; items: DiningItem[] };
+export type MenuBlock = { meal: string; mealSlug?: string; station: string; items: DiningItem[] };
 
 export type RequestedMeal = "breakfast" | "lunch" | "dinner" | "any";
 
@@ -100,6 +100,7 @@ export function filterDay(
       for (let i = 0; i < items.length; i += MAX_ITEMS_PER_BLOCK) {
         blocks.push({
           meal: m.name,
+          mealSlug: m.slug,
           station: station.name,
           items: items.slice(i, i + MAX_ITEMS_PER_BLOCK),
         });
@@ -117,6 +118,12 @@ export function describeItem(item: DiningItem): string {
   const notes = labels.length > 0 ? ` (${labels.join("; ")})` : "";
   const detail = item.description ? ` - ${item.description}` : "";
   return `${item.name}${notes}${detail}`;
+}
+
+/** The page on the menu site for this meal on this day, e.g. .../south-pointe-at-case/dinner/2026-10-10 */
+export function mealPageUrl(hallMenuUrl: string, block: { meal: string; mealSlug?: string }, date: string): string {
+  const slug = block.mealSlug ?? block.meal.toLowerCase().trim().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+  return `${hallMenuUrl}/${slug}/${date}`;
 }
 
 export function blockText(block: MenuBlock): string {

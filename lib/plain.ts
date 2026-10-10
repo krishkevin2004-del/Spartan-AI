@@ -3,6 +3,7 @@ export function plainText(text: string): string {
   return text
     .replace(/\*\*(.+?)\*\*/g, "$1")
     .replace(/__(.+?)__/g, "$1")
+    .replace(/\*\*/g, "") // any leftover, unmatched bold markers
     .replace(/^\s{0,3}#{1,6}\s+/gm, "")
     .replace(/^\s*\*\s+/gm, "- ")
     .replace(/\n{3,}/g, "\n\n")

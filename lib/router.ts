@@ -161,8 +161,16 @@ export async function routeMessage(
   const previousUser = [...history]
     .reverse()
     .find((t) => t.role === "user")?.text;
+  // The assistant's last reply often names the hall ("at South Pointe at Case"), so a follow-up
+  // like "what about tomorrow?" keeps the same hall.
+  const previousReply = [...history]
+    .reverse()
+    .find((t) => t.role === "assistant")?.text;
   const context = previousUser
-    ? `The resident's previous message (context only):\n<previous>\n${previousUser}\n</previous>\n\n`
+    ? `The resident's previous message (context only):\n<previous>\n${previousUser}\n</previous>\n\n` +
+      (previousReply
+        ? `The assistant's previous reply (context only):\n<previous_reply>\n${previousReply.slice(0, 300)}\n</previous_reply>\n\n`
+        : "")
     : "";
   const tool = routeTool(labels);
 

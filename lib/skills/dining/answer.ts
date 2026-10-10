@@ -22,6 +22,7 @@ import {
   blockText,
   filterDay,
   isLowValueStation,
+  mealPageUrl,
   prioritizeBlocks,
   type MenuBlock,
   type RequestedMeal,
@@ -36,7 +37,7 @@ import {
 } from "./time";
 import type { DiningRoute } from "./types";
 
-const SYSTEM_PROMPT = `You are Spart-I, a friendly MSU assistant. Right now you are answering a question about what's on a dining hall's menu, using ONLY the menu blocks provided.
+const SYSTEM_PROMPT = `You are Sparty, a friendly MSU assistant. Right now you are answering a question about what's on a dining hall's menu, using ONLY the menu blocks provided.
 
 Rules:
 - Every dish you name must come from the blocks and be cited. Never add dishes, ingredients, prices, hours, or nutrition details that aren't in the blocks.
@@ -185,6 +186,7 @@ export async function answerDining(
             section: "Hall information",
             passage: `${hall.name}${info.address ? `, ${info.address}` : ""}.${info.hours ? ` Posted hours: ${info.hours}.` : ""}`,
             url: hall.menuUrl,
+            label: `${hall.name} · hours and location`,
           },
         ],
       };
@@ -264,6 +266,8 @@ export async function answerDining(
         source: title,
         section: `${b.meal} · ${b.station}`,
         passage: blockText(b),
+        url: mealPageUrl(hall.menuUrl, b, date),
+        label: `${hall.name} · ${b.meal}, ${prettyDate(date)}`,
       })),
     };
   }
@@ -337,7 +341,8 @@ export async function answerDining(
     .trim();
   const tag = text.match(/^\[(ANSWER|NOT_FOUND)\]/)?.[1];
   const body = text.replace(/^\[[A-Z_]+\]\s*/, "").trim();
-  const citations = collectCitations(blocks, response.content, documentTitle);
+  const link = { menuUrl: hall.menuUrl, date, hallName: hall.name };
+  const citations = collectCitations(blocks, response.content, documentTitle, link);
 
   // No citation, no answer. If the model's wording can't be cited (it sometimes can't on a very
   // big menu), fall back to a plain list straight from the menu data, which is cited by construction.
@@ -359,6 +364,7 @@ export async function answerDining(
       `${mealWord(meal)}, ${prettyDate(date)}`,
       hall.name,
       asOf,
+      link,
     );
   }
 
@@ -461,9 +467,20 @@ async function answerAcrossHalls(
     source: `${hall.name} menu · ${prettyDate(date)}${asOf ? ` · updated ${asOf}` : ""}`,
     section: `${blocks[0].meal} · ${blocks[0].station}`,
     passage: blockText(blocks[0]),
-    url: hall.menuUrl,
+    url: mealPageUrl(hall.menuUrl, blocks[0], date),
+    label: `${hall.name} · ${blocks[0].meal}, ${prettyDate(date)}`,
   }));
   return { type: "answer", answer, citations };
+}
+
+/** Where a citation should send the resident: the menu site's page for that meal on that day. */
+type MenuLink = { menuUrl: string; date: string; hallName: string };
+function linkFor(b: MenuBlock, link?: MenuLink): { url?: string; label?: string } {
+  if (!link) return {};
+  return {
+    url: mealPageUrl(link.menuUrl, b, link.date),
+    label: `${link.hallName} · ${b.meal}, ${prettyDate(link.date)}`,
+  };
 }
 
 /** A plain, cited list of what's on the menu, built in code. Used when the model's wording can't be cited. */
@@ -473,6 +490,7 @@ export function listFromMenu(
   when: string,
   hallName: string,
   asOf: string | null,
+  link?: MenuLink,
 ): AssistantReply {
   const shown = blocks.slice(0, 8);
   const lines = shown.map(
@@ -494,6 +512,7 @@ export function listFromMenu(
       source: title,
       section: `${b.meal} · ${b.station}`,
       passage: blockText(b),
+      ...linkFor(b, link),
     })),
   };
 }
@@ -503,6 +522,7 @@ function collectCitations(
   blocks: MenuBlock[],
   content: Anthropic.ContentBlock[],
   title: string,
+  link?: MenuLink,
 ): Citation[] {
   const citations: Citation[] = [];
   for (const block of content) {
@@ -514,7 +534,7 @@ function collectCitations(
         if (!b) continue;
         const section = `${b.meal} · ${b.station}`;
         if (!citations.some((c) => c.section === section)) {
-          citations.push({ source: title, section, passage: blockText(b) });
+          citations.push({ source: title, section, passage: blockText(b), ...linkFor(b, link) });
         }
       }
     }

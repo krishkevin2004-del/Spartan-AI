@@ -628,6 +628,15 @@ async function offline() {
     "lunch menu, Friday, Oct 9",
     "South Pointe at Case",
     "3:20 p.m. today",
+    { menuUrl: "https://msu.nutrislice.com/menu/south-pointe-at-case", date: "2026-10-09", hallName: "South Pointe at Case" },
+  );
+  check(
+    "fallback list: each source links straight to that meal's page",
+    listed.type === "answer" &&
+      listed.citations.every(
+        (c) => c.url === "https://msu.nutrislice.com/menu/south-pointe-at-case/lunch/2026-10-09" && /South Pointe at Case · Lunch/.test(c.label ?? ""),
+      ),
+    listed.type === "answer" ? JSON.stringify(listed.citations[0]) : "",
   );
   check(
     "fallback list: names stations and dishes, says when, is cited",

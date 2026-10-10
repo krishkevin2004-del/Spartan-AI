@@ -104,7 +104,7 @@ async function scrapeHall(
       const byDate = mapWeek(await response.json(), addDays(today, -1));
       for (const [date, stations] of Object.entries(byDate)) {
         const day = (days[date] ??= { meals: [] });
-        const entry: DiningMeal = { name: meal.name, stations };
+        const entry: DiningMeal = { name: meal.name, slug: meal.slug, stations };
         // The same week can come back twice; keep one copy of each meal per day.
         if (!day.meals.some((m) => m.name === meal.name)) day.meals.push(entry);
       }

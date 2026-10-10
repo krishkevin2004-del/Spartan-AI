@@ -110,6 +110,7 @@ export function validateSnapshot(
     const meals: DiningMeal[] = [];
     for (const rawMeal of rawDay.meals as Array<{
       name?: unknown;
+      slug?: unknown;
       stations?: unknown;
     }>) {
       const mealName = cleanString(rawMeal?.name, LIMITS.nameLength);
@@ -155,7 +156,8 @@ export function validateSnapshot(
         }
         stations.push({ name: stationName, items });
       }
-      meals.push({ name: mealName, stations });
+      const slug = typeof rawMeal.slug === "string" && /^[a-z0-9-]{1,40}$/.test(rawMeal.slug) ? rawMeal.slug : undefined;
+      meals.push({ name: mealName, ...(slug ? { slug } : {}), stations });
     }
     days[date] = { meals };
   }
