@@ -21,6 +21,7 @@ import { DINING_HALLS, DINING_HUB_URL, getDay, getMeta } from "./cache";
 import {
   blockText,
   filterDay,
+  prioritizeBlocks,
   type MenuBlock,
   type RequestedMeal,
 } from "./query";
@@ -90,35 +91,78 @@ export async function answerDining(
   route: DiningRoute,
   now: Date = new Date(),
 ): Promise<AssistantReply> {
-  const hall = DINING_HALLS.find(
-    (h) => h.id === CONFIG.dining.defaultHallId && h.enabled,
-  );
-  if (!hall)
+  const halls = DINING_HALLS.filter((h) => h.enabled);
+  if (halls.length === 0)
     return notFound(
       "Dining menus aren't available right now.",
       "Open eatatstate.msu.edu",
       DINING_HUB_URL,
     );
 
-  // v1 only has one hall. Say so plainly instead of answering about the wrong one.
+  const today = michiganDate(now);
+  const date = isValidDate(route.date) ? route.date : today;
+
+  // Allergies and restrictions are never searched for as if they were foods.
+  const keywords = route.keywords.filter(
+    (k) => !ALLERGY_KEYWORD.test(k.trim()),
+  );
+  const allergens = [
+    ...new Set(
+      ALLERGEN_WORDS.flatMap(([pattern, labels]) =>
+        pattern.test(question) ? labels : [],
+      ),
+    ),
+  ];
+  const isAllergyQuestion =
+    ALLERGY_TRIGGER.test(question) && allergens.length > 0;
+
+  // A dining place we don't cover (a Sparty's market, a cafe): say what we do cover.
   if (route.hall === "other_hall") {
     return notFound(
-      `I only have ${hall.name}'s menu right now. The other dining halls' menus are on eatatstate.msu.edu.`,
+      `I have menus for the residence dining halls (${halls.map((h) => h.name).join(", ")}). Other places are on eatatstate.msu.edu.`,
       "Open eatatstate.msu.edu",
       DINING_HUB_URL,
     );
   }
 
-  const today = michiganDate(now);
-  const date = isValidDate(route.date) ? route.date : today;
-  const menuLink = `Open ${hall.name}'s menu`;
+  const hall = halls.find((h) => h.id === route.hall);
+  const menuLink = hall
+    ? `Open ${hall.name}'s menu`
+    : "Open eatatstate.msu.edu";
 
   if (NUTRITION_QUESTION.test(question) && !ALLERGY_TRIGGER.test(question)) {
     return notFound(
       "I don't have calorie or nutrition details. On the official menu page, tap any dish to see its Nutrition Facts.",
       menuLink,
-      hall.menuUrl,
+      hall ? hall.menuUrl : DINING_HUB_URL,
     );
+  }
+
+  // No hall named. "Where can I get pizza?" is answered across ALL halls; anything else asks which hall.
+  if (!hall) {
+    if (
+      keywords.length > 0 &&
+      !isAllergyQuestion &&
+      !HALL_INFO_QUESTION.test(question)
+    ) {
+      return answerAcrossHalls(
+        question,
+        keywords,
+        route.meal,
+        date,
+        today,
+        now,
+      );
+    }
+    return {
+      type: "dining_pick_hall",
+      question,
+      halls: halls.map((h) => ({
+        id: h.id,
+        name: h.name,
+        building: h.building,
+      })),
+    };
   }
 
   if (HALL_INFO_QUESTION.test(question)) {
@@ -167,20 +211,6 @@ export async function answerDining(
       hall.menuUrl,
     );
   }
-
-  // Allergies and restrictions are never searched for as if they were foods.
-  const keywords = route.keywords.filter(
-    (k) => !ALLERGY_KEYWORD.test(k.trim()),
-  );
-  const allergens = [
-    ...new Set(
-      ALLERGEN_WORDS.flatMap(([pattern, labels]) =>
-        pattern.test(question) ? labels : [],
-      ),
-    ),
-  ];
-  const isAllergyQuestion =
-    ALLERGY_TRIGGER.test(question) && allergens.length > 0;
 
   // Which meal? If they didn't say, guess from the time of day (for today) or show all meals.
   let meal: RequestedMeal;
@@ -237,7 +267,11 @@ export async function answerDining(
     };
   }
 
-  const blocks = filterDay(day, meal, keywords);
+  // A whole meal at a big hall can have 40 stations. Show the real entrees first and cap what goes to the model.
+  const blocks = prioritizeBlocks(
+    filterDay(day, meal, keywords),
+    keywords.length > 0 ? 20 : 14,
+  );
   if (blocks.length === 0) {
     const what =
       keywords.length > 0 ? ` matching "${keywords.join('" or "')}"` : "";
@@ -331,6 +365,96 @@ export async function answerDining(
   if (asOf) answer += `\n\nMenu as of ${asOf}.`;
   if (DIETARY.test(question) || DIETARY.test(body))
     answer += `\n\n${ALLERGY_NOTE}`;
+  return { type: "answer", answer, citations };
+}
+
+/**
+ * "Where can I get pizza today?" with no hall named: look through every hall's menu for that day.
+ * Plain code, no model: it lists up to three matching dishes per hall, each cited.
+ */
+async function answerAcrossHalls(
+  question: string,
+  keywords: string[],
+  requestedMeal: DiningRoute["meal"],
+  date: string,
+  today: string,
+  now: Date,
+): Promise<AssistantReply> {
+  const halls = DINING_HALLS.filter((h) => h.enabled);
+  const meal: RequestedMeal =
+    requestedMeal === "breakfast" ||
+    requestedMeal === "lunch" ||
+    requestedMeal === "dinner"
+      ? requestedMeal
+      : "any";
+  const what = `"${keywords.join('" or "')}"`;
+
+  if (date < addDays(today, -1)) {
+    return notFound(
+      "I can only show today's menus and upcoming days.",
+      "Open eatatstate.msu.edu",
+      DINING_HUB_URL,
+    );
+  }
+
+  const results: {
+    hall: (typeof halls)[number];
+    blocks: MenuBlock[];
+    scrapedAt: string | null;
+  }[] = [];
+  let hallsWithMenu = 0;
+  for (const hall of halls) {
+    const day = await getDay(hall.id, date);
+    if (!day) continue;
+    hallsWithMenu++;
+    const blocks = filterDay(day, meal, keywords);
+    if (blocks.length > 0)
+      results.push({
+        hall,
+        blocks,
+        scrapedAt: (await getMeta(hall.id))?.scrapedAt ?? null,
+      });
+  }
+
+  if (hallsWithMenu === 0) {
+    return notFound(
+      `I don't have the dining menus for ${prettyDate(date)} yet. eatatstate.msu.edu has them.`,
+      "Open eatatstate.msu.edu",
+      DINING_HUB_URL,
+    );
+  }
+  if (results.length === 0) {
+    return notFound(
+      `I don't see ${what} on any dining hall's ${mealWord(meal)} for ${prettyDate(date)}.`,
+      "Open eatatstate.msu.edu",
+      DINING_HUB_URL,
+    );
+  }
+
+  const oldest = results
+    .map((r) => r.scrapedAt)
+    .filter((t): t is string => Boolean(t))
+    .sort()[0];
+  const asOf = oldest ? describeAsOf(oldest, now) : null;
+  const lines = results.map(({ hall, blocks }) => {
+    const dishes = blocks.flatMap((b) =>
+      b.items.map((i) => `${i.name} (${b.meal}, ${b.station.split(" · ")[0]})`),
+    );
+    const shown = dishes.slice(0, 3).join("; ");
+    return `- ${hall.name}: ${shown}${dishes.length > 3 ? `; and ${dishes.length - 3} more` : ""}`;
+  });
+
+  let answer = `Here's where I see ${what} on ${prettyDate(date)}:\n${lines.join("\n")}`;
+  if (asOf) answer += `\n\nMenus as of ${asOf}.`;
+  if (DIETARY.test(question) || keywords.some((k) => DIETARY.test(k)))
+    answer += `\n\n${ALLERGY_NOTE}`;
+
+  const citations: Citation[] = results.slice(0, 8).map(({ hall, blocks }) => ({
+    source: `${hall.name} menu · ${prettyDate(date)}${asOf ? ` · updated ${asOf}` : ""}`,
+    section: `${blocks[0].meal} · ${blocks[0].station}`,
+    passage: blockText(blocks[0]),
+    url: hall.menuUrl,
+  }));
   return { type: "answer", answer, citations };
 }
 

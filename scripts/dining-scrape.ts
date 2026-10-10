@@ -1,9 +1,9 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// DINING SCRAPER: fetch South Pointe at Case's menus and hand them to the cache.
+// DINING SCRAPER: fetch every dining hall's menus and hand them to the cache.
 //
-//   npm run dining:scrape -- --out menus.json      saves the result to a file (a dry run)
-//   npm run dining:scrape -- --post                sends it to the site's /api/dining/ingest
-//                                                  (needs INGEST_URL and INGEST_SECRET)
+//   npm run dining:scrape -- --out-dir menus --only the-edge-at-akers   a dry run: one hall, saved to files
+//   npm run dining:scrape -- --post                                     every hall, sent to /api/dining/ingest
+//                                                                       (needs INGEST_URL and INGEST_SECRET)
 //
 // Permission: MSU Dining authorized this access. MSU's menus are hosted by
 // Nutrislice, whose terms prohibit automated access unless authorized.
@@ -11,41 +11,44 @@
 //
 // How it behaves (please keep it this way):
 //   - It identifies itself honestly in its User-Agent, with the project link.
-//   - It loads about 9 pages once a day, 2.5 seconds apart. Nothing else.
+//   - It loads about 50 pages once a day, 2.5 seconds apart. Nothing else.
 //   - It opens the pages a visitor would and reads the menu data the page itself
 //     receives. It clicks the site's terms screen ("View Menus") like a visitor.
+//   - Each hall is sent as soon as it's done, so one hall failing never loses the rest.
 //   - If the site says no (HTTP 403, 429, 503), it STOPS. No retries, no workarounds.
 //
 // It needs Google Chrome (installed on GitHub's runners and most laptops).
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 import { chromium, type Page, type Response } from "playwright-core";
 import { DINING_HALLS } from "../lib/skills/dining/cache";
-import { mapHallInfo, mapWeek } from "../lib/skills/dining/nutrislice";
+import { mapHallInfo, mapWeek, mealTypesFor } from "../lib/skills/dining/nutrislice";
 import { addDays, michiganDate } from "../lib/skills/dining/time";
-import type { DiningMeal, DiningSnapshot } from "../lib/skills/dining/types";
+import type { DiningHall, DiningMeal, DiningSnapshot } from "../lib/skills/dining/types";
 import { validateSnapshot } from "../lib/skills/dining/validate";
 
 const USER_AGENT =
   "AskSpartyBot/1.0 (student-built MSU assistant pilot, authorized by MSU Dining; +https://github.com/krishkevin2004-del/Spartan-AI)";
 const PAUSE_MS = 2500;
-const HALL_ID = "south-pointe-at-case";
-const SLUG = "south-pointe-at-case";
-const MEAL_TYPES: { name: string; slug: string }[] = [
-  { name: "Breakfast", slug: "breakfast" },
-  { name: "Lunch", slug: "lunch" },
-  { name: "Dinner", slug: "dinner" },
-  { name: "Late Night", slug: "late-night" },
-];
+const SCHOOLS_API = /\/menu\/api\/schools\/(\?|$)/;
 
 class BlockedError extends Error {}
 
 const args = process.argv.slice(2);
-const outFile = args.includes("--out") ? args[args.indexOf("--out") + 1] : null;
+const flag = (name: string) => (args.includes(name) ? args[args.indexOf(name) + 1] : null);
+const outDir = flag("--out-dir");
+const onlyHall = flag("--only");
 const doPost = args.includes("--post");
 const log = (message: string) => console.log(`[dining-scrape] ${message}`);
 const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// A hard stop, so a stuck page can never leave this running (or hammering the site).
+setTimeout(() => {
+  console.error("[dining-scrape] FAILED: took longer than 15 minutes, stopping");
+  process.exit(1);
+}, 15 * 60_000).unref();
 
 /**
  * Open one meal's page and return the menu data the page receives. The site may send a
@@ -70,107 +73,128 @@ async function loadMenuWeek(page: Page, url: string, weekApi: RegExp): Promise<R
   return null;
 }
 
-// A hard stop, so a stuck page can never leave this running (or hammering the site).
-setTimeout(() => {
-  console.error("[dining-scrape] FAILED: took longer than 6 minutes, stopping");
-  process.exit(1);
-}, 6 * 60_000).unref();
+/** One hall: every meal it serves, this week and next. Returns the snapshot to send. */
+async function scrapeHall(
+  page: Page,
+  hall: DiningHall,
+  record: Record<string, unknown>,
+  today: string,
+  pageCount: { n: number },
+): Promise<DiningSnapshot> {
+  const mealTypes = mealTypesFor(record);
+  if (mealTypes.length === 0) throw new Error("no meal types listed for this hall");
+
+  const days: DiningSnapshot["days"] = {};
+  for (const weekOffset of [0, 7]) {
+    const anchor = addDays(today, weekOffset);
+    for (const meal of mealTypes) {
+      if (pageCount.n > 0) await pause(PAUSE_MS);
+      const weekApi = new RegExp(`/menu/api/weeks/school/${hall.id}/menu-type/${meal.slug}/`);
+      const response = await loadMenuWeek(page, `${hall.menuUrl}/${meal.slug}/${anchor}`, weekApi);
+      pageCount.n++;
+
+      if (response && [403, 429, 503].includes(response.status())) {
+        throw new BlockedError(`the site answered ${response.status()} (${hall.name}, ${meal.name}); stopping as agreed`);
+      }
+      if (!response || !response.ok()) {
+        log(`  ${hall.name}: no data for ${meal.name}, week of ${anchor} (skipping)`);
+        continue;
+      }
+
+      const byDate = mapWeek(await response.json(), addDays(today, -1));
+      for (const [date, stations] of Object.entries(byDate)) {
+        const day = (days[date] ??= { meals: [] });
+        const entry: DiningMeal = { name: meal.name, stations };
+        // The same week can come back twice; keep one copy of each meal per day.
+        if (!day.meals.some((m) => m.name === meal.name)) day.meals.push(entry);
+      }
+    }
+  }
+
+  return {
+    hallId: hall.id,
+    hallInfo: mapHallInfo(record),
+    scrapedAt: new Date().toISOString(),
+    source: hall.menuUrl,
+    days,
+  };
+}
 
 async function main() {
-  if (!outFile && !doPost) throw new Error("Pass --out <file> (dry run) and/or --post.");
-  const hall = DINING_HALLS.find((h) => h.id === HALL_ID);
-  if (!hall) throw new Error("hall not found in data/dining/halls.json");
+  if (!outDir && !doPost) throw new Error("Pass --out-dir <folder> (dry run) and/or --post.");
+  const halls = DINING_HALLS.filter((h) => h.enabled && (!onlyHall || h.id === onlyHall));
+  if (halls.length === 0) throw new Error(`no hall to scrape${onlyHall ? ` named ${onlyHall}` : ""}`);
+  if (outDir) mkdirSync(outDir, { recursive: true });
+  if (doPost && (!process.env.INGEST_URL || !process.env.INGEST_SECRET)) {
+    throw new Error("--post needs INGEST_URL and INGEST_SECRET");
+  }
 
   const browser = await chromium.launch({ channel: process.env.PLAYWRIGHT_CHANNEL ?? "chrome", headless: true });
+  const failed: string[] = [];
   try {
     const context = await browser.newContext({ userAgent: USER_AGENT, viewport: { width: 1280, height: 1000 } });
     const page = await context.newPage();
 
-    // Quietly remember the hall's own record (address, hours) when the page loads it.
-    let school: unknown = null;
-    page.on("response", async (res: Response) => {
-      if (!/\/menu\/api\/schools\/(\?|$)/.test(res.url()) || !res.ok()) return;
+    // The platform's own list of locations (name, address, hours, meals). The page loads it on any visit.
+    const records = new Map<string, Record<string, unknown>>();
+    const schoolsLoaded = page.waitForResponse((r) => SCHOOLS_API.test(r.url()), { timeout: 45_000 });
+    page.on("response", async (res) => {
+      if (!SCHOOLS_API.test(res.url()) || !res.ok()) return;
       try {
         const body = await res.json();
-        const list = Array.isArray(body) ? body : (body?.results ?? []);
-        school = list.find((s: { slug?: string }) => s?.slug === SLUG) ?? school;
+        for (const s of Array.isArray(body) ? body : (body?.results ?? [])) if (s?.slug) records.set(s.slug, s);
       } catch {
         // not JSON we understand: ignore
       }
     });
+    await page.goto(halls[0].menuUrl, { waitUntil: "domcontentloaded", timeout: 45_000 });
+    await schoolsLoaded.catch(() => null);
+    await pause(1500); // let the response handler above finish reading it
+    if (records.size === 0) throw new Error("couldn't read the list of dining locations");
+    log(`found ${records.size} locations; scraping ${halls.length} dining hall(s)`);
 
     const today = michiganDate();
-    const days: DiningSnapshot["days"] = {};
-    let pages = 0;
+    const pageCount = { n: 0 };
+    for (const hall of halls) {
+      const record = records.get(hall.id);
+      if (!record) {
+        log(`${hall.name}: not in the platform's location list (skipping)`);
+        failed.push(hall.id);
+        continue;
+      }
+      try {
+        const snapshot = await scrapeHall(page, hall, record, today, pageCount);
 
-    for (const weekOffset of [0, 7]) {
-      const anchor = addDays(today, weekOffset);
-      for (const meal of MEAL_TYPES) {
-        if (pages > 0) await pause(PAUSE_MS);
-        const url = `${hall.menuUrl}/${meal.slug}/${anchor}`;
-        const weekApi = new RegExp(`/menu/api/weeks/school/${SLUG}/menu-type/${meal.slug}/`);
+        // The same checks the server will run, so a bad scrape is caught here and never sent.
+        const checked = validateSnapshot(snapshot, DINING_HALLS);
+        if (!checked.ok) throw new Error(`invalid data: ${checked.error}`);
+        const dates = Object.keys(checked.snapshot.days).sort();
+        if (dates.length === 0) throw new Error("no menus found (not publishing nothing over the last good data)");
+        log(`${hall.name}: ${dates.length} days (${dates[0]} to ${dates[dates.length - 1]}), hours: ${checked.snapshot.hallInfo?.hours ?? "not posted"}`);
 
-        const response = await loadMenuWeek(page, url, weekApi);
-        pages++;
-
-        if (response && [403, 429, 503].includes(response.status())) {
-          throw new BlockedError(`the site answered ${response.status()} for ${meal.name}; stopping as agreed`);
+        if (outDir) writeFileSync(join(outDir, `${hall.id}.json`), JSON.stringify(checked.snapshot, null, 1));
+        if (doPost) {
+          const res = await fetch(process.env.INGEST_URL as string, {
+            method: "POST",
+            headers: { "content-type": "application/json", authorization: `Bearer ${process.env.INGEST_SECRET}` },
+            body: JSON.stringify(checked.snapshot),
+            signal: AbortSignal.timeout(30_000),
+          });
+          const text = await res.text();
+          if (!res.ok) throw new Error(`ingest answered ${res.status}: ${text.slice(0, 160)}`);
+          log(`  sent: ${text}`);
         }
-        if (!response || !response.ok()) {
-          log(`no menu data for ${meal.name}, week of ${anchor} (skipping)`);
-          continue;
-        }
-
-        const byDate = mapWeek(await response.json(), addDays(today, -1));
-        let count = 0;
-        for (const [date, stations] of Object.entries(byDate)) {
-          const day = (days[date] ??= { meals: [] });
-          const entry: DiningMeal = { name: meal.name, stations };
-          // The same week can be returned twice (this week and next); keep one copy of each meal per day.
-          if (!day.meals.some((m) => m.name === meal.name)) day.meals.push(entry);
-          count++;
-        }
-        log(`${meal.name}, week of ${anchor}: ${count} day(s) with a menu`);
+      } catch (err) {
+        if (err instanceof BlockedError) throw err;
+        log(`${hall.name}: FAILED: ${err instanceof Error ? err.message : err}`);
+        failed.push(hall.id);
       }
     }
-
-    const snapshot = {
-      hallId: HALL_ID,
-      hallInfo: mapHallInfo(school),
-      scrapedAt: new Date().toISOString(),
-      source: hall.menuUrl,
-      days,
-    };
-
-    // Same checks the server will run, so a bad scrape is caught here and never sent.
-    const checked = validateSnapshot(snapshot, DINING_HALLS);
-    if (!checked.ok) throw new Error(`scrape produced invalid data: ${checked.error}`);
-    const dates = Object.keys(checked.snapshot.days).sort();
-    if (dates.length === 0) throw new Error("scrape found no menus at all (not publishing nothing over the last good data)");
-    log(`ready: ${dates.length} days (${dates[0]} to ${dates[dates.length - 1]}), hall info: ${JSON.stringify(checked.snapshot.hallInfo ?? {})}`);
-
-    if (outFile) {
-      writeFileSync(outFile, JSON.stringify(checked.snapshot, null, 1));
-      log(`saved to ${outFile}`);
-    }
-
-    if (doPost) {
-      const url = process.env.INGEST_URL;
-      const secret = process.env.INGEST_SECRET;
-      if (!url || !secret) throw new Error("--post needs INGEST_URL and INGEST_SECRET");
-      const res = await fetch(url, {
-        method: "POST",
-        headers: { "content-type": "application/json", authorization: `Bearer ${secret}` },
-        body: JSON.stringify(checked.snapshot),
-        signal: AbortSignal.timeout(30_000),
-      });
-      const text = await res.text();
-      if (!res.ok) throw new Error(`ingest answered ${res.status}: ${text.slice(0, 200)}`);
-      log(`sent to the site: ${text}`);
-    }
+    log(`done: ${pageCount.n} page loads, ${halls.length - failed.length} of ${halls.length} halls updated`);
   } finally {
     await browser.close();
   }
+  if (failed.length > 0) throw new Error(`these halls did not update: ${failed.join(", ")}`);
 }
 
 main().catch((err) => {

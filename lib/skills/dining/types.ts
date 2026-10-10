@@ -29,11 +29,12 @@ export type DiningHall = {
   menuUrl: string;
   enabled: boolean;
   hours: string | null;
+  aliases?: string[]; // names people use for it ("Akers", "The Edge")
 };
 
 /** What the router extracts from a dining question. */
 export type DiningRoute = {
-  hall: "south_pointe_at_case" | "other_hall" | "none";
+  hall: string; // a hall id from data/dining/halls.json, "other_hall" (a place we don't cover), or "none" (not named)
   meal: "breakfast" | "lunch" | "dinner" | "any" | "none";
   date: string; // YYYY-MM-DD, or "" if not stated
   keywords: string[]; // specific foods or diets they asked about

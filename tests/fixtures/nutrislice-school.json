@@ -32,6 +32,28 @@
   "name": "South Pointe at Case",
   "slug": "south-pointe-at-case",
   "ordering_enabled": false,
-  "address": "842 Chestnut Rd, East Lansing"
+  "address": "842 Chestnut Rd, East Lansing",
+  "active_menu_types": [
+   {
+    "id": 1,
+    "name": "Breakfast",
+    "slug": "breakfast"
+   },
+   {
+    "id": 2,
+    "name": "Lunch",
+    "slug": "lunch"
+   },
+   {
+    "id": 3,
+    "name": "Dinner",
+    "slug": "dinner"
+   },
+   {
+    "id": 4,
+    "name": "Late Night",
+    "slug": "late-night"
+   }
+  ]
  }
 }

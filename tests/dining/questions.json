@@ -192,6 +192,34 @@
     "\\\\*\\\\*"
    ],
    "note": "plain text: no markdown asterisks"
+  },
+  {
+   "q": "What's for lunch?",
+   "expect": "dining_pick_hall",
+   "note": "no hall named, so it asks which one"
+  },
+  {
+   "q": "What's for dinner at Akers?",
+   "expect": "dining_not_found",
+   "note": "the live eval only seeds South Pointe, so Akers has no data; it must say so and link to Akers' own page"
+  },
+  {
+   "q": "Where can I get pizza today?",
+   "expect": "dining_answer",
+   "mustMention": [
+    "South Pointe at Case"
+   ],
+   "note": "no hall named + a food: searches every hall"
+  },
+  {
+   "q": "I have a peanut allergy, what can I eat?",
+   "expect": "dining_pick_hall",
+   "note": "allergy questions are hall-specific, so it asks which hall first"
+  },
+  {
+   "q": "When does Brody Square close?",
+   "expect": "dining_not_found",
+   "note": "Brody isn't seeded in the eval, so no hours; must not invent any"
   }
  ]
 }

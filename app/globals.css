@@ -720,3 +720,23 @@ a.chip {
   font-weight: 600;
   font-size: 14px;
 }
+
+.hall-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.hall-chips .chip {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  padding: 8px 14px;
+  min-height: 44px;
+  text-align: left;
+}
+.chip small {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+}

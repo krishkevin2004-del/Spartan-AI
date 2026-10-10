@@ -110,14 +110,15 @@ it has no current list instead of showing stale events.
 **Switch:** `EVENTS_ENABLED=1` in Vercel. The daily job needs `CRON_SECRET` (24+ random characters);
 Vercel Cron sends it automatically.
 
-## Dining skill (LIVE: South Pointe at Case)
+## Dining skill (LIVE: all 8 dining halls)
 
-Answers "what's for lunch at Case?", "where can I get pizza?", "when does it close?" from a cached
-daily menu. It follows the same rules as the handbook: only the cached menu, cited, says how fresh
+Answers "what's for lunch at Akers?", "where can I get pizza?", "when does Brody close?" from cached
+daily menus for every residence dining hall (Akers, Brody, Case, Landon, Owen, Shaw, Snyder-Phillips and
+Kellogg's State Room). If no hall is named, it searches all halls for a food, or asks which hall. It follows the same rules as the handbook: only the cached menu, cited, says how fresh
 it is, and sits behind the same crisis check, rate limits and daily budget.
 
 ```
-GitHub Actions, daily ~8:45 a.m. ET → scripts/dining-scrape.ts (headless Chrome, 9 page loads)
+GitHub Actions, daily ~8:45 a.m. ET → scripts/dining-scrape.ts (headless Chrome, about 50 page loads, each hall sent as soon as it's done)
    → POST /api/dining/ingest (secret + strict validation) → cache (Redis)
 message → crisis check → RA lookup → food-word check (free) → router → dining skill:
    plain-code filter by day, meal and food → Claude words the answer with citations
@@ -137,8 +138,12 @@ message → crisis check → RA lookup → food-word check (free) → router →
 **Permission.** MSU's menus are hosted by Nutrislice, whose terms prohibit automated access unless
 authorized, and whose data server's `robots.txt` disallows bots. **MSU Dining authorized this
 access** (October 2026). Keep their email on file. The scraper identifies itself in its User-Agent,
-loads about 9 pages a day, and stops if the site ever says no (HTTP 403/429/503). If MSU Dining or
+loads about 50 pages a day, 2.5 seconds apart, and stops if the site ever says no (HTTP 403/429/503). If MSU Dining or
 Nutrislice asks us to stop, disable the workflow and set `DINING_ENABLED=0`.
+
+**Adding a hall:** add it to `data/dining/halls.json` (its id is its page name on msu.nutrislice.com) and run the workflow. **Not covered yet:** the Sparty's markets and cafes.
+
+**Hours.** Posted hours come from the platform. Where it marks a day "not enabled" we say "not posted", never "closed", because those halls still post menus for those days.
 
 **Allergies.** The bot never says a dish is safe or allergen-free. For allergy questions it lists what
 the posted menu *labels* as containing that allergen, says it can't call anything safe, and tells

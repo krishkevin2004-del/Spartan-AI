@@ -1,5 +1,5 @@
 {
-  "_readme": "Dining halls the dining skill knows about. v1 covers Case Hall only. menuUrl is just a LINK to the hall's official menu page (we show it to residents); it is not scraped by anything. hubUrl is eatatstate.msu.edu, where every hall is listed. Hours are left empty on purpose until they come from an official source.",
+  "_readme": "The dining halls the dining skill covers: MSU's all-you-care-to-eat halls listed on eatatstate.msu.edu. The id is the hall's page name on MSU's menu site (it is also what the daily scraper visits). menuUrl is a LINK to the official menu page that we show to residents. aliases are the names people use for the hall (used to help the router). Hours and address come from the daily update, not from this file. Not covered yet: the Sparty's markets and cafes.",
   "hubUrl": "https://eatatstate.msu.edu/",
   "halls": [
     {
@@ -8,7 +8,102 @@
       "building": "Case Hall",
       "menuUrl": "https://msu.nutrislice.com/menu/south-pointe-at-case",
       "enabled": true,
-      "hours": null
+      "hours": null,
+      "aliases": [
+        "Case",
+        "Case Hall",
+        "South Pointe"
+      ]
+    },
+    {
+      "id": "the-edge-at-akers",
+      "name": "The Edge at Akers",
+      "building": "Akers Hall",
+      "menuUrl": "https://msu.nutrislice.com/menu/the-edge-at-akers",
+      "enabled": true,
+      "hours": null,
+      "aliases": [
+        "Akers",
+        "Akers Hall",
+        "The Edge"
+      ]
+    },
+    {
+      "id": "brody-square",
+      "name": "Brody Square",
+      "building": "Brody Hall",
+      "menuUrl": "https://msu.nutrislice.com/menu/brody-square",
+      "enabled": true,
+      "hours": null,
+      "aliases": [
+        "Brody",
+        "Brody Square"
+      ]
+    },
+    {
+      "id": "heritage-commons-at-landon",
+      "name": "Heritage Commons at Landon",
+      "building": "Landon Hall",
+      "menuUrl": "https://msu.nutrislice.com/menu/heritage-commons-at-landon",
+      "enabled": true,
+      "hours": null,
+      "aliases": [
+        "Landon",
+        "Landon Hall",
+        "Heritage Commons"
+      ]
+    },
+    {
+      "id": "thrive-at-owen",
+      "name": "Thrive at Owen",
+      "building": "Owen Hall",
+      "menuUrl": "https://msu.nutrislice.com/menu/thrive-at-owen",
+      "enabled": true,
+      "hours": null,
+      "aliases": [
+        "Owen",
+        "Owen Hall",
+        "Thrive"
+      ]
+    },
+    {
+      "id": "the-vista-at-shaw",
+      "name": "The Vista at Shaw",
+      "building": "Shaw Hall",
+      "menuUrl": "https://msu.nutrislice.com/menu/the-vista-at-shaw",
+      "enabled": true,
+      "hours": null,
+      "aliases": [
+        "Shaw",
+        "Shaw Hall",
+        "The Vista"
+      ]
+    },
+    {
+      "id": "the-gallery-at-synderphillips",
+      "name": "The Gallery at Snyder-Phillips",
+      "building": "Snyder and Phillips Halls",
+      "menuUrl": "https://msu.nutrislice.com/menu/the-gallery-at-synderphillips",
+      "enabled": true,
+      "hours": null,
+      "aliases": [
+        "Snyder",
+        "Phillips",
+        "Snyder-Phillips",
+        "The Gallery"
+      ]
+    },
+    {
+      "id": "the-state-room-at-kellogg",
+      "name": "The State Room at Kellogg",
+      "building": "Kellogg Center",
+      "menuUrl": "https://msu.nutrislice.com/menu/the-state-room-at-kellogg",
+      "enabled": true,
+      "hours": null,
+      "aliases": [
+        "Kellogg",
+        "State Room"
+      ]
     }
   ]
 }

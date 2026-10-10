@@ -43,6 +43,8 @@ export type AssistantReply =
   // source/link: set by skills with their own "no data" wording (e.g. dining) so the page can show a link instead of the RA hint
   | { type: "not_found"; note?: string; source?: "dining" | "events"; link?: { label: string; url: string } }
   | { type: "off_topic" }
+  // dining: they didn't say which hall, so the page asks, with one button per hall
+  | { type: "dining_pick_hall"; question: string; halls: { id: string; name: string; building: string }[] }
   // visitor = this person asked too much; busy = the whole site is flooded; budget = today's spending cap is reached
   | { type: "rate_limited"; reason: "visitor" | "busy" | "budget" }
   | { type: "error"; message: string };

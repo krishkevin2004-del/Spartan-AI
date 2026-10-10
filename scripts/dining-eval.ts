@@ -264,7 +264,7 @@ async function offline() {
   const route = (
     r: Partial<{ hall: any; meal: any; date: string; keywords: string[] }>,
   ) => ({
-    hall: "south_pointe_at_case" as const,
+    hall: "south-pointe-at-case" as const,
     meal: "lunch" as const,
     date: "",
     keywords: [] as string[],
@@ -290,7 +290,7 @@ async function offline() {
     "other hall → says v1 has one hall, links to the hub",
     { hall: "other_hall" },
     /eatatstate\.msu\.edu/,
-    /only have South Pointe/,
+    /I have menus for the residence dining halls/,
   );
   await nf(
     "a day with no data → says so, links to the menu",
@@ -407,8 +407,10 @@ async function offline() {
     describeHours(split),
   );
   check(
-    "hall info: a closed day is said so",
-    /Sun closed/.test(describeHours({ ...split, sun_enabled: false }) ?? ""),
+    "hall info: a day with no enabled hours is 'not posted', never 'closed'",
+    /Sun not posted/.test(
+      describeHours({ ...split, sun_enabled: false }) ?? "",
+    ) && !/closed/.test(describeHours({ ...split, sun_enabled: false }) ?? ""),
   );
   check(
     "hall info: open-24-hours is said so",
@@ -655,6 +657,203 @@ async function offline() {
     looksLikeDining("how many calories are in the cheeseburger?"),
   );
 
+  // 9d. Many halls: every hall is valid, questions find the right one, and "which hall?" is asked when needed
+  const { prioritizeBlocks } = await import("../lib/skills/dining/query");
+  const { mealTypesFor } = await import("../lib/skills/dining/nutrislice");
+  const { routerPrompt } = await import("../lib/router");
+
+  check(
+    "eight dining halls are enabled",
+    DINING_HALLS.filter((h) => h.enabled).length === 8,
+    DINING_HALLS.map((h) => h.id).join(", "),
+  );
+  check(
+    "every hall's id is its menu page name and its link matches",
+    DINING_HALLS.every(
+      (h) => h.menuUrl === `https://msu.nutrislice.com/menu/${h.id}`,
+    ),
+  );
+  const prompt = routerPrompt(chainNow, ["dining", "other"]);
+  check(
+    "the router prompt names every hall id and nickname",
+    DINING_HALLS.every(
+      (h) =>
+        prompt.includes(h.id) &&
+        (h.aliases ?? []).every((alias) => prompt.includes(alias)),
+    ),
+  );
+  check(
+    "meal types come from each hall's own record",
+    mealTypesFor(school)
+      .map((m) => m.slug)
+      .join() === "breakfast,lunch,dinner,late-night" &&
+      mealTypesFor(null).length === 0,
+  );
+
+  // Seed the fake menu into two halls so we can tell them apart
+  const base = await fixtureSnapshot(chainNow);
+  for (const hallId of ["south-pointe-at-case", "the-edge-at-akers"]) {
+    const seeded = validateSnapshot(
+      { ...base, hallId, scrapedAt: chainNow.toISOString() },
+      DINING_HALLS,
+      chainNow,
+    );
+    check(
+      `validator accepts the sample menu for ${hallId}`,
+      seeded.ok,
+      seeded.ok ? "" : seeded.error,
+    );
+    if (seeded.ok) await saveSnapshot(seeded.snapshot);
+  }
+  const todayStr = t.michiganDate(chainNow);
+  const whichHall = await answerDining(
+    "What's for lunch?",
+    route({ hall: "none", meal: "lunch" }),
+    chainNow,
+  );
+  check(
+    "no hall named → asks which one, with every hall as a choice",
+    whichHall.type === "dining_pick_hall" &&
+      whichHall.halls.length === 8 &&
+      whichHall.question === "What's for lunch?",
+    whichHall.type,
+  );
+  const everywhere = await answerDining(
+    "Where can I get pizza today?",
+    route({ hall: "none", meal: "none", keywords: ["pizza"] }),
+    chainNow,
+  );
+  check(
+    "no hall named + a food → searches every hall (here the two with data), cited and linked",
+    everywhere.type === "answer" &&
+      /South Pointe at Case: Sample Cheese Pizza/.test(everywhere.answer) &&
+      /The Edge at Akers: Sample Cheese Pizza/.test(everywhere.answer) &&
+      everywhere.citations.length === 2 &&
+      everywhere.citations.every((c) =>
+        /nutrislice\.com\/menu\//.test(c.url ?? ""),
+      ),
+    everywhere.type === "answer"
+      ? everywhere.answer.slice(0, 220)
+      : everywhere.type,
+  );
+  const nowhere = await answerDining(
+    "Is there sushi anywhere?",
+    route({ hall: "none", meal: "none", keywords: ["sushi"] }),
+    chainNow,
+  );
+  check(
+    "a food no hall has → says so plainly",
+    nowhere.type === "not_found" &&
+      /any dining hall's/.test(nowhere.note ?? "") &&
+      /"sushi"/.test(nowhere.note ?? ""),
+    JSON.stringify(nowhere).slice(0, 160),
+  );
+  const noDay = await answerDining(
+    "Where can I get pizza?",
+    route({
+      hall: "none",
+      meal: "none",
+      keywords: ["pizza"],
+      date: t.addDays(todayStr, 6),
+    }),
+    chainNow,
+  );
+  check(
+    "a day nobody has yet → says so, links to the hub",
+    noDay.type === "not_found" &&
+      /don't have the dining menus/.test(noDay.note ?? "") &&
+      /eatatstate/.test(noDay.link?.url ?? ""),
+  );
+  const allergyNoHall = await answerDining(
+    "I have a peanut allergy, what can I eat?",
+    route({ hall: "none", meal: "none", keywords: [] }),
+    chainNow,
+  );
+  check(
+    "an allergy question with no hall → asks which hall first",
+    allergyNoHall.type === "dining_pick_hall",
+  );
+  const calNoHall = await answerDining(
+    "How many calories are in a burger?",
+    route({ hall: "none", meal: "none", keywords: ["burger"] }),
+    chainNow,
+  );
+  check(
+    "calories with no hall → honest pointer to the official site",
+    calNoHall.type === "not_found" &&
+      /nutrition/i.test(calNoHall.note ?? "") &&
+      /eatatstate/.test(calNoHall.link?.url ?? ""),
+  );
+  const otherPlace = await answerDining(
+    "What's at Sparty's Market?",
+    route({ hall: "other_hall" }),
+    chainNow,
+  );
+  check(
+    "a place we don't cover → lists the halls we do, links to the hub",
+    otherPlace.type === "not_found" &&
+      /The Edge at Akers/.test(otherPlace.note ?? "") &&
+      /eatatstate/.test(otherPlace.link?.url ?? ""),
+  );
+  const edgeNoDay = await answerDining(
+    "What's for lunch at The Edge?",
+    route({ hall: "the-edge-at-akers", date: t.addDays(todayStr, 6) }),
+    chainNow,
+  );
+  check(
+    "a named hall with no menu for that day → names that hall and links to its page",
+    edgeNoDay.type === "not_found" &&
+      /The Edge at Akers/.test(edgeNoDay.note ?? "") &&
+      /the-edge-at-akers/.test(edgeNoDay.link?.url ?? ""),
+    JSON.stringify(edgeNoDay).slice(0, 180),
+  );
+
+  // Brunch and Lunch together, and toppings bars
+  const both: import("../lib/skills/dining/types").DiningDay = {
+    meals: [
+      {
+        name: "Brunch",
+        stations: [{ name: "Grill", items: [{ name: "Brunch Burger" }] }],
+      },
+      {
+        name: "Lunch",
+        stations: [{ name: "Grill", items: [{ name: "Lunch Burger" }] }],
+      },
+    ],
+  };
+  check(
+    "'lunch' means Lunch when a hall serves both Brunch and Lunch",
+    filterDay(both, "lunch", [])
+      .flatMap((b) => b.items.map((i) => i.name))
+      .join() === "Lunch Burger",
+  );
+  check(
+    "'breakfast' falls back to Brunch when there's no Breakfast",
+    filterDay(both, "breakfast", [])
+      .flatMap((b) => b.items.map((i) => i.name))
+      .join() === "Brunch Burger",
+  );
+  const mixed = [
+    { meal: "Lunch", station: "Nook · Beverages", items: [{ name: "Water" }] },
+    { meal: "Lunch", station: "Grill · Entrees", items: [{ name: "Burger" }] },
+    {
+      meal: "Lunch",
+      station: "Salad Bar · Build Your Own",
+      items: [{ name: "Lettuce" }],
+    },
+    { meal: "Lunch", station: "Pizza · Entrees", items: [{ name: "Pizza" }] },
+  ];
+  check(
+    "entrees come before toppings and drinks, and the cap is respected",
+    prioritizeBlocks(mixed, 3)
+      .map((b) => b.station)
+      .join("|") === "Grill · Entrees|Pizza · Entrees|Nook · Beverages" &&
+      prioritizeBlocks(mixed, 10).length === 4,
+    prioritizeBlocks(mixed, 3)
+      .map((b) => b.station)
+      .join("|"),
+  );
+
   // 10. The update endpoint's locks
   const post = (body: unknown, auth?: string) =>
     ingest(
@@ -716,6 +915,7 @@ type LiveCase = {
     | "dining_answer"
     | "dining_not_found"
     | "dining_any"
+    | "dining_pick_hall"
     | "handbook"
     | "not_dining"
     | "escalate"
@@ -742,7 +942,13 @@ function gradeLive(c: LiveCase, reply: AssistantReply): string | null {
   const isDining = isDiningAnswer || isDiningNotFound;
   if (c.expect === "dining_answer" && !isDiningAnswer)
     return `expected a dining answer, got ${reply.type}${isDiningNotFound ? " (dining not found)" : ""}`;
-  if (c.expect === "dining_any" && !isDining)
+  if (c.expect === "dining_pick_hall" && reply.type !== "dining_pick_hall")
+    return `expected the which-hall question, got ${reply.type}`;
+  if (
+    c.expect === "dining_any" &&
+    !isDining &&
+    reply.type !== "dining_pick_hall"
+  )
     return `expected a dining reply, got ${reply.type}`;
   if (c.expect === "dining_not_found" && !isDiningNotFound)
     return `expected a dining "no data" reply, got ${reply.type}`;

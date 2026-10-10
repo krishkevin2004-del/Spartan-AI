@@ -5,7 +5,11 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CONFIG } from "@/lib/config";
-import { checkEscalation, SCREENS, type EscalationCategory } from "@/lib/escalation";
+import {
+  checkEscalation,
+  SCREENS,
+  type EscalationCategory,
+} from "@/lib/escalation";
 import { HALLS, isRaOnDuty, matchHall, type Hall } from "@/lib/halls";
 import type { AssistantReply, HistoryTurn } from "@/lib/types";
 import EscalationScreen from "./EscalationScreen";
@@ -24,8 +28,10 @@ function buildHistory(messages: Message[]): HistoryTurn[] {
   const turns: HistoryTurn[] = [];
   for (const m of messages) {
     if (m.role === "user") turns.push({ role: "user", text: m.text });
-    else if (m.reply.type === "answer") turns.push({ role: "assistant", text: m.reply.answer });
-    else if (m.reply.type === "chat") turns.push({ role: "assistant", text: m.reply.text });
+    else if (m.reply.type === "answer")
+      turns.push({ role: "assistant", text: m.reply.answer });
+    else if (m.reply.type === "chat")
+      turns.push({ role: "assistant", text: m.reply.text });
   }
   return turns.slice(-CONFIG.historyTurns);
 }
@@ -46,8 +52,13 @@ export default function Chat() {
 
   // Keep the newest message in view.
   useEffect(() => {
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    bottomRef.current?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "end" });
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    bottomRef.current?.scrollIntoView({
+      behavior: reduceMotion ? "auto" : "smooth",
+      block: "end",
+    });
   }, [messages, loading]);
 
   // The text box grows with what's typed (up to a few lines). When it's empty we
@@ -75,7 +86,10 @@ export default function Chat() {
   }
 
   /** Anonymous audit log for escalations that happen in the browser. No message text is sent. */
-  function logEscalation(category: EscalationCategory, layer: "keyword" | "help_link") {
+  function logEscalation(
+    category: EscalationCategory,
+    layer: "keyword" | "help_link",
+  ) {
     fetch("/api/escalation-log", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -90,13 +104,18 @@ export default function Chat() {
   }
 
   function reachRA() {
-    addUser(onDuty ? "How do I reach the RA on duty?" : "How do I reach my RA?");
+    addUser(
+      onDuty ? "How do I reach the RA on duty?" : "How do I reach my RA?",
+    );
     addReply({ type: "ra_lookup" });
   }
 
   // Did we just ask "which hall are you in?" and not get an answer yet?
   const last = messages[messages.length - 1];
-  const awaitingHall = last?.role === "assistant" && last.reply.type === "ra_lookup" && !last.reply.hallId;
+  const awaitingHall =
+    last?.role === "assistant" &&
+    last.reply.type === "ra_lookup" &&
+    !last.reply.hallId;
 
   function pickHall(hall: Hall) {
     addUser(hall.name);
@@ -134,7 +153,11 @@ export default function Chat() {
       });
       addReply((await res.json()) as AssistantReply);
     } catch {
-      addReply({ type: "error", message: "Couldn't reach the assistant. Check your connection and try again." });
+      addReply({
+        type: "error",
+        message:
+          "Couldn't reach the assistant. Check your connection and try again.",
+      });
     } finally {
       setLoading(false);
       inputRef.current?.focus();
@@ -155,7 +178,11 @@ export default function Chat() {
               alt="Michigan State University"
               decoding="async"
             />
-            <button className="help-btn" onClick={openHelp} aria-label="Get help now">
+            <button
+              className="help-btn"
+              onClick={openHelp}
+              aria-label="Get help now"
+            >
               <HeartIcon size={16} />
               <span>Get help</span>
             </button>
@@ -175,14 +202,21 @@ export default function Chat() {
       </header>
 
       <main className="chat">
-        <div className="chat-inner" role="log" aria-live="polite" aria-label="Conversation">
+        <div
+          className="chat-inner"
+          role="log"
+          aria-live="polite"
+          aria-label="Conversation"
+        >
           {messages.length === 0 && (
             <section className="welcome">
               <span className="welcome-mark">
                 <BookIcon size={30} />
               </span>
               <h2>How can I help?</h2>
-              <p>Your friend, Spart-I, the Housing Handbook that answers back.</p>
+              <p>
+                Your friend, Spart-I, the Housing Handbook that answers back.
+              </p>
             </section>
           )}
 
@@ -199,6 +233,7 @@ export default function Chat() {
                 onReopen={setEscalation}
                 onPickHall={pickHall}
                 onReachRA={reachRA}
+                onAsk={ask}
                 raLabel={raLabel}
               />
             ),
@@ -249,29 +284,42 @@ export default function Chat() {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => {
                 // Enter sends; Shift+Enter makes a new line.
-                if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+                if (
+                  e.key === "Enter" &&
+                  !e.shiftKey &&
+                  !e.nativeEvent.isComposing
+                ) {
                   e.preventDefault();
                   ask(input);
                 }
               }}
-              placeholder={awaitingHall ? "Type your hall, e.g. Akers" : "Ask a question…"}
+              placeholder={
+                awaitingHall ? "Type your hall, e.g. Akers" : "Ask a question…"
+              }
               maxLength={CONFIG.maxQuestionLength}
               enterKeyHint="send"
               autoComplete="off"
             />
-            <button type="submit" className="send" disabled={loading || !input.trim()} aria-label="Send">
+            <button
+              type="submit"
+              className="send"
+              disabled={loading || !input.trim()}
+              aria-label="Send"
+            >
               <SendIcon size={20} />
             </button>
           </form>
 
           <p className="fineprint">
-            Everything is anonymous. Feel free to share whatever&apos;s on your mind.{" "}
-            <strong>In an emergency, call 911.</strong>
+            Everything is anonymous. Feel free to share whatever&apos;s on your
+            mind. <strong>In an emergency, call 911.</strong>
           </p>
         </div>
       </div>
 
-      {escalation && <EscalationScreen category={escalation} onBack={closeHelp} />}
+      {escalation && (
+        <EscalationScreen category={escalation} onBack={closeHelp} />
+      )}
     </div>
   );
 }
@@ -282,6 +330,7 @@ function AssistantMessage({
   onReopen,
   onPickHall,
   onReachRA,
+  onAsk,
   raLabel,
 }: {
   reply: AssistantReply;
@@ -289,6 +338,7 @@ function AssistantMessage({
   onReopen: (c: EscalationCategory) => void;
   onPickHall: (hall: Hall) => void;
   onReachRA: () => void;
+  onAsk: (question: string) => void;
   raLabel: string;
 }) {
   switch (reply.type) {
@@ -308,7 +358,11 @@ function AssistantMessage({
         <div className="bubble assistant">
           {hall ? (
             <>
-              <p>{isRaOnDuty() ? "Here's how to reach the RA on duty:" : "Here's how to reach your RA:"}</p>
+              <p>
+                {isRaOnDuty()
+                  ? "Here's how to reach the RA on duty:"
+                  : "Here's how to reach your RA:"}
+              </p>
               <HallContactCard hall={hall} />
             </>
           ) : (
@@ -337,7 +391,12 @@ function AssistantMessage({
           <div className="bubble assistant handoff">
             <p>{reply.note}</p>
             {reply.link && (
-              <a className="chip inline" href={reply.link.url} target="_blank" rel="noopener noreferrer">
+              <a
+                className="chip inline"
+                href={reply.link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 {reply.link.label}
               </a>
             )}
@@ -348,7 +407,8 @@ function AssistantMessage({
         <div className="bubble assistant handoff">
           <p>{reply.note ?? "I couldn't find this in the handbook."}</p>
           <p className="muted small">
-            Rather than guess, check with your RA or your hall&apos;s Service Center.
+            Rather than guess, check with your RA or your hall&apos;s Service
+            Center.
           </p>
           <button className="chip inline" onClick={onReachRA}>
             <PhoneIcon size={15} /> {raLabel}
@@ -356,11 +416,37 @@ function AssistantMessage({
         </div>
       );
 
+    case "dining_pick_hall":
+      return (
+        <div className="bubble assistant">
+          <p>Which dining hall?</p>
+          {isLatest && (
+            <div className="hall-chips">
+              {reply.halls.map((h) => (
+                <button
+                  key={h.id}
+                  className="chip"
+                  onClick={() =>
+                    onAsk(
+                      `${reply.question.replace(/[?.!\s]+$/, "")} at ${h.name}`,
+                    )
+                  }
+                >
+                  {h.name}
+                  <small>{h.building}</small>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      );
+
     case "off_topic":
       return (
         <div className="bubble assistant">
           <p>
-            I can only help with MSU housing questions, like guests, quiet hours, lockouts and room changes.
+            I can only help with MSU housing questions, like guests, quiet
+            hours, lockouts and room changes.
           </p>
         </div>
       );
@@ -371,13 +457,14 @@ function AssistantMessage({
           <p>
             {reply.reason === "visitor" &&
               "You've asked a lot in a short time. Please wait a minute and try again."}
-            {reply.reason === "busy" && "The assistant is very busy right now. Please try again in a minute."}
+            {reply.reason === "busy" &&
+              "The assistant is very busy right now. Please try again in a minute."}
             {reply.reason === "budget" &&
               "The assistant has reached its limit for today and will be back tomorrow. Your RA and hall Service Center can answer in the meantime."}
           </p>
           <p className="muted small">
-            If you&apos;re going through something hard or anyone is in danger, tap &ldquo;Get help&rdquo; in the top
-            corner.
+            If you&apos;re going through something hard or anyone is in danger,
+            tap &ldquo;Get help&rdquo; in the top corner.
           </p>
           <button className="chip inline" onClick={onReachRA}>
             <PhoneIcon size={15} /> {raLabel}
@@ -394,7 +481,11 @@ function AssistantMessage({
   }
 }
 
-function AnswerCard({ reply }: { reply: Extract<AssistantReply, { type: "answer" }> }) {
+function AnswerCard({
+  reply,
+}: {
+  reply: Extract<AssistantReply, { type: "answer" }>;
+}) {
   const [vote, setVote] = useState<"up" | "down" | null>(null);
 
   function sendVote(v: "up" | "down") {
@@ -424,7 +515,12 @@ function AnswerCard({ reply }: { reply: Extract<AssistantReply, { type: "answer"
             </summary>
             <blockquote>{c.passage}</blockquote>
             {c.url && (
-              <a className="cite-link" href={c.url} target="_blank" rel="noopener noreferrer">
+              <a
+                className="cite-link"
+                href={c.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Open the event page
               </a>
             )}
