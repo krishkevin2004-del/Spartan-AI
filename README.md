@@ -119,7 +119,7 @@ Kellogg's State Room). If no hall is named, it searches all halls for a food, or
 it is, and sits behind the same crisis check, rate limits and daily budget.
 
 ```
-GitHub Actions, daily ~7:15 a.m. ET (6:15 in winter) → scripts/dining-scrape.ts (headless Chrome, about 50 page loads, each hall sent as soon as it's done)
+GitHub Actions, daily ~5:15 a.m. ET (4:15 in winter; GitHub often starts it hours late) → scripts/dining-scrape.ts (headless Chrome, about 50 page loads, each hall sent as soon as it's done)
    → POST /api/dining/ingest (secret + strict validation) → cache (Redis)
 message → crisis check → RA lookup → router (on every message) → dining skill:
    a dish ("pizza") → plain-code word search by day, meal and food
